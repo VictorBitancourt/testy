@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="app/assets/images/testy-logo.svg" width="200" alt="Testy Logo" />
+</p>
+
 # Testy
 
 An opinionated test management tool for QA teams that value simplicity over configuration. Create test plans, write scenarios in Given/When/Then format, attach evidence, and export PDF reports — nothing more, nothing less.
@@ -13,7 +17,6 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Derived Status** — plan status is computed automatically from its scenarios (no manual updates)
 - **Filters** — filter plans by status (Approved, Failed, In Progress, Not Started) and date range
 - **PDF Reports** — export a formatted report with summary, scenarios, and evidence
-- **AI Scenario Generation** — describe what you want to test in plain text and let ChatGPT generate structured Given/When/Then scenarios for review
 
 ## Tech Stack
 
@@ -25,7 +28,6 @@ Most test management tools drown you in fields, workflows, and integrations befo
 | Frontend | Tailwind CSS v4, Hotwire (Turbo + Stimulus) |
 | File Storage | Active Storage (local disk) |
 | PDF | wicked_pdf + wkhtmltopdf |
-| AI | OpenAI ChatGPT API (via `ruby-openai` gem) |
 | Deploy | Kamal-ready (Docker + Thruster) |
 
 ## Getting Started
@@ -34,7 +36,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/testy.git
+git clone https://github.com/VictorBitancourt/testy.git
 cd testy
 
 # Install dependencies
@@ -42,16 +44,6 @@ bundle install
 
 # Setup database
 bin/rails db:setup
-
-# Configure AI scenario generation (optional)
-# You need an OpenAI API key — get one at https://platform.openai.com/api-keys
-EDITOR="vim" bin/rails credentials:edit
-# Add the following lines to the file:
-#   openai:
-#     api_key: sk-your-key-here
-# Save and close. The key is stored encrypted in config/credentials.yml.enc.
-# Without this key, the "Gerar com IA" button will return an error,
-# but all other features work normally.
 
 # Start the server
 bin/dev
@@ -126,8 +118,6 @@ Testy forces you to write scenarios that describe **behavior**, not **procedure*
 One Given, one When, one Then. If you can't describe the scenario in three concise sentences, it's probably more than one scenario. This keeps tests readable by both developers and business people, which is the whole point of Gherkin — a shared language, not a step recorder.
 
 **SQLite in production.** One fewer service to manage. Works great for small-to-medium teams. Rails 8 supports it well with Solid Cache, Solid Queue, and Solid Cable.
-
-**AI generates, human decides.** The "Gerar com IA" button calls the OpenAI API to produce a structured scenario from a free-text description. The result pre-fills the form fields — the QA reviews, edits if needed, and only then clicks "Adicionar Cenário". The AI never saves anything directly. This keeps the human in the loop while removing the blank-page problem.
 
 **No authentication.** Testy is designed for internal use behind a VPN or within a team's private network. Adding auth is straightforward with Rails' built-in `has_secure_password` if needed.
 
