@@ -1,0 +1,88 @@
+<%= form_with model: bug, class: "space-y-6", data: { controller: "bug-form" } do |f| %>
+  <% if bug.errors.any? %>
+    <div class="bg-fz-red-darkest border border-fz-red-darker text-fz-red-light px-4 py-3 rounded-lg">
+      <p class="font-bold"><%= t('bugs.form.error_saving') %></p>
+      <ul class="list-disc list-inside">
+        <% bug.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, t('bugs.form.bug_title'), class: "block font-semibold text-ink-darker mb-2" %>
+    <%= f.text_field :title, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent", placeholder: t('bugs.form.title_placeholder') %>
+  </div>
+
+  <div>
+    <%= f.label :description, t('bugs.form.description'), class: "block font-semibold text-ink-darker mb-2" %>
+    <%= f.text_area :description, rows: 4, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent resize-y", placeholder: t('bugs.form.description_placeholder') %>
+  </div>
+
+  <div>
+    <label class="block font-semibold text-ink-darker mb-2"><%= t('bugs.form.evidence_label') %></label>
+    <label class="cursor-pointer inline-flex items-center gap-1.5 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-4 py-2 rounded-lg transition text-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+      <%= t('bugs.form.upload_evidence') %>
+      <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "bug-file-upload" %>
+    </label>
+    <span class="text-sm text-ink-medium ml-2" id="bug-file-count"><%= t('bugs.form.no_file_selected') %></span>
+  </div>
+
+  <!-- Toggle optional fields -->
+  <div>
+    <button type="button" data-action="click->bug-form#toggle" class="text-fz-blue-light hover:text-fz-blue-medium font-semibold text-sm transition">
+      <span data-bug-form-target="toggleText"><%= t('bugs.form.detail_bug') %></span>
+    </button>
+  </div>
+
+  <div data-bug-form-target="optionalFields" class="<%= 'hidden' unless bug.steps_to_reproduce.present? || bug.obtained_result.present? || bug.expected_result.present? %> space-y-6">
+    <div>
+      <%= f.label :steps_to_reproduce, t('bugs.form.steps_to_reproduce'), class: "block font-semibold text-ink-darker mb-2" %>
+      <%= f.text_area :steps_to_reproduce, rows: 3, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent resize-y", placeholder: t('bugs.form.steps_placeholder') %>
+    </div>
+
+    <div>
+      <%= f.label :obtained_result, t('bugs.form.obtained_result'), class: "block font-semibold text-ink-darker mb-2" %>
+      <%= f.text_area :obtained_result, rows: 3, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent resize-y", placeholder: t('bugs.form.obtained_placeholder') %>
+    </div>
+
+    <div>
+      <%= f.label :expected_result, t('bugs.form.expected_result'), class: "block font-semibold text-ink-darker mb-2" %>
+      <%= f.text_area :expected_result, rows: 3, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-green-light focus:border-transparent resize-y", placeholder: t('bugs.form.expected_placeholder') %>
+    </div>
+  </div>
+
+  <!-- Tags -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div data-controller="bug-tag" data-bug-tag-field-value="feature_tag" class="relative">
+      <%= f.label :feature_tag, t('bugs.form.feature_tag'), class: "block font-semibold text-ink-darker mb-2" %>
+      <%= f.text_field :feature_tag, data: { bug_tag_target: "input", action: "input->bug-tag#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: t('bugs.form.feature_placeholder'), autocomplete: "off" %>
+      <div data-bug-tag-target="suggestions" class="hidden absolute z-10 w-full mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
+    </div>
+
+    <div data-controller="bug-tag" data-bug-tag-field-value="cause_tag" class="relative">
+      <%= f.label :cause_tag, t('bugs.form.cause_tag'), class: "block font-semibold text-ink-darker mb-2" %>
+      <%= f.text_field :cause_tag, data: { bug_tag_target: "input", action: "input->bug-tag#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent", placeholder: t('bugs.form.cause_placeholder'), autocomplete: "off" %>
+      <div data-bug-tag-target="suggestions" class="hidden absolute z-10 w-full mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <div class="flex gap-4">
+    <%= f.submit (bug.new_record? ? t('bugs.form.create_bug') : t('bugs.form.update_bug')), class: "flex-1 bg-fz-red-dark hover:bg-fz-red-darker text-white font-bold py-3 rounded-lg cursor-pointer transition" %>
+    <%= link_to t('bugs.form.cancel'), bugs_path, class: "flex-1 bg-surface-raised hover:bg-ink-lightest text-ink-dark font-bold py-3 rounded-lg text-center transition" %>
+  </div>
+<% end %>
+
+<script>
+  document.getElementById('bug-file-upload')?.addEventListener('change', function(e) {
+    const count = e.target.files.length;
+    const translations = JSON.parse(document.querySelector('meta[name="translations"]')?.content || '{}');
+    const fileUpload = translations.file_upload || {};
+    const text = count === 0 ? (fileUpload.no_file || 'No file selected') :
+                 count === 1 ? (fileUpload.one_file || '1 file selected') :
+                 (fileUpload.files || '%{count} files selected').replace('%{count}', count);
+    document.getElementById('bug-file-count').textContent = text;
+  });
+</script>

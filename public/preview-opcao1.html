@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Opção 1 — Borda completa com destaque lateral</title>
+  <style>
+    :root {
+      --canvas: oklch(20% 0.0195 232.58);
+      --surface: oklch(26% 0.022 232);
+      --surface-raised: oklch(30% 0.024 232);
+      --ink-darkest: oklch(96% 0.002 252);
+      --ink-darker: oklch(92% 0.003 254);
+      --ink-dark: oklch(84% 0.005 256);
+      --ink-medium: oklch(66% 0.008 258);
+      --ink-lighter: oklch(40% 0.026 262);
+
+      --fz-blue-darkest: oklch(26% 0.126 264);
+      --fz-blue-dark: oklch(57.02% 0.1895 260.46);
+      --fz-blue-light: oklch(84.04% 0.0719 255.29);
+
+      --fz-violet-darkest: oklch(26% 0.148 292);
+      --fz-violet-dark: oklch(58% 0.216 287.6);
+      --fz-violet-light: oklch(84.08% 0.0791 283.47);
+
+      --fz-green-darkest: oklch(26% 0.071 149);
+      --fz-green-dark: oklch(55% 0.162 147);
+      --fz-green-light: oklch(83.92% 0.0772 145.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--canvas);
+      color: var(--ink-darkest);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: var(--ink-darkest);
+    }
+
+    .subtitle {
+      color: var(--ink-medium);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .section-label {
+      font-size: 13px;
+      color: var(--ink-medium);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    /* ── Current (for comparison) ── */
+    .current .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .current .box {
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+
+    .current .box-blue { background: var(--fz-blue-darkest); border-left-color: var(--fz-blue-dark); }
+    .current .box-violet { background: var(--fz-violet-darkest); border-left-color: var(--fz-violet-dark); }
+    .current .box-green { background: var(--fz-green-darkest); border-left-color: var(--fz-green-dark); }
+
+    .current .box-blue .label { color: var(--fz-blue-light); }
+    .current .box-violet .label { color: var(--fz-violet-light); }
+    .current .box-green .label { color: var(--fz-green-light); }
+
+    /* ── Option 1: Full border + thick left accent ── */
+    .option1 .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .option1 .box {
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--ink-lighter);
+      border-left: 4px solid;
+    }
+
+    .option1 .box-blue { background: var(--fz-blue-darkest); border-left-color: var(--fz-blue-dark); }
+    .option1 .box-violet { background: var(--fz-violet-darkest); border-left-color: var(--fz-violet-dark); }
+    .option1 .box-green { background: var(--fz-green-darkest); border-left-color: var(--fz-green-dark); }
+
+    .option1 .box-blue .label { color: var(--fz-blue-light); }
+    .option1 .box-violet .label { color: var(--fz-violet-light); }
+    .option1 .box-green .label { color: var(--fz-green-light); }
+
+    /* ── Option 1b: Full colored border (thin) + thick left ── */
+    .option1b .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .option1b .box {
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+
+    .option1b .box-blue { background: var(--fz-blue-darkest); border: 1px solid var(--fz-blue-dark); border-left: 4px solid var(--fz-blue-dark); }
+    .option1b .box-violet { background: var(--fz-violet-darkest); border: 1px solid var(--fz-violet-dark); border-left: 4px solid var(--fz-violet-dark); }
+    .option1b .box-green { background: var(--fz-green-darkest); border: 1px solid var(--fz-green-dark); border-left: 4px solid var(--fz-green-dark); }
+
+    .option1b .box-blue .label { color: var(--fz-blue-light); }
+    .option1b .box-violet .label { color: var(--fz-violet-light); }
+    .option1b .box-green .label { color: var(--fz-green-light); }
+
+    /* ── Option 1c: Full colored border (thin) only, no thick left ── */
+    .option1c .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .option1c .box {
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .option1c .box-blue { background: var(--fz-blue-darkest); border: 1px solid var(--fz-blue-dark); }
+    .option1c .box-violet { background: var(--fz-violet-darkest); border: 1px solid var(--fz-violet-dark); }
+    .option1c .box-green { background: var(--fz-green-darkest); border: 1px solid var(--fz-green-dark); }
+
+    .option1c .box-blue .label { color: var(--fz-blue-light); }
+    .option1c .box-violet .label { color: var(--fz-violet-light); }
+    .option1c .box-green .label { color: var(--fz-green-light); }
+
+    /* ── Shared ── */
+    .label {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .content {
+      color: var(--ink-darker);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--ink-lighter);
+      margin: 32px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Opção 1 — Borda completa com destaque lateral</h1>
+  <p class="subtitle">Variações de borda ao redor da caixa + acento colorido</p>
+
+  <hr>
+
+  <div class="current">
+    <p class="section-label">Atual (só border-left)</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <p class="label">Dado que:</p>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <p class="label">Quando:</p>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <p class="label">Então:</p>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="option1">
+    <p class="section-label">1a — Borda neutra ao redor + border-left colorido</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <p class="label">Dado que:</p>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <p class="label">Quando:</p>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <p class="label">Então:</p>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="option1b">
+    <p class="section-label">1b — Borda colorida fina ao redor + border-left colorido grosso</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <p class="label">Dado que:</p>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <p class="label">Quando:</p>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <p class="label">Então:</p>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="option1c">
+    <p class="section-label">1c — Só borda colorida fina ao redor (sem destaque lateral)</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <p class="label">Dado que:</p>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <p class="label">Quando:</p>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <p class="label">Então:</p>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+login_success:
+  test_plan: login_plan
+  title: Login with valid credentials
+  given: User is on the login page
+  when_step: Fills in correct email and password and clicks Sign In
+  then_step: System redirects to the dashboard
+  status: approved
+  position: 0
+
+login_failure:
+  test_plan: login_plan
+  title: Login with incorrect password
+  given: User is on the login page
+  when_step: Fills in correct email and incorrect password and clicks Sign In
+  then_step: System displays an error message
+  status: pending
+  position: 1
+
+login_approved:
+  test_plan: login_plan
+  title: Login with two-factor authentication
+  given: User with 2FA enabled is on the login page
+  when_step: Fills in credentials and correct 2FA code
+  then_step: System redirects to the dashboard
+  status: approved
+  position: 2
+
+checkout_step1:
+  test_plan: approved_plan
+  title: Add item to cart
+  given: User is on the product page
+  when_step: Clicks add to cart
+  then_step: Item appears in the cart
+  status: approved
+  position: 0
+
+checkout_step2:
+  test_plan: approved_plan
+  title: Complete purchase
+  given: User is in the cart with items
+  when_step: Clicks complete purchase and confirms
+  then_step: Order is created successfully
+  status: approved
+  position: 1
+
+payment_success:
+  test_plan: failed_plan
+  title: Payment with valid card
+  given: User is on the payment page
+  when_step: Fills in valid card data and confirms
+  then_step: Payment is approved
+  status: approved
+  position: 0
+
+payment_failure:
+  test_plan: failed_plan
+  title: Payment with invalid card
+  given: User is on the payment page
+  when_step: Fills in invalid card data and confirms
+  then_step: System displays payment error
+  status: failed
+  position: 1

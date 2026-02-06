@@ -1,0 +1,34 @@
+pt-BR:
+  javascript:
+    confirm_modal:
+      cancel: "Cancelar"
+      confirm: "Confirmar"
+    scenario:
+      approved: "Aprovado"
+      failed: "Reprovado"
+      approve: "Aprovar"
+      fail: "Reprovar"
+      error_status: "Erro ao atualizar o status do cenário"
+      save: "Salvar"
+      cancel: "Cancelar"
+      upload_evidence: "Enviar Evidências"
+      no_file_selected: "Nenhum arquivo selecionado"
+      one_file_selected: "1 arquivo selecionado"
+      files_selected: "%{count} arquivos selecionados"
+      error_saving: "Erro ao salvar: %{errors}"
+      error_saving_generic: "Erro ao salvar o cenário"
+      associate_bug: "Associar Bug"
+      search_bug: "Buscar bugs..."
+      cannot_approve_with_bug: "Não é possível aprovar um cenário com bug associado. Remova o bug primeiro."
+    ai_generate:
+      enter_description: "Insira uma descrição da funcionalidade que deseja testar."
+      error_generating: "Erro ao gerar cenários."
+      scenarios_created: "%{count} cenários criados com sucesso!"
+      error_communication: "Erro na comunicação com a IA. Tente novamente."
+    bug_form:
+      detail_bug: "Detalhar Bug +"
+      hide_details: "Ocultar Detalhes -"
+    file_upload:
+      no_file: "Nenhum arquivo selecionado"
+      one_file: "1 arquivo selecionado"
+      files: "%{count} arquivos selecionados"

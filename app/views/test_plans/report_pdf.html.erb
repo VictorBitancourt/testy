@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      background: #f5f3ef;
+      height: 100%;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Table that controls header/footer repetition on each page */
+    .page-table {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+    }
+
+    .page-table td {
+      padding: 0;
+      border: none;
+    }
+
+    /* Top space repeated on each page */
+    .page-header-space {
+      height: 12mm;
+    }
+
+    /* Invisible tfoot — reserves space for page breaks */
+    .tfoot-spacer {
+      height: 20mm;
+    }
+
+    /* Fixed visual footer at the bottom of each page */
+    .pdf-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 20mm;
+      text-align: center;
+      padding-top: 4px;
+      border-top: 2px solid #e8e4dd;
+      background: #f5f3ef;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .pdf-footer img {
+      display: block;
+      margin: 0 auto 2px;
+    }
+
+    .pdf-footer .footer-text {
+      font-size: 9px;
+      color: #999;
+    }
+
+    .pdf-footer .footer-date {
+      font-size: 8px;
+      color: #bbb;
+    }
+
+    /* Main content */
+    td.page-content {
+      padding: 0 20mm;
+    }
+
+    /* Header com logo centralizado */
+    .header {
+      text-align: center;
+      padding: 40px 0 30px;
+      border-bottom: 3px solid #e8e4dd;
+      margin-bottom: 40px;
+    }
+
+    .logo-container {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .report-title {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .report-date {
+      font-size: 13px;
+      color: #999;
+    }
+
+    /* Plan Info */
+    .plan-info {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .plan-name {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .plan-qa {
+      font-size: 15px;
+      color: #666;
+    }
+
+    .plan-qa strong {
+      color: #f5576c;
+    }
+
+    /* Metrics */
+    .metrics {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .metric {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .metric-number {
+      font-size: 36px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-total .metric-number { color: #6366f1; }
+    .metric-approved .metric-number { color: #22c55e; }
+    .metric-failed .metric-number { color: #ef4444; }
+    .metric-pending .metric-number { color: #f59e0b; }
+
+    /* Success Banner */
+    .success-banner {
+      background: #22c55e;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: white;
+    }
+
+    .success-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .success-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .success-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* Index */
+    .toc {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .toc-title-cell {
+      font-size: 13px;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8e4dd;
+    }
+
+    .toc-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .toc-table tr {
+      border-bottom: 1px solid #f0ede8;
+    }
+
+    .toc-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .toc-table td {
+      padding: 7px 4px;
+      vertical-align: middle;
+    }
+
+    .toc-num {
+      width: 28px;
+    }
+
+    .toc-num span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: #f5576c;
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 10px;
+    }
+
+    .toc-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .toc-name a {
+      color: #1a1a1a;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .toc-name a:hover {
+      color: #f5576c;
+      text-decoration: underline;
+    }
+
+    .toc-status {
+      width: 90px;
+      text-align: right;
+    }
+
+    /* Scenarios Section */
+    .section-title {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      padding-top: 10px;
+      border-top: 2px solid #e8e4dd;
+      page-break-after: avoid;
+    }
+
+    /* Scenario */
+    .scenario {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      page-break-inside: avoid;
+    }
+
+    .scenario-header {
+      padding: 18px 24px;
+      border-bottom: 2px solid #f5f3ef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .scenario-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #f5576c;
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 13px;
+      margin-right: 12px;
+    }
+
+    .scenario-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a1a1a;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-failed {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .scenario-body {
+      padding: 24px;
+    }
+
+    .steps {
+      display: flex;
+      gap: 10px;
+    }
+
+    .step {
+      flex: 1;
+      min-width: 0;
+      background: #f9f8f6;
+      padding: 16px;
+      border-radius: 10px;
+    }
+
+    .step-given { border-top: 3px solid #6366f1; }
+    .step-when { border-top: 3px solid #a855f7; }
+    .step-then { border-top: 3px solid #22c55e; }
+
+    .step-label {
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .step-given .step-label { color: #6366f1; }
+    .step-when .step-label { color: #a855f7; }
+    .step-then .step-label { color: #22c55e; }
+
+    .step-content {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #444;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* Evidence */
+    .evidence {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px dashed #e8e4dd;
+    }
+
+    .evidence-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .evidence-img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 2px solid #e8e4dd;
+      margin-bottom: 12px;
+    }
+
+    .evidence-file {
+      background: #f9f8f6;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+  </style>
+</head>
+<body>
+  <% require 'base64' %>
+  <% logo_b64 = Base64.strict_encode64(File.read(Rails.root.join('app/assets/images/testy-logo.png'))) %>
+
+  <!-- Fixed visual footer at the bottom of each page -->
+  <div class="pdf-footer">
+    <img src="data:image/png;base64,<%= logo_b64 %>" width="16" height="16" />
+    <div class="footer-text"><%= t('test_plans.report_pdf.footer_tagline') %></div>
+    <div class="footer-date"><%= l(Time.zone.now, format: :short_datetime) %></div>
+  </div>
+
+  <table class="page-table">
+    <thead>
+      <tr><td><div class="page-header-space"></div></td></tr>
+    </thead>
+    <tfoot>
+      <tr><td><div class="tfoot-spacer"></div></td></tr>
+    </tfoot>
+    <tbody>
+      <tr><td class="page-content">
+
+  <!-- Header with Logo -->
+  <div class="header">
+    <div class="logo-container">
+      <img src="data:image/png;base64,<%= logo_b64 %>" width="100" height="100" />
+    </div>
+    <div class="report-title"><%= t('test_plans.report_pdf.test_report') %></div>
+    <div class="report-date"><%= t('test_plans.report_pdf.generated_on', date: l(Time.zone.today, format: :month_day_year)) %></div>
+  </div>
+
+  <!-- Plan Info -->
+  <div class="plan-info">
+    <div class="plan-name"><%= @test_plan.name %></div>
+    <div class="plan-qa"><%= t('test_plans.report_pdf.responsible_qa') %> <strong><%= @test_plan.qa_name %></strong></div>
+    <% if @test_plan.tags.any? %>
+      <div style="margin-top: 12px;">
+        <% @test_plan.tags.each do |tag| %>
+          <span style="display: inline-block; background: #8b5cf6; color: white; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-right: 6px;"><%= tag.name %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric metric-total">
+      <span class="metric-number"><%= @test_plan.total_scenarios %></span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.total') %></span>
+    </div>
+    <div class="metric metric-approved">
+      <span class="metric-number"><%= @test_plan.approved_scenarios %></span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.approved') %></span>
+    </div>
+    <div class="metric metric-failed">
+      <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'failed').count %></span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.failed') %></span>
+    </div>
+    <div class="metric metric-pending">
+      <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'pending').count %></span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.pending') %></span>
+    </div>
+  </div>
+
+  <% if @test_plan.all_scenarios_approved? && @test_plan.total_scenarios > 0 %>
+  <!-- Success Banner -->
+  <div class="success-banner">
+    <div class="success-icon">&#10003;</div>
+    <div class="success-title"><%= t('test_plans.report_pdf.all_approved_title') %></div>
+    <div class="success-subtitle"><%= t('test_plans.report_pdf.all_approved_subtitle', qa: @test_plan.qa_name, date: l(Time.zone.today, format: :short_date)) %></div>
+  </div>
+  <% end %>
+
+  <!-- Index -->
+  <% scenarios = @test_plan.test_scenarios.to_a %>
+  <% if scenarios.size > 1 %>
+  <div class="toc">
+    <table class="toc-table">
+      <thead>
+        <tr><td colspan="3" class="toc-title-cell"><%= t('test_plans.report_pdf.scenario_index') %></td></tr>
+      </thead>
+      <tbody>
+        <% scenarios.each_with_index do |s, i| %>
+          <tr>
+            <td class="toc-num"><a href="#scenario-<%= i + 1 %>"><span><%= i + 1 %></span></a></td>
+            <td class="toc-name"><a href="#scenario-<%= i + 1 %>"><%= s.title %></a></td>
+            <td class="toc-status">
+              <span class="badge badge-<%= s.status %>">
+                <%= s.status == 'approved' ? t('test_plans.report_pdf.status_approved') : s.status == 'failed' ? t('test_plans.report_pdf.status_failed') : t('test_plans.report_pdf.status_pending') %>
+              </span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <% end %>
+
+  <!-- Scenarios -->
+  <div class="section-title"><%= t('test_plans.report_pdf.test_scenarios') %></div>
+
+  <% scenarios.each_with_index do |scenario, index| %>
+  <div class="scenario" id="scenario-<%= index + 1 %>">
+    <div class="scenario-header">
+      <div>
+        <span class="scenario-number"><%= index + 1 %></span>
+        <span class="scenario-title"><%= scenario.title %></span>
+      </div>
+      <span class="badge badge-<%= scenario.status %>">
+        <%= scenario.status == 'approved' ? t('test_plans.report_pdf.status_approved') : scenario.status == 'failed' ? t('test_plans.report_pdf.status_failed') : t('test_plans.report_pdf.status_pending') %>
+      </span>
+    </div>
+
+    <div class="scenario-body">
+      <div class="steps">
+        <div class="step step-given">
+          <span class="step-label"><%= t('test_plans.report_pdf.given') %></span>
+          <div class="step-content"><%= scenario.given %></div>
+        </div>
+        <div class="step step-when">
+          <span class="step-label"><%= t('test_plans.report_pdf.when') %></span>
+          <div class="step-content"><%= scenario.when_step %></div>
+        </div>
+        <div class="step step-then">
+          <span class="step-label"><%= t('test_plans.report_pdf.then') %></span>
+          <div class="step-content"><%= scenario.then_step %></div>
+        </div>
+      </div>
+
+      <% if scenario.bug.present? %>
+      <div style="margin-top: 16px; padding: 10px 16px; background: #fef2f2; border-radius: 8px; border-left: 3px solid #ef4444;">
+        <span style="font-size: 12px;"><svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;display:inline;vertical-align:middle;" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l1.5 3M16 2l-1.5 3"/><path d="M9 5h6a4 4 0 014 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V9a4 4 0 014-4z"/><path d="M7 12v4a5 5 0 0010 0v-4"/><path d="M5 10H3m18 0h-2"/><path d="M5 14H3m18 0h-2"/><path d="M12 12v9"/></svg> <strong><%= t('test_plans.report_pdf.associated_bug') %></strong> <%= scenario.bug.display_name %></span>
+      </div>
+      <% end %>
+
+      <% if scenario.evidence_files.attached? %>
+      <div class="evidence">
+        <div class="evidence-label"><%= t('test_plans.report_pdf.evidence') %></div>
+        <% scenario.evidence_files.each do |file| %>
+          <% if file.image? %>
+            <div style="page-break-inside: avoid;">
+              <img src="data:<%= file.content_type %>;base64,<%= Base64.strict_encode64(file.download) %>" class="evidence-img" />
+            </div>
+          <% else %>
+            <div class="evidence-file">
+              <div style="font-size: 24px;">&#128196;</div>
+              <div style="font-size: 12px; color: #666;"><%= file.filename %></div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+      </td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

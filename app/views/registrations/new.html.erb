@@ -1,0 +1,67 @@
+<div class="min-h-screen bg-canvas flex items-center justify-center px-4">
+  <div class="w-full max-w-sm">
+    <div class="flex justify-center mb-8">
+      <svg width="120" height="120" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="reg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f093fb"/>
+            <stop offset="100%" style="stop-color:#f5576c"/>
+          </linearGradient>
+        </defs>
+        <rect x="30" y="30" width="160" height="160" rx="20" fill="none" stroke="url(#reg-grad)" stroke-width="8" transform="rotate(-5 110 110)"/>
+        <path d="M 75 110 L 95 130 L 145 80" stroke="url(#reg-grad)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" transform="rotate(-5 110 110)"/>
+        <text x="110" y="175" font-family="Arial Black, Arial" font-size="32" font-weight="900" fill="url(#reg-grad)" text-anchor="middle" transform="rotate(-5 110 175)">testy</text>
+      </svg>
+    </div>
+
+    <div class="bg-surface rounded-xl shadow-lg p-8 border border-ink-lighter">
+      <h1 class="text-2xl font-bold text-ink-darkest text-center mb-2"><%= t('registrations.new.initial_setup') %></h1>
+      <p class="text-sm text-ink-dark text-center mb-6"><%= t('registrations.new.create_admin') %></p>
+
+      <%= form_with model: @user, url: registration_path, class: "space-y-4" do |f| %>
+        <% if @user.errors.any? %>
+          <div class="bg-fz-red-light/10 border border-fz-red-light rounded-lg p-3">
+            <ul class="text-sm text-fz-red-light space-y-1">
+              <% @user.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div>
+          <label for="user_username" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.username') %></label>
+          <%= f.text_field :username, autocomplete: "username", autofocus: true, required: true,
+              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+        </div>
+
+        <div>
+          <label for="user_password" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.password') %></label>
+          <%= f.password_field :password, autocomplete: "new-password", required: true,
+              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+        </div>
+
+        <div>
+          <label for="user_password_confirmation" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.confirm_password') %></label>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true,
+              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold py-2.5 rounded-lg shadow-lg transition">
+          <%= t('registrations.new.create_user') %>
+        </button>
+      <% end %>
+
+      <!-- Language switcher -->
+      <div class="flex items-center justify-center gap-1 mt-4">
+        <%= button_to locale_path(locale: :en), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :en ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+          <%= t('language.en') %>
+        <% end %>
+        <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :'pt-BR' ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+          <%= t('language.pt_br') %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

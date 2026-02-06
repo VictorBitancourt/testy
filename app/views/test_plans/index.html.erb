@@ -1,0 +1,211 @@
+<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center gap-3">
+        <%= link_to new_test_plan_path, class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
+          <%= t('test_plans.index.new_plan') %>
+          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">N</span>
+        <% end %>
+      </div>
+      <p class="text-sm text-ink-medium">
+        <%= t('test_plans.index.plans_count', count: TestPlan.count) %> ·
+        <%= t('test_plans.index.approved_count', count: TestPlan.approved_plans.count) %> ·
+        <%= t('test_plans.index.in_progress_count', count: TestPlan.in_progress.count) %> ·
+        <%= t('test_plans.index.failed_count', count: TestPlan.failed_plans.count) %>
+      </p>
+      <div class="flex items-center gap-3">
+        <%= link_to bugs_path, class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 2l1.5 3M16 2l-1.5 3" />
+            <path d="M9 5h6a4 4 0 014 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V9a4 4 0 014-4z" />
+            <path d="M7 12v4a5 5 0 0010 0v-4" />
+            <path d="M5 10H3m18 0h-2" />
+            <path d="M5 14H3m18 0h-2" />
+            <path d="M12 12v9" />
+          </svg>
+          Bug Jar
+          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+        <% end %>
+      </div>
+    </div>
+
+    <%# === Filter Bar === %>
+    <div class="bg-surface rounded-xl shadow-md p-4 mb-6">
+      <%# Search + Status pills %>
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <%= form_tag test_plans_path, method: :get, class: "flex items-center gap-2 mr-4" do %>
+          <% if params[:status].present? %>
+            <input type="hidden" name="status" value="<%= params[:status] %>">
+          <% end %>
+          <% if params[:date_from].present? %>
+            <input type="hidden" name="date_from" value="<%= params[:date_from] %>">
+          <% end %>
+          <% if params[:date_until].present? %>
+            <input type="hidden" name="date_until" value="<%= params[:date_until] %>">
+          <% end %>
+          <input type="text" name="search" value="<%= @search %>" placeholder="<%= t('test_plans.index.search_placeholder') %>"
+                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest placeholder-ink-medium focus:ring-2 focus:ring-fz-blue-light focus:outline-none w-64">
+          <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
+            <%= t('test_plans.index.search') %>
+          </button>
+        <% end %>
+
+        <span class="text-sm font-semibold text-ink-dark mr-1"><%= t('test_plans.index.status_label') %></span>
+        <%
+          status_options = [
+            { value: nil,            label: t('test_plans.index.status_all'),          active_bg: "bg-ink-dark",          inactive_bg: "bg-surface-raised text-ink-dark hover:bg-ink-lightest" },
+            { value: "approved",     label: t('test_plans.index.status_approved'),     active_bg: "bg-fz-green-dark",     inactive_bg: "bg-fz-green-darkest text-fz-green-light hover:bg-fz-green-darker" },
+            { value: "failed",       label: t('test_plans.index.status_failed'),       active_bg: "bg-fz-red-dark",       inactive_bg: "bg-fz-red-darkest text-fz-red-light hover:bg-fz-red-darker" },
+            { value: "in_progress",  label: t('test_plans.index.status_in_progress'),  active_bg: "bg-fz-yellow-medium",  inactive_bg: "bg-fz-yellow-darkest text-fz-yellow-light hover:bg-fz-yellow-darker" },
+            { value: "not_started",  label: t('test_plans.index.status_not_started'),  active_bg: "bg-fz-blue-dark",      inactive_bg: "bg-fz-blue-darkest text-fz-blue-light hover:bg-fz-blue-darker" },
+          ]
+          current_status = params[:status]
+        %>
+        <% status_options.each do |opt| %>
+          <% is_active = (opt[:value] == current_status) || (opt[:value].nil? && current_status.blank?) %>
+          <%= form_tag test_plans_path, method: :get, class: "inline" do %>
+            <% if opt[:value].present? %>
+              <input type="hidden" name="status" value="<%= opt[:value] %>">
+            <% end %>
+            <% if params[:date_from].present? %>
+              <input type="hidden" name="date_from" value="<%= params[:date_from] %>">
+            <% end %>
+            <% if params[:date_until].present? %>
+              <input type="hidden" name="date_until" value="<%= params[:date_until] %>">
+            <% end %>
+            <% if @search.present? %>
+              <input type="hidden" name="search" value="<%= @search %>">
+            <% end %>
+            <button type="submit" class="px-4 py-1.5 rounded-full text-sm font-semibold transition <%= is_active ? "#{opt[:active_bg]} text-white" : opt[:inactive_bg] %>">
+              <%= opt[:label] %>
+            </button>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%# Date filters %>
+      <%= form_tag test_plans_path, method: :get, class: "flex flex-wrap items-end gap-3" do %>
+        <% if params[:status].present? %>
+          <input type="hidden" name="status" value="<%= params[:status] %>">
+        <% end %>
+        <% if @search.present? %>
+          <input type="hidden" name="search" value="<%= @search %>">
+        <% end %>
+        <div>
+          <label for="date_from" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('test_plans.index.date_from') %></label>
+          <input type="date" name="date_from" id="date_from" value="<%= params[:date_from] %>"
+                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+        </div>
+        <div>
+          <label for="date_until" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('test_plans.index.date_to') %></label>
+          <input type="date" name="date_until" id="date_until" value="<%= params[:date_until] %>"
+                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+        </div>
+        <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
+          <%= t('test_plans.index.filter_by_date') %>
+        </button>
+        <% if @filters_active %>
+          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: "text-sm text-fz-red-light hover:text-fz-red-dark font-semibold underline ml-2" %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if @test_plans.any? %>
+      <%# === Table === %>
+      <div class="bg-surface rounded-xl shadow-lg overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="border-b border-ink-lighter">
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_name') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_qa') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_created_by') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_scenarios') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_status') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_tags') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_date') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_actions') %></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-lighter/30">
+            <% @test_plans.each do |plan| %>
+              <% status = plan.derived_status %>
+              <tr class="hover:bg-surface-raised/50 transition">
+                <td class="px-4 py-3">
+                  <%= link_to plan.name, plan, class: "text-fz-blue-light hover:text-fz-blue-medium font-semibold" %>
+                </td>
+                <td class="px-4 py-3 text-sm text-ink-dark"><%= plan.qa_name %></td>
+                <td class="px-4 py-3 text-sm text-ink-dark"><%= plan.user&.username || "—" %></td>
+                <td class="px-4 py-3 text-sm text-ink-dark text-center">
+                  <span class="text-fz-green-medium font-semibold"><%= plan.approved_scenarios %></span>/<%= plan.total_scenarios %>
+                </td>
+                <td class="px-4 py-3 text-center">
+                  <% case status %>
+                  <% when "approved" %>
+                    <span class="inline-block bg-fz-green-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_approved').upcase %></span>
+                  <% when "failed" %>
+                    <span class="inline-block bg-fz-red-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_failed').upcase %></span>
+                  <% when "in_progress" %>
+                    <span class="inline-block bg-fz-yellow-medium text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_in_progress').upcase %></span>
+                  <% when "not_started" %>
+                    <span class="inline-block bg-fz-blue-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_not_started').upcase %></span>
+                  <% end %>
+                </td>
+                <td class="px-4 py-3 text-center">
+                  <div class="flex flex-wrap justify-center gap-1">
+                    <% plan.tags.each do |tag| %>
+                      <%= link_to tag.name, test_plans_path(search: tag.name), class: "inline-block bg-fz-violet-darkest text-fz-violet-light text-xs font-semibold px-2 py-0.5 rounded-full hover:bg-fz-violet-darker transition" %>
+                    <% end %>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-sm text-ink-dark whitespace-nowrap">
+                  <%= l(plan.created_at.to_date, format: :short_date) %>
+                </td>
+                <td class="px-4 py-3 text-center">
+                  <div class="flex items-center justify-center gap-2">
+                    <%= link_to plan, class: "text-fz-blue-light hover:text-fz-blue-medium transition", title: t('test_plans.index.view') do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    <% end %>
+                    <% if current_user_admin? || plan.user == Current.user %>
+                      <%= link_to edit_test_plan_path(plan), class: "text-ink-medium hover:text-fz-yellow-light transition", title: t('test_plans.index.edit') do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      <% end %>
+                      <%= link_to test_plan_path(plan), data: { turbo_method: :delete, turbo_confirm: t('test_plans.index.confirm_remove_plan') }, class: "text-ink-medium hover:text-fz-red-light transition", title: t('test_plans.index.remove') do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <%# === Pagination === %>
+      <% if @pagy.pages > 1 %>
+        <div class="mt-6 flex justify-center">
+          <%== @pagy.series_nav %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-surface rounded-xl shadow-lg p-12 text-center">
+        <% if @filters_active %>
+          <p class="text-ink-medium text-lg mb-4"><%= t('test_plans.index.no_plans_filtered') %></p>
+          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" %>
+        <% else %>
+          <p class="text-ink-medium text-lg mb-4"><%= t('test_plans.index.no_plans_yet') %></p>
+          <%= link_to new_test_plan_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" do %>
+            <%= t('test_plans.index.create_first_plan') %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

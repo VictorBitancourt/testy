@@ -1,0 +1,203 @@
+<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center gap-3">
+        <%= link_to new_bug_path, class: "bg-fz-red-dark hover:bg-fz-red-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
+          <%= t('bugs.index.new_bug') %>
+          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">N</span>
+        <% end %>
+      </div>
+      <p class="text-sm text-ink-medium">
+        <%= t('bugs.index.bugs_count', count: Bug.count) %> ·
+        <%= t('bugs.index.open_count', count: Bug.open_bugs.count) %> ·
+        <%= t('bugs.index.resolved_count', count: Bug.resolved.count) %>
+      </p>
+      <div class="flex items-center gap-3">
+        <%= link_to bug_root_causes_path, class: "bg-fz-violet-dark hover:bg-fz-violet-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "r" } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <%= t('bugs.index.root_causes') %>
+          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">R</span>
+        <% end %>
+        <%= link_to test_plans_path, class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "p" } do %>
+          <%= t('bugs.index.test_plans') %>
+          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">P</span>
+        <% end %>
+      </div>
+    </div>
+
+    <%# === Filter Bar === %>
+    <div class="bg-surface rounded-xl shadow-md p-4 mb-6">
+      <%# Search + Status pills %>
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <%= form_tag bugs_path, method: :get, class: "flex items-center gap-2 mr-4" do %>
+          <% if params[:status].present? %>
+            <input type="hidden" name="status" value="<%= params[:status] %>">
+          <% end %>
+          <% if params[:date_from].present? %>
+            <input type="hidden" name="date_from" value="<%= params[:date_from] %>">
+          <% end %>
+          <% if params[:date_until].present? %>
+            <input type="hidden" name="date_until" value="<%= params[:date_until] %>">
+          <% end %>
+          <input type="text" name="search" value="<%= @search %>" placeholder="<%= t('bugs.index.search_placeholder') %>"
+                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest placeholder-ink-medium focus:ring-2 focus:ring-fz-blue-light focus:outline-none w-64">
+          <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
+            <%= t('bugs.index.search') %>
+          </button>
+        <% end %>
+
+        <span class="text-sm font-semibold text-ink-dark mr-1"><%= t('bugs.index.status_label') %></span>
+        <%
+          status_options = [
+            { value: nil,        label: t('bugs.index.status_all'),      active_bg: "bg-ink-dark",       inactive_bg: "bg-surface-raised text-ink-dark hover:bg-ink-lightest" },
+            { value: "open",     label: t('bugs.index.status_open'),     active_bg: "bg-fz-yellow-medium", inactive_bg: "bg-fz-yellow-darkest text-fz-yellow-light hover:bg-fz-yellow-darker" },
+            { value: "resolved", label: t('bugs.index.status_resolved'), active_bg: "bg-fz-green-dark",  inactive_bg: "bg-fz-green-darkest text-fz-green-light hover:bg-fz-green-darker" },
+          ]
+          current_status = params[:status]
+        %>
+        <% status_options.each do |opt| %>
+          <% is_active = (opt[:value] == current_status) || (opt[:value].nil? && current_status.blank?) %>
+          <%= form_tag bugs_path, method: :get, class: "inline" do %>
+            <% if opt[:value].present? %>
+              <input type="hidden" name="status" value="<%= opt[:value] %>">
+            <% end %>
+            <% if params[:date_from].present? %>
+              <input type="hidden" name="date_from" value="<%= params[:date_from] %>">
+            <% end %>
+            <% if params[:date_until].present? %>
+              <input type="hidden" name="date_until" value="<%= params[:date_until] %>">
+            <% end %>
+            <% if @search.present? %>
+              <input type="hidden" name="search" value="<%= @search %>">
+            <% end %>
+            <button type="submit" class="px-4 py-1.5 rounded-full text-sm font-semibold transition <%= is_active ? "#{opt[:active_bg]} text-white" : opt[:inactive_bg] %>">
+              <%= opt[:label] %>
+            </button>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%# Date filters %>
+      <%= form_tag bugs_path, method: :get, class: "flex flex-wrap items-end gap-3" do %>
+        <% if params[:status].present? %>
+          <input type="hidden" name="status" value="<%= params[:status] %>">
+        <% end %>
+        <% if @search.present? %>
+          <input type="hidden" name="search" value="<%= @search %>">
+        <% end %>
+        <div>
+          <label for="date_from" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('bugs.index.date_from') %></label>
+          <input type="date" name="date_from" id="date_from" value="<%= params[:date_from] %>"
+                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+        </div>
+        <div>
+          <label for="date_until" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('bugs.index.date_to') %></label>
+          <input type="date" name="date_until" id="date_until" value="<%= params[:date_until] %>"
+                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+        </div>
+        <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
+          <%= t('bugs.index.filter_by_date') %>
+        </button>
+        <% if @filters_active %>
+          <%= link_to t('bugs.index.clear_filters'), bugs_path, class: "text-sm text-fz-red-light hover:text-fz-red-dark font-semibold underline ml-2" %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if @bugs.any? %>
+      <%# === Table === %>
+      <div class="bg-surface rounded-xl shadow-lg overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="border-b border-ink-lighter">
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_id') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_title') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_feature') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_cause') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('bugs.index.th_status') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_date') %></th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('bugs.index.th_actions') %></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-lighter/30">
+            <% @bugs.each do |bug| %>
+              <tr class="hover:bg-surface-raised/50 transition">
+                <td class="px-4 py-3 text-sm text-ink-medium font-mono">#<%= bug.id %></td>
+                <td class="px-4 py-3">
+                  <%= link_to bug.title, bug, class: "text-fz-red-light hover:text-fz-red-medium font-semibold" %>
+                </td>
+                <td class="px-4 py-3 text-sm text-ink-dark">
+                  <% if bug.feature_tag.present? %>
+                    <%= link_to bug.feature_tag, bugs_path(feature_tag: bug.feature_tag), class: "inline-block bg-fz-blue-darkest text-fz-blue-light text-xs font-semibold px-2 py-0.5 rounded-full hover:bg-fz-blue-darker transition" %>
+                  <% else %>
+                    <span class="text-ink-medium">—</span>
+                  <% end %>
+                </td>
+                <td class="px-4 py-3 text-sm text-ink-dark">
+                  <% if bug.cause_tag.present? %>
+                    <%= link_to bug.cause_tag, bugs_path(cause_tag: bug.cause_tag), class: "inline-block bg-fz-red-darkest text-fz-red-light text-xs font-semibold px-2 py-0.5 rounded-full hover:bg-fz-red-darker transition" %>
+                  <% else %>
+                    <span class="text-ink-medium">—</span>
+                  <% end %>
+                </td>
+                <td class="px-4 py-3 text-center">
+                  <% if bug.open? %>
+                    <span class="inline-block bg-fz-yellow-medium text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('bugs.index.status_open').upcase %></span>
+                  <% else %>
+                    <span class="inline-block bg-fz-green-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('bugs.index.status_resolved').upcase %></span>
+                  <% end %>
+                </td>
+                <td class="px-4 py-3 text-sm text-ink-dark whitespace-nowrap">
+                  <%= l(bug.created_at.to_date, format: :short_date) %>
+                </td>
+                <td class="px-4 py-3 text-center">
+                  <div class="flex items-center justify-center gap-2">
+                    <%= link_to bug, class: "text-fz-blue-light hover:text-fz-blue-medium transition", title: t('bugs.index.view') do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    <% end %>
+                    <% if current_user_admin? || bug.user == Current.user %>
+                      <%= link_to edit_bug_path(bug), class: "text-ink-medium hover:text-fz-yellow-light transition", title: t('bugs.index.edit') do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      <% end %>
+                      <%= link_to bug_path(bug), data: { turbo_method: :delete, turbo_confirm: t('bugs.index.confirm_remove_bug') }, class: "text-ink-medium hover:text-fz-red-light transition", title: t('bugs.index.remove') do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <%# === Pagination === %>
+      <% if @pagy.pages > 1 %>
+        <div class="mt-6 flex justify-center">
+          <%== @pagy.series_nav %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-surface rounded-xl shadow-lg p-12 text-center">
+        <% if @filters_active %>
+          <p class="text-ink-medium text-lg mb-4"><%= t('bugs.index.no_bugs_filtered') %></p>
+          <%= link_to t('bugs.index.clear_filters'), bugs_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" %>
+        <% else %>
+          <p class="text-ink-medium text-lg mb-4"><%= t('bugs.index.no_bugs_yet') %></p>
+          <%= link_to new_bug_path, class: "inline-block bg-fz-red-dark hover:bg-fz-red-darker text-white font-semibold px-8 py-3 rounded-lg" do %>
+            <%= t('bugs.index.create_first_bug') %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

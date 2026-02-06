@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="turbo-visit-control" content="reload">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      background: white;
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid #ef4444;
+      padding-bottom: 20px;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+    }
+
+    .header-info {
+      text-align: right;
+    }
+
+    .header-info h1 {
+      color: #ef4444;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .header-info p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .bug-info {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .bug-info h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .bug-info .bug-meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge-open {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-resolved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-right: 6px;
+    }
+
+    .tag-feature {
+      background: rgba(255,255,255,0.25);
+      color: white;
+    }
+
+    .tag-cause {
+      background: rgba(255,255,255,0.15);
+      color: white;
+    }
+
+    .section {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+
+    .section-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #374151;
+      white-space: pre-wrap;
+    }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .evidence-item {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+    }
+
+    .footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+    }
+
+    @media print {
+      body {
+        padding: 20px;
+      }
+      .section {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+        <defs>
+          <linearGradient id="reportGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ef4444"/>
+            <stop offset="100%" style="stop-color:#dc2626"/>
+          </linearGradient>
+        </defs>
+        <rect x="30" y="30" width="160" height="160" rx="20" fill="none" stroke="url(#reportGrad)" stroke-width="8" transform="rotate(-5 110 110)"/>
+        <path d="M 75 110 L 95 130 L 145 80" stroke="url(#reportGrad)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" transform="rotate(-5 110 110)"/>
+        <text x="110" y="175" font-family="Arial Black, Arial" font-size="32" font-weight="900" fill="url(#reportGrad)" text-anchor="middle" transform="rotate(-5 110 175)">testy</text>
+      </svg>
+    </div>
+    <div class="header-info">
+      <h1><%= t('bugs.report.bug_report') %></h1>
+      <p><%= t('bugs.report.generated_on', date: l(Date.today, format: :short_date)) %></p>
+    </div>
+  </div>
+
+  <div class="bug-info">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div>
+        <h2>#<%= @bug.id %> - <%= @bug.title %></h2>
+        <div class="bug-meta">
+          <%= t('bugs.report.reported_by') %> <strong><%= @bug.user&.username %></strong> · <%= l(@bug.created_at.to_date, format: :short_date) %>
+        </div>
+      </div>
+      <span class="badge badge-<%= @bug.status %>"><%= @bug.open? ? t('bugs.report.status_open') : t('bugs.report.status_resolved') %></span>
+    </div>
+    <% if @bug.feature_tag.present? || @bug.cause_tag.present? %>
+      <div style="margin-top: 12px;">
+        <% if @bug.feature_tag.present? %>
+          <span class="tag tag-feature"><%= @bug.feature_tag %></span>
+        <% end %>
+        <% if @bug.cause_tag.present? %>
+          <span class="tag tag-cause"><%= @bug.cause_tag %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><%= t('bugs.report.description') %></div>
+    <div class="section-content"><%= @bug.description %></div>
+  </div>
+
+  <% if @bug.steps_to_reproduce.present? %>
+    <div class="section">
+      <div class="section-title"><%= t('bugs.report.steps_to_reproduce') %></div>
+      <div class="section-content"><%= @bug.steps_to_reproduce %></div>
+    </div>
+  <% end %>
+
+  <% if @bug.obtained_result.present? %>
+    <div class="section">
+      <div class="section-title"><%= t('bugs.report.obtained_result') %></div>
+      <div class="section-content"><%= @bug.obtained_result %></div>
+    </div>
+  <% end %>
+
+  <% if @bug.expected_result.present? %>
+    <div class="section">
+      <div class="section-title"><%= t('bugs.report.expected_result') %></div>
+      <div class="section-content"><%= @bug.expected_result %></div>
+    </div>
+  <% end %>
+
+  <% if @bug.evidence_files.attached? %>
+    <div class="section">
+      <div class="section-title"><%= t('bugs.report.evidence') %></div>
+      <div class="evidence-grid">
+        <% @bug.evidence_files.first(4).each do |file| %>
+          <% if file.image? %>
+            <%= image_tag url_for(file), class: "evidence-item" %>
+          <% else %>
+            <div style="width:100%;height:120px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:40px;border:2px solid #e5e7eb;">&#128196;</div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="footer">
+    <p><strong>Testy</strong> | <%= t('bugs.report.footer') %></p>
+  </div>
+</body>
+</html>

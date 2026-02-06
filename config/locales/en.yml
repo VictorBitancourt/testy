@@ -1,0 +1,38 @@
+en:
+  activerecord:
+    models:
+      user: "User"
+      test_plan: "Test Plan"
+      test_scenario: "Test Scenario"
+      tag: "Tag"
+    attributes:
+      user:
+        username: "Username"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        role: "Role"
+      test_plan:
+        name: "Name"
+        qa_name: "Responsible QA"
+        tag_list: "Tags"
+      test_scenario:
+        title: "Title"
+        given: "Given"
+        when_step: "When"
+        then_step: "Then"
+        status: "Status"
+        evidence_files: "Evidence"
+    errors:
+      models:
+        test_scenario:
+          attributes:
+            status:
+              cannot_approve_with_bug: "cannot be approved while a bug is associated"
+  date:
+    formats:
+      short_date: "%m/%d/%Y"
+      month_day_year: "%B %d, %Y"
+  time:
+    formats:
+      short_datetime: "%m/%d/%Y at %H:%M"
+      month_day_year: "%B %d, %Y"

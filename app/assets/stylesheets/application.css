@@ -1,0 +1,23 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+@keyframes sign-fall {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(190deg); }
+  33%  { transform: rotate(168deg); }
+  44%  { transform: rotate(186deg); }
+  54%  { transform: rotate(174deg); }
+  63%  { transform: rotate(183deg); }
+  72%  { transform: rotate(177deg); }
+  80%  { transform: rotate(181deg); }
+  88%  { transform: rotate(179deg); }
+  100% { transform: rotate(180deg); }
+}

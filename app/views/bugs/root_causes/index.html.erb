@@ -1,0 +1,65 @@
+<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
+  <div class="max-w-4xl mx-auto">
+    <!-- Back -->
+    <div class="mb-4">
+      <%= link_to bugs_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+        &larr; <%= t('bugs.root_causes.back') %>
+        <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+      <% end %>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-surface rounded-xl shadow-lg p-6 mb-8 text-center">
+      <h1 class="text-3xl font-bold text-ink-darkest mb-2"><%= t('bugs.root_causes.title') %></h1>
+      <p class="text-ink-medium"><%= t('bugs.root_causes.subtitle', count: @total_bugs) %></p>
+    </div>
+
+    <% if @cause_counts.any? || @feature_counts.any? %>
+      <!-- By Cause -->
+      <% if @cause_counts.any? %>
+        <div class="bg-surface rounded-xl shadow-lg p-6 mb-6">
+          <h2 class="text-xl font-bold text-ink-darkest mb-6"><%= t('bugs.root_causes.by_cause') %></h2>
+          <% max_cause = @cause_counts.values.max %>
+          <div class="space-y-4">
+            <% @cause_counts.each do |tag, count| %>
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-semibold text-ink-dark"><%= tag %></span>
+                  <span class="text-sm font-bold text-fz-red-light"><%= count %></span>
+                </div>
+                <div class="w-full bg-surface-raised rounded-full h-6 overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500" style="width: <%= (count.to_f / max_cause * 100).round(1) %>%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- By Feature -->
+      <% if @feature_counts.any? %>
+        <div class="bg-surface rounded-xl shadow-lg p-6 mb-6">
+          <h2 class="text-xl font-bold text-ink-darkest mb-6"><%= t('bugs.root_causes.by_feature') %></h2>
+          <% max_feature = @feature_counts.values.max %>
+          <div class="space-y-4">
+            <% @feature_counts.each do |tag, count| %>
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-semibold text-ink-dark"><%= tag %></span>
+                  <span class="text-sm font-bold text-fz-blue-light"><%= count %></span>
+                </div>
+                <div class="w-full bg-surface-raised rounded-full h-6 overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500" style="width: <%= (count.to_f / max_feature * 100).round(1) %>%; background: linear-gradient(90deg, #3b82f6, #2563eb);"></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-surface rounded-xl shadow-lg p-12 text-center">
+        <p class="text-ink-medium text-lg"><%= t('bugs.root_causes.no_data') %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
