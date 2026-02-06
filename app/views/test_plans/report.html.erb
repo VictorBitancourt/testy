@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      background: white;
+      padding: 40px;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid #EC7000;
+      padding-bottom: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .logo {
+      width: 150px;
+      height: 60px;
+      background: #EC7000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+    
+    .header-info {
+      text-align: right;
+    }
+    
+    .header-info h1 {
+      color: #EC7000;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    
+    .header-info p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .summary {
+      background: linear-gradient(135deg, #EC7000 0%, #FF8C00 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(236, 112, 0, 0.3);
+    }
+    
+    .summary h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    
+    .summary-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .summary-item .number {
+      font-size: 36px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    .summary-item .label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    <% if @test_plan.all_scenarios_approved? %>
+    .stamp {
+      position: absolute;
+      top: 80px;
+      right: 60px;
+      transform: rotate(12deg);
+      border: 6px solid #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+      padding: 20px 30px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+    }
+    
+    .stamp .title {
+      font-size: 32px;
+      margin-bottom: 5px;
+    }
+    
+    .stamp .date {
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+    
+    .stamp .by {
+      font-size: 10px;
+    }
+    <% end %>
+    
+    .scenario {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      page-break-inside: avoid;
+      position: relative;
+    }
+    
+    .scenario-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    
+    .scenario-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1f2937;
+      flex: 1;
+    }
+    
+    .scenario-status {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    .status-approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+    
+    .status-failed {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .scenario-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .step {
+      background: #f9fafb;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+    
+    .step-given {
+      border-left-color: #3b82f6;
+    }
+    
+    .step-when {
+      border-left-color: #8b5cf6;
+    }
+    
+    .step-then {
+      border-left-color: #22c55e;
+    }
+    
+    .step-label {
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: #666;
+    }
+    
+    .step-content {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #374151;
+    }
+    
+    .evidences {
+      margin-top: 20px;
+    }
+    
+    .evidences-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #666;
+    }
+    
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    
+    .evidence-item {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .evidence-placeholder {
+      width: 100%;
+      height: 120px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    @media print {
+      body {
+        padding: 20px;
+      }
+      
+      .scenario {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <% if @test_plan.all_scenarios_approved? %>
+  <div class="stamp">
+    <div class="title">DONE</div>
+    <div class="date"><%= Date.today.strftime('%b %d, %Y').upcase %></div>
+    <div class="by">by <%= @test_plan.qa_name %></div>
+  </div>
+  <% end %>
+
+  <div class="header">
+    <div class="logo">itaú</div>
+    <div class="header-info">
+      <h1>Relatório de Testes</h1>
+      <p>Gerado em <%= Date.today.strftime('%d/%m/%Y') %></p>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h2><%= @test_plan.name %></h2>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span class="number"><%= @test_plan.total_scenarios %></span>
+        <span class="label">Total de Casos</span>
+      </div>
+      <div class="summary-item">
+        <span class="number"><%= @test_plan.approved_scenarios %></span>
+        <span class="label">Aprovados</span>
+      </div>
+      <div class="summary-item">
+        <span class="number"><%= @test_plan.qa_name %></span>
+        <span class="label">QA Responsável</span>
+      </div>
+    </div>
+  </div>
+
+  <% @test_plan.test_scenarios.each_with_index do |scenario, index| %>
+    <div class="scenario">
+      <div class="scenario-header">
+        <div class="scenario-title">
+          <%= index + 1 %>. <%= scenario.title %>
+        </div>
+        <div class="scenario-status status-<%= scenario.status %>">
+          <%= scenario.status == 'approved' ? '✓ Aprovado' : scenario.status == 'failed' ? '✗ Reprovado' : '⋯ Pendente' %>
+        </div>
+      </div>
+      
+      <div class="scenario-steps">
+        <div class="step step-given">
+          <div class="step-label">Dado que</div>
+          <div class="step-content"><%= scenario.given %></div>
+        </div>
+        
+        <div class="step step-when">
+          <div class="step-label">Quando</div>
+          <div class="step-content"><%= scenario.when_step %></div>
+        </div>
+        
+        <div class="step step-then">
+          <div class="step-label">Então</div>
+          <div class="step-content"><%= scenario.then_step %></div>
+        </div>
+      </div>
+      
+      <% if scenario.evidence_files.attached? %>
+        <div class="evidences">
+          <div class="evidences-title">📎 Evidências Anexadas:</div>
+          <div class="evidence-grid">
+            <% scenario.evidence_files.first(4).each do |file| %>
+              <% if file.image? %>
+                <%= image_tag url_for(file), class: "evidence-item" %>
+              <% else %>
+                <div class="evidence-placeholder">📄</div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="footer">
+    <p><strong>Itaú Unibanco</strong> | Relatório de Testes de Software</p>
+    <p>Este documento é confidencial e destinado exclusivamente para uso interno.</p>
+  </div>
+</body>
+</html>

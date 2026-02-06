@@ -1,0 +1,173 @@
+<div class="min-h-screen bg-canvas py-12 px-4" data-controller="scenario">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="bg-surface rounded-xl shadow-lg p-6 mb-8 relative">
+      <div id="stamp-container" data-scenario-target="stamp" class="hidden absolute -top-6 -right-6">
+        <div class="bg-fz-green-dark text-white px-8 py-4 rounded-xl shadow-2xl transform rotate-12 border-4 border-fz-green-darker">
+          <div class="text-center">
+            <div class="text-3xl font-bold">DONE</div>
+            <div class="text-sm"><%= Date.today.strftime('%b %d, %Y').upcase %></div>
+            <div class="text-xs">by <%= @test_plan.qa_name %></div>
+          </div>
+        </div>
+      </div>
+
+      <a href="/" class="flex items-center gap-3 mb-4 w-fit group" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="v">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="rotate(-8 50 50)">
+            <rect x="8" y="8" width="84" height="84" rx="16" fill="white" stroke="url(#testy-grad-show)" stroke-width="5"/>
+            <path d="M30 48L42 60L70 32" stroke="url(#testy-grad-show)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <text x="50" y="80" text-anchor="middle" fill="url(#testy-grad-show)" font-family="system-ui, sans-serif" font-size="18" font-weight="bold">testy</text>
+          </g>
+          <defs>
+            <linearGradient id="testy-grad-show" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF8FB1"/>
+              <stop offset="100%" stop-color="#E91E63"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="text-fz-blue-light group-hover:text-fz-blue-dark">← Voltar</span>
+        <span class="bg-ink-lighter text-ink-dark text-xs font-bold px-1.5 py-0.5 rounded">V</span>
+      </a>
+
+      <h1 class="text-3xl font-bold text-ink-darkest mb-2"><%= @test_plan.name %></h1>
+      <p class="text-ink-dark">QA Responsável: <span class="font-semibold"><%= @test_plan.qa_name %></span></p>
+      <p class="text-ink-medium text-sm mt-2">
+        <%= @test_plan.approved_scenarios %>/<%= @test_plan.total_scenarios %> cenários aprovados
+      </p>
+    </div>
+
+    <!-- Formulário para novo cenário -->
+    <div class="bg-surface rounded-xl shadow-lg p-6 mb-8">
+      <h2 class="text-xl font-bold text-ink-darkest mb-4">+ Adicionar Novo Cenário</h2>
+
+      <%= form_with model: [@test_plan, @new_scenario], class: "space-y-4" do |f| %>
+        <div>
+          <%= f.label :title, "Título do Cenário", class: "block font-semibold text-ink-darker mb-2" %>
+          <%= f.text_field :title, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: Login com credenciais válidas" %>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <%= f.label :given, "Dado que", class: "block font-semibold text-ink-darker mb-2" %>
+            <%= f.text_area :given, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: o usuário está na página de login" %>
+          </div>
+
+          <div>
+            <%= f.label :when_step, "Quando", class: "block font-semibold text-ink-darker mb-2" %>
+            <%= f.text_area :when_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: ele insere credenciais válidas" %>
+          </div>
+
+          <div>
+            <%= f.label :then_step, "Então", class: "block font-semibold text-ink-darker mb-2" %>
+            <%= f.text_area :then_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: ele deve ser redirecionado" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :evidence_files, "Evidências (imagens/arquivos)", class: "block font-semibold text-ink-darker mb-2" %>
+          <label class="cursor-pointer inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-6 py-3 rounded-lg transition">
+            📎 Upload de Evidências
+            <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload" %>
+          </label>
+          <p class="text-sm text-ink-medium mt-2" id="file-count">Nenhum arquivo selecionado</p>
+        </div>
+
+        <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition flex items-center gap-2" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="c">
+          + Adicionar Cenário
+          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">C</span>
+        </button>
+      <% end %>
+    </div>
+
+    <!-- Lista de Cenários -->
+    <div class="space-y-6" id="scenarios-container" data-scenario-target="container">
+      <% @test_scenarios.each do |scenario| %>
+        <div class="bg-surface rounded-xl shadow-lg p-6 scenario-card" data-scenario-id="<%= scenario.id %>" data-scenario-status="<%= scenario.status %>">
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-xl font-bold text-ink-darkest"><%= scenario.title %></h3>
+
+            <div class="flex gap-2">
+              <% if scenario.status == 'approved' %>
+                <div class="bg-fz-green-dark text-white px-6 py-2 rounded-lg font-semibold">
+                  ✓ Aprovado
+                </div>
+              <% elsif scenario.status == 'failed' %>
+                <div class="bg-fz-red-dark text-white px-6 py-2 rounded-lg font-semibold">
+                  ✗ Reprovado
+                </div>
+              <% else %>
+                <button data-action="click->scenario#updateStatus" data-status="approved" data-scenario-id="<%= scenario.id %>" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition">
+                  ✓ Aprovar
+                </button>
+                <button data-action="click->scenario#updateStatus" data-status="failed" data-scenario-id="<%= scenario.id %>" class="bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition">
+                  ✗ Reprovar
+                </button>
+              <% end %>
+              <%= button_to test_plan_test_scenario_path(@test_plan, scenario), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja excluir este cenário?' }, class: "bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
+                🗑️
+              <% end %>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="bg-fz-blue-darkest p-4 rounded-lg border-l-4 border-fz-blue-dark">
+              <p class="font-semibold text-fz-blue-light mb-2">Dado que:</p>
+              <p class="text-ink-darker"><%= scenario.given %></p>
+            </div>
+
+            <div class="bg-fz-violet-darkest p-4 rounded-lg border-l-4 border-fz-violet-dark">
+              <p class="font-semibold text-fz-violet-light mb-2">Quando:</p>
+              <p class="text-ink-darker"><%= scenario.when_step %></p>
+            </div>
+
+            <div class="bg-fz-green-darkest p-4 rounded-lg border-l-4 border-fz-green-dark">
+              <p class="font-semibold text-fz-green-light mb-2">Então:</p>
+              <p class="text-ink-darker"><%= scenario.then_step %></p>
+            </div>
+          </div>
+
+          <!-- Evidências -->
+          <% if scenario.evidence_files.attached? %>
+            <div class="mt-4">
+              <p class="font-semibold text-ink-darker mb-2">Evidências:</p>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <% scenario.evidence_files.each do |file| %>
+                  <div class="relative group">
+                    <% if file.image? %>
+                      <%= image_tag file, class: "w-full h-32 object-cover rounded-lg shadow" %>
+                    <% else %>
+                      <div class="w-full h-32 bg-surface-raised rounded-lg flex items-center justify-center">
+                        <span class="text-4xl">📄</span>
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Botão de Exportar -->
+    <% if @test_scenarios.any? %>
+      <div class="mt-8 text-center">
+        <%= link_to report_test_plan_path(@test_plan, format: :pdf), target: "_blank", class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold px-12 py-4 rounded-xl shadow-xl transition transform hover:scale-105" do %>
+          📄 Exportar Relatório em PDF
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  // Atualizar contador de arquivos
+  document.getElementById('file-upload').addEventListener('change', function(e) {
+    const count = e.target.files.length;
+    const text = count === 0 ? 'Nenhum arquivo selecionado' :
+                 count === 1 ? '1 arquivo selecionado' :
+                 `${count} arquivos selecionados`;
+    document.getElementById('file-count').textContent = text;
+  });
+</script>

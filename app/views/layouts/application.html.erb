@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Testy</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-canvas text-ink-darkest">
+    <% if notice %>
+      <div class="flash-message fixed top-4 right-4 bg-fz-green-dark text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+        <%= notice %>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="flash-message fixed top-4 right-4 bg-fz-red-dark text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <%= yield %>
+
+    <script>
+      // Auto-hide flash messages após 4 segundos
+      document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        
+        flashMessages.forEach(function(message) {
+          setTimeout(function() {
+            // Adiciona transição de fade out
+            message.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+            message.style.opacity = '0';
+            message.style.transform = 'translateX(100px)';
+            
+            // Remove o elemento após a animação
+            setTimeout(function() {
+              message.remove();
+            }, 500);
+          }, 4000); // 4 segundos
+        });
+      });
+
+      // Também funciona com Turbo (para navegação SPA do Rails)
+      document.addEventListener('turbo:load', function() {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        
+        flashMessages.forEach(function(message) {
+          setTimeout(function() {
+            message.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+            message.style.opacity = '0';
+            message.style.transform = 'translateX(100px)';
+            
+            setTimeout(function() {
+              message.remove();
+            }, 500);
+          }, 4000);
+        });
+      });
+    </script>
+  </body>
+</html>

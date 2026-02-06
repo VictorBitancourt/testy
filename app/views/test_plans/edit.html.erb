@@ -1,0 +1,15 @@
+<div class="min-h-screen bg-canvas py-12 px-4">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-surface rounded-xl shadow-lg p-8">
+      <h1 class="text-3xl font-bold text-ink-darkest mb-6">Editar Plano de Teste</h1>
+
+      <%= render 'form', test_plan: @test_plan %>
+
+      <div class="mt-6 pt-6 border-t border-ink-lighter">
+        <%= button_to @test_plan, method: :delete, data: { turbo_confirm: 'Tem certeza? Todos os cenários serão removidos!' }, class: "text-fz-red-dark hover:text-fz-red-light font-semibold bg-transparent border-0 cursor-pointer" do %>
+          🗑️ Excluir este plano de teste
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

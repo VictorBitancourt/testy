@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fizzy Dark — Canvas & Surface */
+  --color-canvas: oklch(20% 0.0195 232.58);
+  --color-surface: oklch(26% 0.022 232);
+  --color-surface-raised: oklch(30% 0.024 232);
+
+  /* Fizzy Dark — Ink (inverted: light text on dark bg) */
+  --color-ink-darkest: oklch(96% 0.002 252);
+  --color-ink-darker: oklch(92% 0.003 254);
+  --color-ink-dark: oklch(84% 0.005 256);
+  --color-ink-medium: oklch(66% 0.008 258);
+  --color-ink-light: oklch(56% 0.014 260);
+  --color-ink-lighter: oklch(40% 0.026 262);
+  --color-ink-lightest: oklch(26% 0.05 264);
+
+  /* Fizzy — Blue */
+  --color-fz-blue-darkest: oklch(26% 0.126 264);
+  --color-fz-blue-darker: oklch(40% 0.166 262);
+  --color-fz-blue-dark: oklch(57.02% 0.1895 260.46);
+  --color-fz-blue-medium: oklch(66% 0.196 257.82);
+  --color-fz-blue-light: oklch(84.04% 0.0719 255.29);
+  --color-fz-blue-lighter: oklch(92% 0.026 254);
+  --color-fz-blue-lightest: oklch(96% 0.016 252);
+
+  /* Fizzy — Green */
+  --color-fz-green-darkest: oklch(26% 0.071 149);
+  --color-fz-green-darker: oklch(40% 0.12 148);
+  --color-fz-green-dark: oklch(55% 0.162 147);
+  --color-fz-green-medium: oklch(66% 0.208 146);
+  --color-fz-green-light: oklch(83.92% 0.0772 145.06);
+  --color-fz-green-lighter: oklch(92% 0.044 144);
+  --color-fz-green-lightest: oklch(96% 0.022 143);
+
+  /* Fizzy — Red */
+  --color-fz-red-darkest: oklch(26% 0.105 34);
+  --color-fz-red-darker: oklch(40% 0.154 36);
+  --color-fz-red-dark: oklch(59% 0.19 38);
+  --color-fz-red-medium: oklch(66% 0.204 40);
+  --color-fz-red-light: oklch(84.08% 0.0837 41.96);
+  --color-fz-red-lighter: oklch(92% 0.03 44);
+  --color-fz-red-lightest: oklch(96% 0.013 46);
+
+  /* Fizzy — Yellow */
+  --color-fz-yellow-darkest: oklch(26% 0.0729 40);
+  --color-fz-yellow-darker: oklch(40% 0.12 50);
+  --color-fz-yellow-dark: oklch(58% 0.156 60);
+  --color-fz-yellow-medium: oklch(74% 0.184 70);
+  --color-fz-yellow-light: oklch(84% 0.12 80);
+  --color-fz-yellow-lighter: oklch(92% 0.076 90);
+  --color-fz-yellow-lightest: oklch(96% 0.034 100);
+
+  /* Fizzy — Violet */
+  --color-fz-violet-darkest: oklch(26% 0.148 292);
+  --color-fz-violet-darker: oklch(40% 0.2 290);
+  --color-fz-violet-dark: oklch(58% 0.216 287.6);
+  --color-fz-violet-medium: oklch(66% 0.206 285.52);
+  --color-fz-violet-light: oklch(84.08% 0.0791 283.47);
+  --color-fz-violet-lighter: oklch(92% 0.03 282);
+  --color-fz-violet-lightest: oklch(96% 0.015 280);
+}

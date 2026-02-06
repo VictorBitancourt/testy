@@ -1,0 +1,15 @@
+login_plan:
+  name: Login do Sistema
+  qa_name: Maria Silva
+
+empty_plan:
+  name: Cadastro de Usuarios
+  qa_name: Joao Souza
+
+approved_plan:
+  name: Checkout do E-commerce
+  qa_name: Ana Costa
+
+failed_plan:
+  name: Pagamento Online
+  qa_name: Carlos Lima

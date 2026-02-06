@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: #1a1a1a;
+      background: #f5f3ef;
+      padding: 40px;
+    }
+
+    /* Header com logo centralizado */
+    .header {
+      text-align: center;
+      padding: 40px 0 30px;
+      border-bottom: 3px solid #e8e4dd;
+      margin-bottom: 40px;
+    }
+
+    .logo-container {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .logo-box {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border: 4px solid #E91E63;
+      border-radius: 20px;
+      transform: rotate(-8deg);
+      display: inline-block;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .logo-check {
+      position: absolute;
+      top: 15px;
+      left: 18px;
+      font-size: 45px;
+      color: #E91E63;
+    }
+
+    .logo-text {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #E91E63;
+    }
+
+    .report-title {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .report-date {
+      font-size: 13px;
+      color: #999;
+    }
+
+    /* Info do Plano */
+    .plan-info {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .plan-name {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .plan-qa {
+      font-size: 15px;
+      color: #666;
+    }
+
+    .plan-qa strong {
+      color: #E91E63;
+    }
+
+    /* Métricas */
+    .metrics {
+      margin-bottom: 30px;
+    }
+
+    .metrics table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 12px 0;
+    }
+
+    .metric {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      width: 25%;
+    }
+
+    .metric-number {
+      font-size: 36px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-total .metric-number { color: #6366f1; }
+    .metric-approved .metric-number { color: #22c55e; }
+    .metric-failed .metric-number { color: #ef4444; }
+    .metric-pending .metric-number { color: #f59e0b; }
+
+    /* Banner de Sucesso */
+    .success-banner {
+      background: #22c55e;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: white;
+    }
+
+    .success-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .success-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .success-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* Seção de Cenários */
+    .section-title {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8e4dd;
+    }
+
+    /* Cenário */
+    .scenario {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      page-break-inside: avoid;
+    }
+
+    .scenario-header {
+      padding: 18px 24px;
+      border-bottom: 2px solid #f5f3ef;
+    }
+
+    .scenario-header table {
+      width: 100%;
+    }
+
+    .scenario-number {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      background: #E91E63;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-weight: bold;
+      font-size: 13px;
+      margin-right: 12px;
+    }
+
+    .scenario-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a1a1a;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-failed {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .scenario-body {
+      padding: 24px;
+    }
+
+    .steps {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 10px 0;
+    }
+
+    .step {
+      background: #f9f8f6;
+      padding: 16px;
+      border-radius: 10px;
+      vertical-align: top;
+      width: 33%;
+    }
+
+    .step-given { border-top: 3px solid #6366f1; }
+    .step-when { border-top: 3px solid #a855f7; }
+    .step-then { border-top: 3px solid #22c55e; }
+
+    .step-label {
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .step-given .step-label { color: #6366f1; }
+    .step-when .step-label { color: #a855f7; }
+    .step-then .step-label { color: #22c55e; }
+
+    .step-content {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    /* Evidências */
+    .evidence {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px dashed #e8e4dd;
+    }
+
+    .evidence-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .evidence-img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 2px solid #e8e4dd;
+      margin-bottom: 12px;
+    }
+
+    .evidence-file {
+      background: #f9f8f6;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 3px solid #e8e4dd;
+      text-align: center;
+    }
+
+    .footer-logo {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border: 2px solid #E91E63;
+      border-radius: 12px;
+      transform: rotate(-8deg);
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .footer-logo-check {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      font-size: 22px;
+      color: #E91E63;
+    }
+
+    .footer-logo-text {
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 9px;
+      font-weight: bold;
+      color: #E91E63;
+    }
+
+    .footer-tagline {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 4px;
+    }
+
+    .footer-date {
+      font-size: 11px;
+      color: #bbb;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header com Logo -->
+  <div class="header">
+    <div class="logo-container">
+      <div class="logo-box">
+        <span class="logo-check">&#10003;</span>
+        <span class="logo-text">testy</span>
+      </div>
+    </div>
+    <div class="report-title">Relatório de Testes</div>
+    <div class="report-date">Gerado em <%= Time.zone.today.strftime('%d de %B de %Y') %></div>
+  </div>
+
+  <!-- Info do Plano -->
+  <div class="plan-info">
+    <div class="plan-name"><%= @test_plan.name %></div>
+    <div class="plan-qa">QA Responsável: <strong><%= @test_plan.qa_name %></strong></div>
+  </div>
+
+  <!-- Métricas -->
+  <div class="metrics">
+    <table cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="metric metric-total">
+          <span class="metric-number"><%= @test_plan.total_scenarios %></span>
+          <span class="metric-label">Total</span>
+        </td>
+        <td class="metric metric-approved">
+          <span class="metric-number"><%= @test_plan.approved_scenarios %></span>
+          <span class="metric-label">Aprovados</span>
+        </td>
+        <td class="metric metric-failed">
+          <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'failed').count %></span>
+          <span class="metric-label">Reprovados</span>
+        </td>
+        <td class="metric metric-pending">
+          <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'pending').count %></span>
+          <span class="metric-label">Pendentes</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <% if @test_plan.all_scenarios_approved? && @test_plan.total_scenarios > 0 %>
+  <!-- Banner de Sucesso -->
+  <div class="success-banner">
+    <div class="success-icon">&#10003;</div>
+    <div class="success-title">Todos os Cenários Aprovados!</div>
+    <div class="success-subtitle">Concluído por <%= @test_plan.qa_name %> em <%= Time.zone.today.strftime('%d/%m/%Y') %></div>
+  </div>
+  <% end %>
+
+  <!-- Cenários -->
+  <div class="section-title">Cenários de Teste</div>
+
+  <% @test_plan.test_scenarios.each_with_index do |scenario, index| %>
+  <div class="scenario">
+    <div class="scenario-header">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span class="scenario-number"><%= index + 1 %></span>
+            <span class="scenario-title"><%= scenario.title %></span>
+          </td>
+          <td width="100" style="text-align: right;">
+            <span class="badge badge-<%= scenario.status %>">
+              <%= scenario.status == 'approved' ? 'Aprovado' : scenario.status == 'failed' ? 'Reprovado' : 'Pendente' %>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="scenario-body">
+      <table class="steps" cellspacing="0" cellpadding="0">
+        <tr>
+          <td class="step step-given">
+            <span class="step-label">Dado que</span>
+            <div class="step-content"><%= scenario.given %></div>
+          </td>
+          <td class="step step-when">
+            <span class="step-label">Quando</span>
+            <div class="step-content"><%= scenario.when_step %></div>
+          </td>
+          <td class="step step-then">
+            <span class="step-label">Então</span>
+            <div class="step-content"><%= scenario.then_step %></div>
+          </td>
+        </tr>
+      </table>
+
+      <% if scenario.evidence_files.attached? %>
+      <div class="evidence">
+        <div class="evidence-label">Evidências</div>
+        <% scenario.evidence_files.each do |file| %>
+          <% if file.image? %>
+            <div style="page-break-inside: avoid;">
+              <% require 'base64' %>
+              <img src="data:<%= file.content_type %>;base64,<%= Base64.strict_encode64(file.download) %>" class="evidence-img" />
+            </div>
+          <% else %>
+            <div class="evidence-file">
+              <div style="font-size: 24px;">&#128196;</div>
+              <div style="font-size: 12px; color: #666;"><%= file.filename %></div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-logo">
+      <span class="footer-logo-check">&#10003;</span>
+      <span class="footer-logo-text">testy</span>
+    </div>
+    <div class="footer-tagline">Test Management Made Simple</div>
+    <div class="footer-date"><%= Time.zone.now.strftime('%d/%m/%Y às %H:%M') %></div>
+  </div>
+</body>
+</html>

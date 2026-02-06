@@ -1,0 +1,55 @@
+login_success:
+  test_plan: login_plan
+  title: Login com credenciais validas
+  given: Usuario esta na pagina de login
+  when_step: Preenche email e senha corretos e clica em Entrar
+  then_step: Sistema redireciona para o dashboard
+  status: approved
+
+login_failure:
+  test_plan: login_plan
+  title: Login com senha incorreta
+  given: Usuario esta na pagina de login
+  when_step: Preenche email correto e senha incorreta e clica em Entrar
+  then_step: Sistema exibe mensagem de erro
+  status: pending
+
+login_approved:
+  test_plan: login_plan
+  title: Login com autenticacao dois fatores
+  given: Usuario com 2FA ativado esta na pagina de login
+  when_step: Preenche credenciais e codigo 2FA corretos
+  then_step: Sistema redireciona para o dashboard
+  status: approved
+
+checkout_step1:
+  test_plan: approved_plan
+  title: Adicionar item ao carrinho
+  given: Usuario esta na pagina do produto
+  when_step: Clica em adicionar ao carrinho
+  then_step: Item aparece no carrinho
+  status: approved
+
+checkout_step2:
+  test_plan: approved_plan
+  title: Finalizar compra
+  given: Usuario esta no carrinho com itens
+  when_step: Clica em finalizar compra e confirma
+  then_step: Pedido e criado com sucesso
+  status: approved
+
+payment_success:
+  test_plan: failed_plan
+  title: Pagamento com cartao valido
+  given: Usuario esta na pagina de pagamento
+  when_step: Preenche dados do cartao valido e confirma
+  then_step: Pagamento e aprovado
+  status: approved
+
+payment_failure:
+  test_plan: failed_plan
+  title: Pagamento com cartao invalido
+  given: Usuario esta na pagina de pagamento
+  when_step: Preenche dados do cartao invalido e confirma
+  then_step: Sistema exibe erro de pagamento
+  status: failed
