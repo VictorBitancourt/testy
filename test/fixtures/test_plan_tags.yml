@@ -1,0 +1,11 @@
+login_plan_login:
+  test_plan: login_plan
+  tag: login
+
+login_plan_sprint:
+  test_plan: login_plan
+  tag: sprint_23
+
+approved_plan_regressao:
+  test_plan: approved_plan
+  tag: regressao

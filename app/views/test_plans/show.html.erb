@@ -33,57 +33,73 @@
       <p class="text-ink-medium text-sm mt-2">
         <%= @test_plan.approved_scenarios %>/<%= @test_plan.total_scenarios %> cenários aprovados
       </p>
-    </div>
-
-    <!-- Formulário para novo cenário -->
-    <div class="bg-surface rounded-xl shadow-lg p-6 mb-8">
-      <h2 class="text-xl font-bold text-ink-darkest mb-4">+ Adicionar Novo Cenário</h2>
-
-      <%= form_with model: [@test_plan, @new_scenario], class: "space-y-4" do |f| %>
-        <div>
-          <%= f.label :title, "Título do Cenário", class: "block font-semibold text-ink-darker mb-2" %>
-          <%= f.text_field :title, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: Login com credenciais válidas" %>
+      <% if @test_plan.tags.any? %>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <% @test_plan.tags.each do |tag| %>
+            <%= link_to tag.name, test_plans_path(tag: tag.name), class: "inline-block bg-fz-violet-darkest text-fz-violet-light text-sm font-semibold px-3 py-1 rounded-full hover:bg-fz-violet-darker transition" %>
+          <% end %>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <%= f.label :given, "Dado que", class: "block font-semibold text-ink-darker mb-2" %>
-            <%= f.text_area :given, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: o usuário está na página de login" %>
-          </div>
-
-          <div>
-            <%= f.label :when_step, "Quando", class: "block font-semibold text-ink-darker mb-2" %>
-            <%= f.text_area :when_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: ele insere credenciais válidas" %>
-          </div>
-
-          <div>
-            <%= f.label :then_step, "Então", class: "block font-semibold text-ink-darker mb-2" %>
-            <%= f.text_area :then_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: ele deve ser redirecionado" %>
-          </div>
-        </div>
-
-        <div>
-          <%= f.label :evidence_files, "Evidências (imagens/arquivos)", class: "block font-semibold text-ink-darker mb-2" %>
-          <label class="cursor-pointer inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-6 py-3 rounded-lg transition">
-            📎 Upload de Evidências
-            <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload" %>
-          </label>
-          <p class="text-sm text-ink-medium mt-2" id="file-count">Nenhum arquivo selecionado</p>
-        </div>
-
-        <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition flex items-center gap-2" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="c">
-          + Adicionar Cenário
-          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">C</span>
-        </button>
       <% end %>
     </div>
 
+    <% if current_user_admin? || @test_plan.user == Current.user %>
+      <!-- Formulário para novo cenário -->
+      <div class="bg-surface rounded-xl shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-ink-darkest mb-4">+ Adicionar Novo Cenário</h2>
+
+        <%= form_with model: [@test_plan, @new_scenario], class: "space-y-4" do |f| %>
+          <div>
+            <%= f.label :title, "Título do Cenário", class: "block font-semibold text-ink-darker mb-2" %>
+            <%= f.text_field :title, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: Login com credenciais válidas" %>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <%= f.label :given, "Dado que", class: "block font-semibold text-ink-darker mb-2" %>
+              <%= f.text_area :given, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: o usuário está na página de login" %>
+            </div>
+
+            <div>
+              <%= f.label :when_step, "Quando", class: "block font-semibold text-ink-darker mb-2" %>
+              <%= f.text_area :when_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: ele insere credenciais válidas" %>
+            </div>
+
+            <div>
+              <%= f.label :then_step, "Então", class: "block font-semibold text-ink-darker mb-2" %>
+              <%= f.text_area :then_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "Ex: ele deve ser redirecionado" %>
+            </div>
+          </div>
+
+          <div>
+            <%= f.label :evidence_files, "Evidências (imagens/arquivos)", class: "block font-semibold text-ink-darker mb-2" %>
+            <label class="cursor-pointer inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-6 py-3 rounded-lg transition">
+              📎 Upload de Evidências
+              <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload" %>
+            </label>
+            <p class="text-sm text-ink-medium mt-2" id="file-count">Nenhum arquivo selecionado</p>
+          </div>
+
+          <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition flex items-center gap-2" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="c">
+            + Adicionar Cenário
+            <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">C</span>
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+
     <!-- Lista de Cenários -->
-    <div class="space-y-6" id="scenarios-container" data-scenario-target="container">
+    <div class="space-y-6" id="scenarios-container" data-scenario-target="container" data-controller="sortable" data-sortable-url-value="<%= reorder_test_plan_test_scenarios_path(@test_plan) %>">
       <% @test_scenarios.each do |scenario| %>
-        <div class="bg-surface rounded-xl shadow-lg p-6 scenario-card" data-scenario-id="<%= scenario.id %>" data-scenario-status="<%= scenario.status %>">
+        <div class="bg-surface rounded-xl shadow-lg p-6 scenario-card" data-scenario-id="<%= scenario.id %>" data-scenario-status="<%= scenario.status %>" data-sortable-target="item" draggable="true" data-action="dragstart->sortable#dragStart dragover->sortable#dragOver dragend->sortable#dragEnd touchstart->sortable#touchStart">
           <div class="flex justify-between items-start mb-4">
-            <h3 class="text-xl font-bold text-ink-darkest"><%= scenario.title %></h3>
+            <div class="flex items-center gap-3">
+              <span class="cursor-grab active:cursor-grabbing text-ink-medium hover:text-ink-dark transition" title="Arrastar para reordenar" data-drag-handle>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                </svg>
+              </span>
+              <h3 class="text-xl font-bold text-ink-darkest"><%= scenario.title %></h3>
+            </div>
 
             <div class="flex gap-2">
               <% if scenario.status == 'approved' %>
@@ -95,15 +111,19 @@
                   ✗ Reprovado
                 </div>
               <% else %>
-                <button data-action="click->scenario#updateStatus" data-status="approved" data-scenario-id="<%= scenario.id %>" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition">
-                  ✓ Aprovar
-                </button>
-                <button data-action="click->scenario#updateStatus" data-status="failed" data-scenario-id="<%= scenario.id %>" class="bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition">
-                  ✗ Reprovar
-                </button>
+                <% if current_user_admin? || @test_plan.user == Current.user %>
+                  <button data-action="click->scenario#updateStatus" data-status="approved" data-scenario-id="<%= scenario.id %>" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition">
+                    ✓ Aprovar
+                  </button>
+                  <button data-action="click->scenario#updateStatus" data-status="failed" data-scenario-id="<%= scenario.id %>" class="bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition">
+                    ✗ Reprovar
+                  </button>
+                <% end %>
               <% end %>
-              <%= button_to test_plan_test_scenario_path(@test_plan, scenario), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja excluir este cenário?' }, class: "bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
-                🗑️
+              <% if current_user_admin? || @test_plan.user == Current.user %>
+                <%= button_to test_plan_test_scenario_path(@test_plan, scenario), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja excluir este cenário?' }, class: "bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
+                  🗑️
+                <% end %>
               <% end %>
             </div>
           </div>

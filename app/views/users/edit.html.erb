@@ -1,0 +1,41 @@
+<div class="min-h-screen bg-canvas flex items-center justify-center px-4">
+  <div class="w-full max-w-sm">
+    <div class="bg-surface rounded-xl shadow-lg p-8 border border-ink-lighter">
+      <h1 class="text-2xl font-bold text-ink-darkest text-center mb-2">Resetar Senha</h1>
+      <p class="text-sm text-ink-dark text-center mb-6">Usuário: <span class="font-semibold"><%= @user.username %></span></p>
+
+      <%= form_with model: @user, url: user_path(@user), method: :patch, class: "space-y-4" do |f| %>
+        <% if @user.errors.any? %>
+          <div class="bg-fz-red-light/10 border border-fz-red-light rounded-lg p-3">
+            <ul class="text-sm text-fz-red-light space-y-1">
+              <% @user.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div>
+          <label for="user_password" class="block text-sm font-medium text-ink-dark mb-1">Nova Senha</label>
+          <%= f.password_field :password, autocomplete: "new-password", required: true,
+              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+        </div>
+
+        <div>
+          <label for="user_password_confirmation" class="block text-sm font-medium text-ink-dark mb-1">Confirmar Nova Senha</label>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true,
+              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-fz-yellow-medium hover:bg-fz-yellow-dark text-white font-semibold py-2.5 rounded-lg shadow-lg transition">
+          Resetar Senha
+        </button>
+      <% end %>
+
+      <div class="mt-4 text-center">
+        <%= link_to "← Voltar", users_path, class: "text-sm text-fz-blue-light hover:text-fz-blue-dark font-semibold" %>
+      </div>
+    </div>
+  </div>
+</div>

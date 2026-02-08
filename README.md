@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/assets/images/testy-logo.svg" width="200" alt="Testy Logo" />
+  <img src="app/assets/images/testy-logo.png" width="200" alt="Testy Logo" />
 </p>
 
 # Testy
@@ -11,23 +11,27 @@ Most test management tools drown you in fields, workflows, and integrations befo
 ## Features
 
 - **Test Plans** — group related scenarios under a named plan assigned to a QA
+- **Tags** — categorize plans with tags (e.g. "login", "sprint-23", "regressão") and search by them
 - **Scenarios (Given/When/Then)** — structured BDD format without the overhead of a full framework
+- **Drag & Drop Reorder** — reorder scenarios by dragging them, with smooth FLIP animations and a visual drop zone; order is persisted and reflected in reports
 - **Evidence Attachments** — upload screenshots and files directly on each scenario
 - **One-Click Approve/Reject** — mark scenarios as approved or failed inline
 - **Derived Status** — plan status is computed automatically from its scenarios (no manual updates)
-- **Filters** — filter plans by status (Approved, Failed, In Progress, Not Started) and date range
-- **PDF Reports** — export a formatted report with summary, scenarios, and evidence
+- **Search & Filters** — search plans by name, QA, or tag; filter by status and date range
+- **Pagination** — paginated plan listing for large datasets
+- **PDF Reports** — export a formatted report with table of contents (clickable anchors), summary, scenarios, and evidence
+- **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans, users manage their own
 
 ## Tech Stack
 
 | Layer | Choice |
 |-------|--------|
 | Framework | Rails 8.1 |
-| Ruby | 3.4.7 |
+| Ruby | 3.4+ |
 | Database | SQLite |
 | Frontend | Tailwind CSS v4, Hotwire (Turbo + Stimulus) |
 | File Storage | Active Storage (local disk) |
-| PDF | wicked_pdf + wkhtmltopdf |
+| PDF | ferrum_pdf (Chrome headless) |
 | Deploy | Kamal-ready (Docker + Thruster) |
 
 ## Getting Started
@@ -49,7 +53,7 @@ bin/rails db:setup
 bin/dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). On first access, you'll be prompted to create the admin user.
 
 ## Running Tests
 
@@ -57,18 +61,24 @@ Open [http://localhost:3000](http://localhost:3000).
 bin/rails test
 ```
 
-53 tests, 174 assertions — covering models, controllers, and filter behavior.
+153 tests, 504 assertions — covering models, controllers, authentication, authorization, and filter behavior.
 
 ## How It Works
 
 ### Data Model
 
 ```
-TestPlan (name, qa_name)
+User (username, password_digest, role)
   |
-  +-- TestScenario (title, given, when, then, status)
+  +-- Session (user_agent, ip_address)
+  |
+  +-- TestPlan (name, qa_name)
         |
-        +-- Evidence Files (Active Storage)
+        +-- TestScenario (title, given, when, then, status, position)
+        |     |
+        |     +-- Evidence Files (Active Storage)
+        |
+        +-- Tags (many-to-many via TestPlanTag)
 ```
 
 ### Derived Status
@@ -85,7 +95,8 @@ Plan status is not a stored field. It's computed from the scenarios:
 ### PDF Export
 
 Each plan has an "Export PDF Report" button that generates a formatted document with:
-- Plan summary (total scenarios, approved count, QA name)
+- Table of contents with clickable anchors to each scenario
+- Plan summary (total scenarios, approved count, QA name, tags)
 - Each scenario with Given/When/Then steps and status
 - Attached evidence images
 
@@ -119,11 +130,36 @@ One Given, one When, one Then. If you can't describe the scenario in three conci
 
 **SQLite in production.** One fewer service to manage. Works great for small-to-medium teams. Rails 8 supports it well with Solid Cache, Solid Queue, and Solid Cable.
 
-**No authentication.** Testy is designed for internal use behind a VPN or within a team's private network. Adding auth is straightforward with Rails' built-in `has_secure_password` if needed.
+**Simple authentication.** Testy uses Rails' built-in `has_secure_password` with username/password login. On first access, you'll be redirected to create the admin user — no seeds or setup scripts needed.
 
 **No JavaScript build step.** Uses import maps for JS and the `tailwindcss-rails` gem for CSS. `bin/dev` runs both the server and the Tailwind watcher.
 
 **Server-side filters.** Filtering happens via query params and SQL scopes — no client-side state, no JavaScript complexity, and every filtered view is a shareable URL.
+
+## Deployment
+
+### Docker Compose
+
+```bash
+# Generate a secret key
+export SECRET_KEY_BASE=$(rails secret)
+
+# Start
+docker compose up -d
+```
+
+Open [http://localhost:3000](http://localhost:3000). On first access, you'll be prompted to create the admin user.
+
+### Docker Run
+
+```bash
+docker run -d \
+  -p 3000:80 \
+  -e SECRET_KEY_BASE=$(rails secret) \
+  -e SOLID_QUEUE_IN_PUMA=true \
+  -v testy_storage:/rails/storage \
+  ghcr.io/victorbitancourt/testy:latest
+```
 
 ## Contributing
 

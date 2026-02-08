@@ -5,6 +5,7 @@ login_success:
   when_step: Preenche email e senha corretos e clica em Entrar
   then_step: Sistema redireciona para o dashboard
   status: approved
+  position: 0
 
 login_failure:
   test_plan: login_plan
@@ -13,6 +14,7 @@ login_failure:
   when_step: Preenche email correto e senha incorreta e clica em Entrar
   then_step: Sistema exibe mensagem de erro
   status: pending
+  position: 1
 
 login_approved:
   test_plan: login_plan
@@ -21,6 +23,7 @@ login_approved:
   when_step: Preenche credenciais e codigo 2FA corretos
   then_step: Sistema redireciona para o dashboard
   status: approved
+  position: 2
 
 checkout_step1:
   test_plan: approved_plan
@@ -29,6 +32,7 @@ checkout_step1:
   when_step: Clica em adicionar ao carrinho
   then_step: Item aparece no carrinho
   status: approved
+  position: 0
 
 checkout_step2:
   test_plan: approved_plan
@@ -37,6 +41,7 @@ checkout_step2:
   when_step: Clica em finalizar compra e confirma
   then_step: Pedido e criado com sucesso
   status: approved
+  position: 1
 
 payment_success:
   test_plan: failed_plan
@@ -45,6 +50,7 @@ payment_success:
   when_step: Preenche dados do cartao valido e confirma
   then_step: Pagamento e aprovado
   status: approved
+  position: 0
 
 payment_failure:
   test_plan: failed_plan
@@ -53,3 +59,4 @@ payment_failure:
   when_step: Preenche dados do cartao invalido e confirma
   then_step: Sistema exibe erro de pagamento
   status: failed
+  position: 1

@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="turbo-visit-control" content="reload">
   <style>
     * {
       margin: 0;
@@ -9,6 +10,10 @@
       box-sizing: border-box;
     }
     
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: 'Arial', sans-serif;
       color: #333;
@@ -26,8 +31,8 @@
     }
     
     .logo {
-      width: 60px;
-      height: 60px;
+      width: 120px;
+      height: 120px;
     }
     
     .header-info {
@@ -241,6 +246,83 @@
       border: 2px solid #e5e7eb;
     }
     
+    .toc {
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 40px;
+    }
+
+    .toc-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .toc-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .toc-table tr {
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .toc-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .toc-table td {
+      padding: 8px 4px;
+      vertical-align: middle;
+    }
+
+    .toc-number {
+      width: 32px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .toc-number a {
+      color: #f5576c;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .toc-name {
+      font-size: 14px;
+      color: #1f2937;
+    }
+
+    .toc-name a {
+      color: #1f2937;
+      text-decoration: none;
+    }
+
+    .toc-name a:hover {
+      color: #f5576c;
+      text-decoration: underline;
+    }
+
+    .toc-status {
+      width: 110px;
+      text-align: right;
+    }
+
+    .toc-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
     .footer {
       margin-top: 60px;
       padding-top: 20px;
@@ -272,7 +354,7 @@
 
   <div class="header">
     <div class="logo">
-      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
         <defs>
           <linearGradient id="reportGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" style="stop-color:#f093fb"/>
@@ -292,6 +374,13 @@
 
   <div class="summary">
     <h2><%= @test_plan.name %></h2>
+    <% if @test_plan.tags.any? %>
+      <div style="margin-bottom: 15px;">
+        <% @test_plan.tags.each do |tag| %>
+          <span style="display: inline-block; background: rgba(255,255,255,0.25); color: white; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-right: 6px;"><%= tag.name %></span>
+        <% end %>
+      </div>
+    <% end %>
     <div class="summary-grid">
       <div class="summary-item">
         <span class="number"><%= @test_plan.total_scenarios %></span>
@@ -308,8 +397,28 @@
     </div>
   </div>
 
-  <% @test_plan.test_scenarios.each_with_index do |scenario, index| %>
-    <div class="scenario">
+  <% scenarios = @test_plan.test_scenarios.to_a %>
+  <% if scenarios.size > 1 %>
+  <div class="toc">
+    <div class="toc-title">Índice de Cenários</div>
+    <table class="toc-table">
+      <% scenarios.each_with_index do |s, i| %>
+        <tr>
+          <td class="toc-number"><a href="#scenario-<%= i + 1 %>" data-turbo="false"><%= i + 1 %></a></td>
+          <td class="toc-name"><a href="#scenario-<%= i + 1 %>" data-turbo="false"><%= s.title %></a></td>
+          <td class="toc-status">
+            <span class="toc-badge status-<%= s.status %>">
+              <%= s.status == 'approved' ? '✓ Aprovado' : s.status == 'failed' ? '✗ Reprovado' : '⋯ Pendente' %>
+            </span>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <% end %>
+
+  <% scenarios.each_with_index do |scenario, index| %>
+    <div class="scenario" id="scenario-<%= index + 1 %>">
       <div class="scenario-header">
         <div class="scenario-title">
           <%= index + 1 %>. <%= scenario.title %>
@@ -356,5 +465,15 @@
   <div class="footer">
     <p><strong>Testy</strong> | Test Management Made Simple</p>
   </div>
+
+  <script>
+    document.querySelectorAll('.toc-name a').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
 </body>
 </html>

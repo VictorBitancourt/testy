@@ -1,6 +1,7 @@
 class TestScenariosController < ApplicationController
   before_action :set_test_plan
   before_action :set_test_scenario, only: [:update, :destroy, :update_status]
+  before_action :authorize_owner_or_admin
 
   def create
     @test_scenario = @test_plan.test_scenarios.build(test_scenario_params)
@@ -29,6 +30,13 @@ class TestScenariosController < ApplicationController
     end
   end
 
+  def reorder
+    params[:scenario_ids].each_with_index do |id, index|
+      @test_plan.test_scenarios.where(id: id).update_all(position: index)
+    end
+    head :ok
+  end
+
   def destroy
     @test_scenario.destroy
     redirect_to @test_plan, notice: 'Cenário removido!'
@@ -46,5 +54,9 @@ class TestScenariosController < ApplicationController
 
   def test_scenario_params
     params.require(:test_scenario).permit(:title, :given, :when_step, :then_step, :status, evidence_files: [])
+  end
+
+  def authorize_owner_or_admin
+    authorize_plan_owner_or_admin(@test_plan)
   end
 end

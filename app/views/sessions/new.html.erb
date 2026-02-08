@@ -1,0 +1,40 @@
+<div class="min-h-screen bg-canvas flex items-center justify-center px-4">
+  <div class="w-full max-w-sm">
+    <div class="flex justify-center mb-8">
+      <svg width="120" height="120" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="login-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f093fb"/>
+            <stop offset="100%" style="stop-color:#f5576c"/>
+          </linearGradient>
+        </defs>
+        <rect x="30" y="30" width="160" height="160" rx="20" fill="none" stroke="url(#login-grad)" stroke-width="8" transform="rotate(-5 110 110)"/>
+        <path d="M 75 110 L 95 130 L 145 80" stroke="url(#login-grad)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" transform="rotate(-5 110 110)"/>
+        <text x="110" y="175" font-family="Arial Black, Arial" font-size="32" font-weight="900" fill="url(#login-grad)" text-anchor="middle" transform="rotate(-5 110 175)">testy</text>
+      </svg>
+    </div>
+
+    <div class="bg-surface rounded-xl shadow-lg p-8 border border-ink-lighter">
+      <h1 class="text-2xl font-bold text-ink-darkest text-center mb-6">Entrar</h1>
+
+      <%= form_with url: session_path, method: :post, class: "space-y-4" do |f| %>
+        <div>
+          <label for="username" class="block text-sm font-medium text-ink-dark mb-1">Usuário</label>
+          <input type="text" name="username" id="username" autocomplete="username" autofocus required
+                 class="w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-ink-dark mb-1">Senha</label>
+          <input type="password" name="password" id="password" autocomplete="current-password" required
+                 class="w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" />
+        </div>
+
+        <button type="submit"
+                class="w-full bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold py-2.5 rounded-lg shadow-lg transition">
+          Entrar
+        </button>
+      <% end %>
+    </div>
+  </div>
+</div>

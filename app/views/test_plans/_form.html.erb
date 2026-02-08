@@ -20,6 +20,13 @@
     <%= f.text_field :qa_name, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: "Seu nome completo" %>
   </div>
 
+  <div data-controller="tag-input" class="relative">
+    <%= f.label :tag_list, "Tags", class: "block font-semibold text-ink-darker mb-2" %>
+    <%= f.text_field :tag_list, value: test_plan.tag_list, data: { tag_input_target: "input", action: "input->tag-input#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-violet-light focus:border-transparent", placeholder: "Ex: login, sprint-23, regressão", autocomplete: "off" %>
+    <div data-tag-input-target="suggestions" class="hidden absolute z-10 w-full mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
+    <p class="text-xs text-ink-medium mt-1">Separe as tags com vírgulas</p>
+  </div>
+
   <div class="flex gap-4">
     <%= f.submit (test_plan.new_record? ? "Criar Plano" : "Atualizar Plano"), class: "flex-1 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold py-3 rounded-lg cursor-pointer transition" %>
     <%= link_to "Cancelar", test_plans_path, class: "flex-1 bg-surface-raised hover:bg-ink-lightest text-ink-dark font-bold py-3 rounded-lg text-center transition" %>

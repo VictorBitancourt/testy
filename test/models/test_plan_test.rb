@@ -2,18 +2,18 @@ require "test_helper"
 
 class TestPlanTest < ActiveSupport::TestCase
   test "valid test plan" do
-    plan = TestPlan.new(name: "Checkout Flow", qa_name: "Ana Costa")
+    plan = TestPlan.new(name: "Checkout Flow", qa_name: "Ana Costa", user: users(:admin))
     assert plan.valid?
   end
 
   test "invalid without name" do
-    plan = TestPlan.new(qa_name: "Ana Costa")
+    plan = TestPlan.new(qa_name: "Ana Costa", user: users(:admin))
     assert_not plan.valid?
     assert_includes plan.errors[:name], "can't be blank"
   end
 
   test "invalid without qa_name" do
-    plan = TestPlan.new(name: "Checkout Flow")
+    plan = TestPlan.new(name: "Checkout Flow", user: users(:admin))
     assert_not plan.valid?
     assert_includes plan.errors[:qa_name], "can't be blank"
   end
@@ -131,6 +131,99 @@ class TestPlanTest < ActiveSupport::TestCase
 
   test "scope created_until excludes future plans" do
     results = TestPlan.created_until(Time.zone.yesterday)
+    assert_empty results
+  end
+
+  # search scope tests
+
+  test "search scope filters by name" do
+    results = TestPlan.search("Login")
+    assert_includes results, test_plans(:login_plan)
+    assert_not_includes results, test_plans(:approved_plan)
+  end
+
+  test "search scope filters by qa_name" do
+    results = TestPlan.search("Maria")
+    assert_includes results, test_plans(:login_plan)
+    assert_not_includes results, test_plans(:approved_plan)
+  end
+
+  test "search scope returns all when empty query" do
+    results = TestPlan.search("")
+    assert_equal TestPlan.count, results.count
+  end
+
+  test "search scope filters by tag name" do
+    results = TestPlan.search("sprint-23")
+    assert_includes results, test_plans(:login_plan)
+    assert_not_includes results, test_plans(:empty_plan)
+  end
+
+  # tag associations
+
+  test "has many tags through test_plan_tags" do
+    plan = test_plans(:login_plan)
+    assert_includes plan.tags, tags(:login)
+    assert_includes plan.tags, tags(:sprint_23)
+  end
+
+  test "dependent destroy removes test_plan_tags" do
+    plan = test_plans(:login_plan)
+    tag_count = plan.test_plan_tags.count
+    assert tag_count > 0
+
+    assert_difference "TestPlanTag.count", -tag_count do
+      plan.destroy
+    end
+  end
+
+  # tag_list get/set
+
+  test "tag_list returns comma-separated tag names" do
+    plan = test_plans(:login_plan)
+    list = plan.tag_list
+    assert_includes list, "login"
+    assert_includes list, "sprint-23"
+  end
+
+  test "tag_list= assigns tags from comma-separated string" do
+    plan = test_plans(:empty_plan)
+    plan.tag_list = "api, frontend, api"
+    plan.save!
+
+    assert_equal 2, plan.tags.count
+    assert_includes plan.tags.pluck(:name), "api"
+    assert_includes plan.tags.pluck(:name), "frontend"
+  end
+
+  test "tag_list= strips and downcases tag names" do
+    plan = test_plans(:empty_plan)
+    plan.tag_list = "  API , Frontend  "
+    plan.save!
+
+    assert_includes plan.tags.pluck(:name), "api"
+    assert_includes plan.tags.pluck(:name), "frontend"
+  end
+
+  test "tag_list= ignores blank entries" do
+    plan = test_plans(:empty_plan)
+    plan.tag_list = "valid, , ,another"
+    plan.save!
+
+    assert_equal 2, plan.tags.count
+  end
+
+  # tagged_with scope
+
+  test "scope tagged_with returns plans with the given tag" do
+    results = TestPlan.tagged_with("login")
+    assert_includes results, test_plans(:login_plan)
+    assert_not_includes results, test_plans(:empty_plan)
+    assert_not_includes results, test_plans(:approved_plan)
+  end
+
+  test "scope tagged_with returns empty when no plans have tag" do
+    results = TestPlan.tagged_with("nonexistent")
     assert_empty results
   end
 end

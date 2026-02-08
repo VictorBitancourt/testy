@@ -1,8 +1,29 @@
 class TestPlan < ApplicationRecord
-  has_many :test_scenarios, dependent: :destroy
+  belongs_to :user
+  has_many :test_scenarios, -> { order(position: :asc) }, dependent: :destroy
+  has_many :test_plan_tags, dependent: :destroy
+  has_many :tags, through: :test_plan_tags
 
   validates :name, presence: true
   validates :qa_name, presence: true
+
+  scope :search, ->(query) {
+    left_joins(:tags)
+      .where("test_plans.name LIKE :q OR test_plans.qa_name LIKE :q OR tags.name LIKE :q", q: "%#{query}%")
+      .distinct
+  }
+
+  scope :tagged_with, ->(name) { joins(:tags).where(tags: { name: name }) }
+
+  def tag_list
+    tags.pluck(:name).join(", ")
+  end
+
+  def tag_list=(names)
+    self.tags = names.split(",").map(&:strip).reject(&:blank?).uniq.map do |name|
+      Tag.find_or_create_by(name: name.downcase)
+    end
+  end
 
   scope :nao_iniciado, -> { where.not(id: TestScenario.select(:test_plan_id)) }
 

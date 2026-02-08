@@ -3,17 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       font-family: 'Helvetica Neue', Arial, sans-serif;
       color: #1a1a1a;
       background: #f5f3ef;
-      padding: 40px;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .content {
+      padding: 30px 40px 40px;
     }
 
     /* Header com logo centralizado */
@@ -27,37 +39,6 @@
     .logo-container {
       display: inline-block;
       margin-bottom: 20px;
-    }
-
-    .logo-box {
-      width: 100px;
-      height: 100px;
-      background: white;
-      border: 4px solid #f5576c;
-      border-radius: 20px;
-      transform: rotate(-5deg);
-      display: inline-block;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .logo-check {
-      position: absolute;
-      top: 15px;
-      left: 18px;
-      font-size: 45px;
-      color: #f5576c;
-    }
-
-    .logo-text {
-      position: absolute;
-      bottom: 10px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      color: #f5576c;
     }
 
     .report-title {
@@ -98,24 +79,20 @@
       color: #f5576c;
     }
 
-    /* Métricas */
+    /* Metricas */
     .metrics {
+      display: flex;
+      gap: 12px;
       margin-bottom: 30px;
     }
 
-    .metrics table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 12px 0;
-    }
-
     .metric {
+      flex: 1;
       background: white;
       border-radius: 12px;
       padding: 20px;
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      width: 25%;
     }
 
     .metric-number {
@@ -163,7 +140,84 @@
       opacity: 0.9;
     }
 
-    /* Seção de Cenários */
+    /* Indice */
+    .toc {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .toc-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8e4dd;
+    }
+
+    .toc-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .toc-table tr {
+      border-bottom: 1px solid #f0ede8;
+    }
+
+    .toc-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .toc-table td {
+      padding: 7px 4px;
+      vertical-align: middle;
+    }
+
+    .toc-num {
+      width: 28px;
+    }
+
+    .toc-num span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: #f5576c;
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 10px;
+    }
+
+    .toc-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .toc-name a {
+      color: #1a1a1a;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .toc-name a:hover {
+      color: #f5576c;
+      text-decoration: underline;
+    }
+
+    .toc-status {
+      width: 90px;
+      text-align: right;
+    }
+
+    /* Secao de Cenarios */
     .section-title {
       font-size: 12px;
       color: #888;
@@ -174,7 +228,7 @@
       border-bottom: 2px solid #e8e4dd;
     }
 
-    /* Cenário */
+    /* Cenario */
     .scenario {
       background: white;
       border-radius: 12px;
@@ -187,21 +241,20 @@
     .scenario-header {
       padding: 18px 24px;
       border-bottom: 2px solid #f5f3ef;
-    }
-
-    .scenario-header table {
-      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .scenario-number {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 28px;
       height: 28px;
       background: #f5576c;
       color: white;
       border-radius: 50%;
-      text-align: center;
-      line-height: 28px;
       font-weight: bold;
       font-size: 13px;
       margin-right: 12px;
@@ -243,17 +296,15 @@
     }
 
     .steps {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 10px 0;
+      display: flex;
+      gap: 10px;
     }
 
     .step {
+      flex: 1;
       background: #f9f8f6;
       padding: 16px;
       border-radius: 10px;
-      vertical-align: top;
-      width: 33%;
     }
 
     .step-given { border-top: 3px solid #6366f1; }
@@ -279,7 +330,7 @@
       color: #444;
     }
 
-    /* Evidências */
+    /* Evidencias */
     .evidence {
       margin-top: 20px;
       padding-top: 20px;
@@ -310,65 +361,15 @@
       margin-bottom: 12px;
     }
 
-    /* Footer */
-    .footer {
-      margin-top: 40px;
-      padding-top: 30px;
-      border-top: 3px solid #e8e4dd;
-      text-align: center;
-    }
-
-    .footer-logo {
-      display: inline-block;
-      width: 50px;
-      height: 50px;
-      background: white;
-      border: 2px solid #f5576c;
-      border-radius: 12px;
-      transform: rotate(-5deg);
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .footer-logo-check {
-      position: absolute;
-      top: 8px;
-      left: 10px;
-      font-size: 22px;
-      color: #f5576c;
-    }
-
-    .footer-logo-text {
-      position: absolute;
-      bottom: 4px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 9px;
-      font-weight: bold;
-      color: #f5576c;
-    }
-
-    .footer-tagline {
-      font-size: 12px;
-      color: #999;
-      margin-bottom: 4px;
-    }
-
-    .footer-date {
-      font-size: 11px;
-      color: #bbb;
-    }
   </style>
 </head>
 <body>
+  <div class="content">
   <!-- Header com Logo -->
   <div class="header">
     <div class="logo-container">
-      <div class="logo-box">
-        <span class="logo-check">&#10003;</span>
-        <span class="logo-text">testy</span>
-      </div>
+      <% require 'base64' %>
+      <img src="data:image/png;base64,<%= Base64.strict_encode64(File.read(Rails.root.join('app/assets/images/testy-logo.png'))) %>" width="100" height="100" />
     </div>
     <div class="report-title">Relatório de Testes</div>
     <div class="report-date">Gerado em <%= Time.zone.today.strftime('%d de %B de %Y') %></div>
@@ -378,30 +379,33 @@
   <div class="plan-info">
     <div class="plan-name"><%= @test_plan.name %></div>
     <div class="plan-qa">QA Responsável: <strong><%= @test_plan.qa_name %></strong></div>
+    <% if @test_plan.tags.any? %>
+      <div style="margin-top: 12px;">
+        <% @test_plan.tags.each do |tag| %>
+          <span style="display: inline-block; background: #8b5cf6; color: white; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-right: 6px;"><%= tag.name %></span>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
-  <!-- Métricas -->
+  <!-- Metricas -->
   <div class="metrics">
-    <table cellspacing="0" cellpadding="0">
-      <tr>
-        <td class="metric metric-total">
-          <span class="metric-number"><%= @test_plan.total_scenarios %></span>
-          <span class="metric-label">Total</span>
-        </td>
-        <td class="metric metric-approved">
-          <span class="metric-number"><%= @test_plan.approved_scenarios %></span>
-          <span class="metric-label">Aprovados</span>
-        </td>
-        <td class="metric metric-failed">
-          <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'failed').count %></span>
-          <span class="metric-label">Reprovados</span>
-        </td>
-        <td class="metric metric-pending">
-          <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'pending').count %></span>
-          <span class="metric-label">Pendentes</span>
-        </td>
-      </tr>
-    </table>
+    <div class="metric metric-total">
+      <span class="metric-number"><%= @test_plan.total_scenarios %></span>
+      <span class="metric-label">Total</span>
+    </div>
+    <div class="metric metric-approved">
+      <span class="metric-number"><%= @test_plan.approved_scenarios %></span>
+      <span class="metric-label">Aprovados</span>
+    </div>
+    <div class="metric metric-failed">
+      <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'failed').count %></span>
+      <span class="metric-label">Reprovados</span>
+    </div>
+    <div class="metric metric-pending">
+      <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'pending').count %></span>
+      <span class="metric-label">Pendentes</span>
+    </div>
   </div>
 
   <% if @test_plan.all_scenarios_approved? && @test_plan.total_scenarios > 0 %>
@@ -413,44 +417,57 @@
   </div>
   <% end %>
 
-  <!-- Cenários -->
-  <div class="section-title">Cenários de Teste</div>
-
-  <% @test_plan.test_scenarios.each_with_index do |scenario, index| %>
-  <div class="scenario">
-    <div class="scenario-header">
-      <table cellspacing="0" cellpadding="0">
+  <!-- Indice -->
+  <% scenarios = @test_plan.test_scenarios.to_a %>
+  <% if scenarios.size > 1 %>
+  <div class="toc">
+    <div class="toc-title">Índice de Cenários</div>
+    <table class="toc-table">
+      <% scenarios.each_with_index do |s, i| %>
         <tr>
-          <td>
-            <span class="scenario-number"><%= index + 1 %></span>
-            <span class="scenario-title"><%= scenario.title %></span>
-          </td>
-          <td width="100" style="text-align: right;">
-            <span class="badge badge-<%= scenario.status %>">
-              <%= scenario.status == 'approved' ? 'Aprovado' : scenario.status == 'failed' ? 'Reprovado' : 'Pendente' %>
+          <td class="toc-num"><a href="#scenario-<%= i + 1 %>"><span><%= i + 1 %></span></a></td>
+          <td class="toc-name"><a href="#scenario-<%= i + 1 %>"><%= s.title %></a></td>
+          <td class="toc-status">
+            <span class="badge badge-<%= s.status %>">
+              <%= s.status == 'approved' ? 'Aprovado' : s.status == 'failed' ? 'Reprovado' : 'Pendente' %>
             </span>
           </td>
         </tr>
-      </table>
+      <% end %>
+    </table>
+  </div>
+  <% end %>
+
+  <!-- Cenarios -->
+  <div class="section-title">Cenários de Teste</div>
+
+  <% scenarios.each_with_index do |scenario, index| %>
+  <div class="scenario" id="scenario-<%= index + 1 %>">
+    <div class="scenario-header">
+      <div>
+        <span class="scenario-number"><%= index + 1 %></span>
+        <span class="scenario-title"><%= scenario.title %></span>
+      </div>
+      <span class="badge badge-<%= scenario.status %>">
+        <%= scenario.status == 'approved' ? 'Aprovado' : scenario.status == 'failed' ? 'Reprovado' : 'Pendente' %>
+      </span>
     </div>
 
     <div class="scenario-body">
-      <table class="steps" cellspacing="0" cellpadding="0">
-        <tr>
-          <td class="step step-given">
-            <span class="step-label">Dado que</span>
-            <div class="step-content"><%= scenario.given %></div>
-          </td>
-          <td class="step step-when">
-            <span class="step-label">Quando</span>
-            <div class="step-content"><%= scenario.when_step %></div>
-          </td>
-          <td class="step step-then">
-            <span class="step-label">Então</span>
-            <div class="step-content"><%= scenario.then_step %></div>
-          </td>
-        </tr>
-      </table>
+      <div class="steps">
+        <div class="step step-given">
+          <span class="step-label">Dado que</span>
+          <div class="step-content"><%= scenario.given %></div>
+        </div>
+        <div class="step step-when">
+          <span class="step-label">Quando</span>
+          <div class="step-content"><%= scenario.when_step %></div>
+        </div>
+        <div class="step step-then">
+          <span class="step-label">Então</span>
+          <div class="step-content"><%= scenario.then_step %></div>
+        </div>
+      </div>
 
       <% if scenario.evidence_files.attached? %>
       <div class="evidence">
@@ -458,7 +475,6 @@
         <% scenario.evidence_files.each do |file| %>
           <% if file.image? %>
             <div style="page-break-inside: avoid;">
-              <% require 'base64' %>
               <img src="data:<%= file.content_type %>;base64,<%= Base64.strict_encode64(file.download) %>" class="evidence-img" />
             </div>
           <% else %>
@@ -474,14 +490,6 @@
   </div>
   <% end %>
 
-  <!-- Footer -->
-  <div class="footer">
-    <div class="footer-logo">
-      <span class="footer-logo-check">&#10003;</span>
-      <span class="footer-logo-text">testy</span>
-    </div>
-    <div class="footer-tagline">Test Management Made Simple</div>
-    <div class="footer-date"><%= Time.zone.now.strftime('%d/%m/%Y às %H:%M') %></div>
   </div>
 </body>
 </html>

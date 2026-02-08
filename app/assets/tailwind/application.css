@@ -1,5 +1,50 @@
 @import "tailwindcss";
 
+/* Pagy pagination */
+.pagy {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.pagy a,
+.pagy span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.pagy a {
+  color: oklch(84.04% 0.0719 255.29);
+  background: oklch(30% 0.024 232);
+}
+
+.pagy a:hover {
+  background: oklch(40% 0.026 262);
+  color: oklch(96% 0.002 252);
+}
+
+.pagy a.current {
+  background: oklch(57.02% 0.1895 260.46);
+  color: white;
+}
+
+.pagy span.current {
+  background: oklch(57.02% 0.1895 260.46);
+  color: white;
+}
+
+.pagy span:not(.current) {
+  color: oklch(40% 0.026 262);
+}
+
 @theme {
   /* Fizzy Dark — Canvas & Surface */
   --color-canvas: oklch(20% 0.0195 232.58);
