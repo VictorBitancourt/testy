@@ -1,7 +1,7 @@
 class TestPlansController < ApplicationController
   include Pagy::Method
 
-  before_action :set_test_plan, only: [:show, :edit, :update, :destroy, :report]
+  before_action :set_test_plan, only: [:show, :edit, :update, :destroy]
   before_action :authorize_owner_or_admin, only: [:edit, :update, :destroy]
 
   def index
@@ -9,10 +9,10 @@ class TestPlansController < ApplicationController
 
     if params[:status].present?
       @test_plans = case params[:status]
-      when "aprovado" then @test_plans.aprovado
-      when "reprovado" then @test_plans.reprovado
-      when "em_andamento" then @test_plans.em_andamento
-      when "nao_iniciado" then @test_plans.nao_iniciado
+      when "approved" then @test_plans.approved_plans
+      when "failed" then @test_plans.failed_plans
+      when "in_progress" then @test_plans.in_progress
+      when "not_started" then @test_plans.not_started
       else @test_plans
       end
     end
@@ -42,7 +42,7 @@ class TestPlansController < ApplicationController
     @test_plan.user = Current.user
 
     if @test_plan.save
-      redirect_to @test_plan, notice: 'Plano de teste criado com sucesso!'
+      redirect_to @test_plan, notice: "Test plan created successfully!"
     else
       render :new, status: :unprocessable_entity
     end
@@ -53,7 +53,7 @@ class TestPlansController < ApplicationController
 
   def update
     if @test_plan.update(test_plan_params)
-      redirect_to @test_plan, notice: 'Plano de teste atualizado!'
+      redirect_to @test_plan, notice: "Test plan updated!"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -61,54 +61,19 @@ class TestPlansController < ApplicationController
 
   def destroy
     @test_plan.destroy
-    redirect_to test_plans_path, notice: 'Plano de teste removido!'
+    redirect_to test_plans_path, notice: "Test plan removed!"
   end
 
-  def report
-    respond_to do |format|
-      format.html { render 'report', layout: false }
-      format.pdf do
-        require "base64"
-        logo_b64 = Base64.strict_encode64(File.read(Rails.root.join("app/assets/images/testy-logo.png")))
-        now = Time.zone.now.strftime("%d/%m/%Y às %H:%M")
-
-        footer_html = <<~HTML
-          <div style="margin:-1px 0 0 0;padding:0;width:100%;height:150%;background:#f5f3ef;display:flex;align-items:flex-end;justify-content:center;font-family:'Helvetica Neue',Arial,sans-serif;">
-            <div style="text-align:center;padding-bottom:12px;border-top:3px solid #e8e4dd;margin:0 40px;flex:1;padding-top:8px;">
-              <img src="data:image/png;base64,#{logo_b64}" width="20" height="20" style="display:block;margin:0 auto 3px;" />
-              <div style="font-size:9px;color:#999;">Test Management Made Simple</div>
-              <div style="font-size:8px;color:#bbb;">#{now}</div>
-            </div>
-          </div>
-        HTML
-
-        render ferrum_pdf: {
-          paper_width: 8.27,
-          paper_height: 11.69,
-          margin_bottom: 0.55,
-          display_header_footer: true,
-          header_template: '<div style="width:100%;height:100%;background:#f5f3ef;"></div>',
-          footer_template: footer_html
-        },
-        template: "test_plans/report_pdf",
-        formats: [:html],
-        layout: false,
-        disposition: :inline,
-        filename: "plano_teste_#{@test_plan.id}.pdf"
-      end
-    end
-  end
   private
+    def set_test_plan
+      @test_plan = TestPlan.find(params[:id])
+    end
 
-  def set_test_plan
-    @test_plan = TestPlan.find(params[:id])
-  end
+    def authorize_owner_or_admin
+      authorize_plan_owner_or_admin(@test_plan)
+    end
 
-  def test_plan_params
-    params.require(:test_plan).permit(:name, :qa_name, :tag_list)
-  end
-
-  def authorize_owner_or_admin
-    authorize_plan_owner_or_admin(@test_plan)
-  end
+    def test_plan_params
+      params.require(:test_plan).permit(:name, :qa_name, :tag_list)
+    end
 end

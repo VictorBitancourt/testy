@@ -28,7 +28,9 @@ module Authentication
     end
 
     def find_session_by_cookie
-      Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+      if cookies.signed[:session_id]
+        Session.find_by(id: cookies.signed[:session_id])
+      end
     end
 
     def request_authentication
@@ -37,7 +39,9 @@ module Authentication
     end
 
     def redirect_to_setup
-      redirect_to new_registration_path unless request.path == new_registration_path
+      if request.path != new_registration_path
+        redirect_to new_registration_path
+      end
     end
 
     def after_authentication_url
@@ -62,13 +66,13 @@ module Authentication
 
     def require_admin
       unless current_user_admin?
-        redirect_to root_path, alert: "Acesso restrito a administradores."
+        redirect_to root_path, alert: "Access restricted to administrators."
       end
     end
 
     def authorize_plan_owner_or_admin(plan)
       unless current_user_admin? || plan.user == Current.user
-        redirect_to root_path, alert: "Você não tem permissão para esta ação."
+        redirect_to root_path, alert: "You do not have permission for this action."
       end
     end
 end

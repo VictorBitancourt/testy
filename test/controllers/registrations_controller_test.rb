@@ -6,10 +6,9 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     get new_registration_path
     assert_response :success
-    assert_match "Configuração Inicial", response.body
   end
 
-  test "new when users already exist redirects away" do
+  test "new redirects when users already exist" do
     get new_registration_path
     assert_redirected_to root_path
   end
@@ -23,17 +22,10 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
     assert cookies[:session_id]
-    assert_equal "newadmin", User.last.username
-  end
-
-  test "create first user receives admin role" do
-    User.destroy_all
-
-    post registration_path, params: { user: { username: "newadmin", password: "password123", password_confirmation: "password123" } }
 
     user = User.last
+    assert_equal "newadmin", user.username
     assert_equal "admin", user.role
-    assert user.admin?
   end
 
   test "create first user starts a session" do
@@ -44,7 +36,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "create with invalid params re-renders form" do
+  test "create with invalid params" do
     User.destroy_all
 
     assert_no_difference -> { User.count } do

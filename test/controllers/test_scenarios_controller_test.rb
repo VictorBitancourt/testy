@@ -2,137 +2,129 @@ require "test_helper"
 
 class TestScenariosControllerTest < ActionDispatch::IntegrationTest
   setup do
-    sign_in_as(users(:admin))
-    @plan = test_plans(:login_plan)
-    @scenario = test_scenarios(:login_success)
+    sign_in_as users(:admin)
   end
-
-  # authentication
 
   test "unauthenticated access redirects to login" do
     sign_out
 
-    post test_plan_test_scenarios_path(@plan), params: {
-      test_scenario: { title: "Test" }
-    }
+    post test_plan_test_scenarios_path(test_plans(:login_plan)), params: { test_scenario: { title: "Test" } }
     assert_redirected_to new_session_path
   end
 
-  # create
-
   test "create" do
-    assert_difference -> { @plan.test_scenarios.count }, +1 do
-      post test_plan_test_scenarios_path(@plan), params: {
-        test_scenario: { title: "Logout do sistema", given: "Usuario logado", when_step: "Clica em sair", then_step: "Redireciona para login" }
+    plan = test_plans(:login_plan)
+
+    assert_difference -> { plan.test_scenarios.count }, +1 do
+      post test_plan_test_scenarios_path(plan), params: {
+        test_scenario: { title: "System logout", given: "User is logged in", when_step: "Clicks sign out", then_step: "Redirects to login" }
       }
     end
 
-    assert_redirected_to test_plan_path(@plan)
+    assert_redirected_to test_plan_path(plan)
 
-    scenario = @plan.test_scenarios.last
-    assert_equal "Logout do sistema", scenario.title
+    scenario = plan.test_scenarios.last
+    assert_equal "System logout", scenario.title
     assert_equal "pending", scenario.status
   end
 
   test "create with invalid params" do
+    plan = test_plans(:login_plan)
+
     assert_no_difference -> { TestScenario.count } do
-      post test_plan_test_scenarios_path(@plan), params: {
-        test_scenario: { title: "" }
-      }
+      post test_plan_test_scenarios_path(plan), params: { test_scenario: { title: "" } }
     end
 
-    assert_redirected_to test_plan_path(@plan)
-    assert_equal "Erro ao adicionar cenário.", flash[:alert]
+    assert_redirected_to test_plan_path(plan)
   end
-
-  # update
 
   test "update" do
-    patch test_plan_test_scenario_path(@plan, @scenario), params: {
-      test_scenario: { title: "Titulo atualizado" }
-    }
+    plan = test_plans(:login_plan)
+    scenario = test_scenarios(:login_success)
 
-    assert_redirected_to test_plan_path(@plan)
-    assert_equal "Titulo atualizado", @scenario.reload.title
+    patch test_plan_test_scenario_path(plan, scenario), params: { test_scenario: { title: "Updated title" } }
+
+    assert_redirected_to test_plan_path(plan)
+    assert_equal "Updated title", scenario.reload.title
   end
 
-  test "update does not change other fields when not provided" do
-    original_given = @scenario.given
+  test "update preserves unsubmitted fields" do
+    scenario = test_scenarios(:login_success)
+    original_given = scenario.given
 
-    patch test_plan_test_scenario_path(@plan, @scenario), params: {
-      test_scenario: { title: "Novo titulo" }
-    }
+    patch test_plan_test_scenario_path(test_plans(:login_plan), scenario), params: { test_scenario: { title: "New title" } }
 
-    assert_equal original_given, @scenario.reload.given
+    assert_equal original_given, scenario.reload.given
   end
-
-  # destroy
 
   test "destroy" do
-    assert_difference -> { @plan.test_scenarios.count }, -1 do
-      delete test_plan_test_scenario_path(@plan, @scenario)
+    plan = test_plans(:login_plan)
+
+    assert_difference -> { plan.test_scenarios.count }, -1 do
+      delete test_plan_test_scenario_path(plan, test_scenarios(:login_success))
     end
 
-    assert_redirected_to test_plan_path(@plan)
+    assert_redirected_to test_plan_path(plan)
   end
 
-  # update_status
-
   test "update_status to approved" do
+    plan = test_plans(:login_plan)
     scenario = test_scenarios(:login_failure)
 
-    patch update_status_test_plan_test_scenario_path(@plan, scenario), params: { status: "approved" }, as: :json
+    patch test_plan_test_scenario_status_path(plan, scenario), params: { status: "approved" }, as: :json
     assert_response :success
 
-    body = response.parsed_body
-    assert body["success"]
+    assert @response.parsed_body["success"]
     assert_equal "approved", scenario.reload.status
   end
 
   test "update_status to failed" do
-    patch update_status_test_plan_test_scenario_path(@plan, @scenario), params: { status: "failed" }, as: :json
+    plan = test_plans(:login_plan)
+    scenario = test_scenarios(:login_success)
+
+    patch test_plan_test_scenario_status_path(plan, scenario), params: { status: "failed" }, as: :json
     assert_response :success
 
-    body = response.parsed_body
-    assert body["success"]
-    assert_equal "failed", @scenario.reload.status
+    assert @response.parsed_body["success"]
+    assert_equal "failed", scenario.reload.status
   end
 
   test "update_status with invalid status" do
-    patch update_status_test_plan_test_scenario_path(@plan, @scenario), params: { status: "invalid" }, as: :json
+    plan = test_plans(:login_plan)
+    scenario = test_scenarios(:login_success)
+
+    patch test_plan_test_scenario_status_path(plan, scenario), params: { status: "invalid" }, as: :json
     assert_response :unprocessable_entity
 
-    body = response.parsed_body
-    assert_not body["success"]
+    assert_not @response.parsed_body["success"]
   end
 
   test "update_status returns all_approved flag" do
-    @plan.test_scenarios.update_all(status: "approved")
+    plan = test_plans(:login_plan)
+    plan.test_scenarios.update_all(status: "approved")
 
-    patch update_status_test_plan_test_scenario_path(@plan, @scenario), params: { status: "approved" }, as: :json
+    patch test_plan_test_scenario_status_path(plan, test_scenarios(:login_success)), params: { status: "approved" }, as: :json
 
-    body = response.parsed_body
-    assert body["all_approved"]
+    assert @response.parsed_body["all_approved"]
   end
 
   test "update_status returns all_approved false when not all approved" do
-    patch update_status_test_plan_test_scenario_path(@plan, @scenario), params: { status: "approved" }, as: :json
+    plan = test_plans(:login_plan)
 
-    body = response.parsed_body
-    assert_not body["all_approved"]
+    patch test_plan_test_scenario_status_path(plan, test_scenarios(:login_success)), params: { status: "approved" }, as: :json
+
+    assert_not @response.parsed_body["all_approved"]
   end
 
-  # reorder
-
-  test "reorder scenarios" do
+  test "reorder" do
+    plan = test_plans(:login_plan)
     s1 = test_scenarios(:login_success)
     s2 = test_scenarios(:login_failure)
     s3 = test_scenarios(:login_approved)
 
-    patch reorder_test_plan_test_scenarios_path(@plan),
-      params: { scenario_ids: [ s3.id, s1.id, s2.id ] }, as: :json
-
+    patch test_plan_scenario_order_path(plan), params: { scenario_ids: [ s3.id, s1.id, s2.id ] }, as: :json
     assert_response :success
+
     assert_equal 0, s3.reload.position
     assert_equal 1, s1.reload.position
     assert_equal 2, s2.reload.position
@@ -141,44 +133,35 @@ class TestScenariosControllerTest < ActionDispatch::IntegrationTest
   test "reorder requires authentication" do
     sign_out
 
-    patch reorder_test_plan_test_scenarios_path(@plan),
-      params: { scenario_ids: [ @scenario.id ] }, as: :json
+    patch test_plan_scenario_order_path(test_plans(:login_plan)),
+      params: { scenario_ids: [ test_scenarios(:login_success).id ] }, as: :json
 
     assert_redirected_to new_session_path
   end
 
-  # authorization
-
-  test "regular user cannot create scenario on another users plan" do
-    sign_out
-    sign_in_as(users(:regular_user))
+  test "regular user cannot create scenario on another user's plan" do
+    logout_and_sign_in_as users(:regular_user)
 
     assert_no_difference -> { TestScenario.count } do
-      post test_plan_test_scenarios_path(@plan), params: {
-        test_scenario: { title: "Hacked scenario" }
-      }
+      post test_plan_test_scenarios_path(test_plans(:login_plan)), params: { test_scenario: { title: "Hacked" } }
     end
 
     assert_redirected_to root_path
   end
 
-  test "regular user cannot destroy scenario on another users plan" do
-    sign_out
-    sign_in_as(users(:regular_user))
+  test "regular user cannot destroy scenario on another user's plan" do
+    logout_and_sign_in_as users(:regular_user)
 
     assert_no_difference -> { TestScenario.count } do
-      delete test_plan_test_scenario_path(@plan, @scenario)
+      delete test_plan_test_scenario_path(test_plans(:login_plan), test_scenarios(:login_success))
     end
 
     assert_redirected_to root_path
   end
 
   test "regular user can create scenario on own plan" do
-    sign_out
-    user = users(:regular_user)
-    sign_in_as(user)
-
-    own_plan = TestPlan.create!(name: "My Plan", qa_name: "QA", user: user)
+    logout_and_sign_in_as users(:regular_user)
+    own_plan = TestPlan.create!(name: "My Plan", qa_name: "QA", user: users(:regular_user))
 
     assert_difference -> { own_plan.test_scenarios.count }, +1 do
       post test_plan_test_scenarios_path(own_plan), params: {

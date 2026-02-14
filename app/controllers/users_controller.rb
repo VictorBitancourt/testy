@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     @user = User.new(user_create_params)
 
     if @user.save
-      redirect_to users_path, notice: "Usuário criado com sucesso!"
+      redirect_to users_path, notice: "User created successfully!"
     else
       render :new, status: :unprocessable_entity
     end
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_update_params)
-      redirect_to users_path, notice: "Senha resetada com sucesso!"
+      redirect_to users_path, notice: "Password reset successfully!"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -33,24 +33,23 @@ class UsersController < ApplicationController
 
   def destroy
     if @user == Current.user
-      redirect_to users_path, alert: "Você não pode deletar a si mesmo."
+      redirect_to users_path, alert: "You cannot delete yourself."
     else
       @user.destroy
-      redirect_to users_path, notice: "Usuário removido com sucesso!"
+      redirect_to users_path, notice: "User removed successfully!"
     end
   end
 
   private
+    def set_user
+      @user = User.find(params[:id])
+    end
 
-  def set_user
-    @user = User.find(params[:id])
-  end
+    def user_create_params
+      params.require(:user).permit(:username, :password, :password_confirmation, :role)
+    end
 
-  def user_create_params
-    params.require(:user).permit(:username, :password, :password_confirmation, :role)
-  end
-
-  def user_update_params
-    params.require(:user).permit(:password, :password_confirmation)
-  end
+    def user_update_params
+      params.require(:user).permit(:password, :password_confirmation)
+    end
 end

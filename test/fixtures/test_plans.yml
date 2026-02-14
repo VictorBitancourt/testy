@@ -1,19 +1,19 @@
 login_plan:
-  name: Login do Sistema
+  name: System Login
   qa_name: Maria Silva
   user: admin
 
 empty_plan:
-  name: Cadastro de Usuarios
+  name: User Registration
   qa_name: Joao Souza
   user: admin
 
 approved_plan:
-  name: Checkout do E-commerce
+  name: E-commerce Checkout
   qa_name: Ana Costa
   user: admin
 
 failed_plan:
-  name: Pagamento Online
+  name: Online Payment
   qa_name: Carlos Lima
   user: admin

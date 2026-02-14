@@ -15,17 +15,73 @@
     }
 
     html, body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      color: #1a1a1a;
       background: #f5f3ef;
-      margin: 0;
-      padding: 0;
+      height: 100%;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
 
-    .content {
-      padding: 30px 40px 40px;
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Table that controls header/footer repetition on each page */
+    .page-table {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+    }
+
+    .page-table td {
+      padding: 0;
+      border: none;
+    }
+
+    /* Top space repeated on each page */
+    .page-header-space {
+      height: 12mm;
+    }
+
+    /* Invisible tfoot — reserves space for page breaks */
+    .tfoot-spacer {
+      height: 20mm;
+    }
+
+    /* Fixed visual footer at the bottom of each page */
+    .pdf-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 20mm;
+      text-align: center;
+      padding-top: 4px;
+      border-top: 2px solid #e8e4dd;
+      background: #f5f3ef;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .pdf-footer img {
+      display: block;
+      margin: 0 auto 2px;
+    }
+
+    .pdf-footer .footer-text {
+      font-size: 9px;
+      color: #999;
+    }
+
+    .pdf-footer .footer-date {
+      font-size: 8px;
+      color: #bbb;
+    }
+
+    /* Main content */
+    td.page-content {
+      padding: 0 20mm;
     }
 
     /* Header com logo centralizado */
@@ -54,7 +110,7 @@
       color: #999;
     }
 
-    /* Info do Plano */
+    /* Plan Info */
     .plan-info {
       background: white;
       border-radius: 16px;
@@ -79,7 +135,7 @@
       color: #f5576c;
     }
 
-    /* Metricas */
+    /* Metrics */
     .metrics {
       display: flex;
       gap: 12px;
@@ -114,7 +170,7 @@
     .metric-failed .metric-number { color: #ef4444; }
     .metric-pending .metric-number { color: #f59e0b; }
 
-    /* Banner de Sucesso */
+    /* Success Banner */
     .success-banner {
       background: #22c55e;
       border-radius: 12px;
@@ -140,13 +196,14 @@
       opacity: 0.9;
     }
 
-    /* Indice */
+    /* Index */
     .toc {
       background: white;
       border-radius: 12px;
       padding: 24px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      page-break-inside: avoid;
     }
 
     .toc-title {
@@ -217,23 +274,23 @@
       text-align: right;
     }
 
-    /* Secao de Cenarios */
+    /* Scenarios Section */
     .section-title {
       font-size: 12px;
       color: #888;
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e8e4dd;
+      padding-top: 10px;
+      border-top: 2px solid #e8e4dd;
+      page-break-after: avoid;
     }
 
-    /* Cenario */
+    /* Scenario */
     .scenario {
       background: white;
       border-radius: 12px;
       margin-bottom: 20px;
-      overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       page-break-inside: avoid;
     }
@@ -302,6 +359,7 @@
 
     .step {
       flex: 1;
+      min-width: 0;
       background: #f9f8f6;
       padding: 16px;
       border-radius: 10px;
@@ -328,9 +386,11 @@
       font-size: 13px;
       line-height: 1.5;
       color: #444;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
-    /* Evidencias */
+    /* Evidence */
     .evidence {
       margin-top: 20px;
       padding-top: 20px;
@@ -364,21 +424,39 @@
   </style>
 </head>
 <body>
-  <div class="content">
-  <!-- Header com Logo -->
-  <div class="header">
-    <div class="logo-container">
-      <% require 'base64' %>
-      <img src="data:image/png;base64,<%= Base64.strict_encode64(File.read(Rails.root.join('app/assets/images/testy-logo.png'))) %>" width="100" height="100" />
-    </div>
-    <div class="report-title">Relatório de Testes</div>
-    <div class="report-date">Gerado em <%= Time.zone.today.strftime('%d de %B de %Y') %></div>
+  <% require 'base64' %>
+  <% logo_b64 = Base64.strict_encode64(File.read(Rails.root.join('app/assets/images/testy-logo.png'))) %>
+
+  <!-- Fixed visual footer at the bottom of each page -->
+  <div class="pdf-footer">
+    <img src="data:image/png;base64,<%= logo_b64 %>" width="16" height="16" />
+    <div class="footer-text">Test Management Made Simple</div>
+    <div class="footer-date"><%= Time.zone.now.strftime('%m/%d/%Y at %H:%M') %></div>
   </div>
 
-  <!-- Info do Plano -->
+  <table class="page-table">
+    <thead>
+      <tr><td><div class="page-header-space"></div></td></tr>
+    </thead>
+    <tfoot>
+      <tr><td><div class="tfoot-spacer"></div></td></tr>
+    </tfoot>
+    <tbody>
+      <tr><td class="page-content">
+
+  <!-- Header with Logo -->
+  <div class="header">
+    <div class="logo-container">
+      <img src="data:image/png;base64,<%= logo_b64 %>" width="100" height="100" />
+    </div>
+    <div class="report-title">Test Report</div>
+    <div class="report-date">Generated on <%= Time.zone.today.strftime('%B %d, %Y') %></div>
+  </div>
+
+  <!-- Plan Info -->
   <div class="plan-info">
     <div class="plan-name"><%= @test_plan.name %></div>
-    <div class="plan-qa">QA Responsável: <strong><%= @test_plan.qa_name %></strong></div>
+    <div class="plan-qa">Responsible QA: <strong><%= @test_plan.qa_name %></strong></div>
     <% if @test_plan.tags.any? %>
       <div style="margin-top: 12px;">
         <% @test_plan.tags.each do |tag| %>
@@ -388,7 +466,7 @@
     <% end %>
   </div>
 
-  <!-- Metricas -->
+  <!-- Metrics -->
   <div class="metrics">
     <div class="metric metric-total">
       <span class="metric-number"><%= @test_plan.total_scenarios %></span>
@@ -396,40 +474,42 @@
     </div>
     <div class="metric metric-approved">
       <span class="metric-number"><%= @test_plan.approved_scenarios %></span>
-      <span class="metric-label">Aprovados</span>
+      <span class="metric-label">Approved</span>
     </div>
     <div class="metric metric-failed">
       <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'failed').count %></span>
-      <span class="metric-label">Reprovados</span>
+      <span class="metric-label">Failed</span>
     </div>
     <div class="metric metric-pending">
       <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'pending').count %></span>
-      <span class="metric-label">Pendentes</span>
+      <span class="metric-label">Pending</span>
     </div>
   </div>
 
   <% if @test_plan.all_scenarios_approved? && @test_plan.total_scenarios > 0 %>
-  <!-- Banner de Sucesso -->
+  <!-- Success Banner -->
   <div class="success-banner">
     <div class="success-icon">&#10003;</div>
-    <div class="success-title">Todos os Cenários Aprovados!</div>
-    <div class="success-subtitle">Concluído por <%= @test_plan.qa_name %> em <%= Time.zone.today.strftime('%d/%m/%Y') %></div>
+    <div class="success-title">All Scenarios Approved!</div>
+    <div class="success-subtitle">Completed by <%= @test_plan.qa_name %> on <%= Time.zone.today.strftime('%m/%d/%Y') %></div>
   </div>
   <% end %>
 
-  <!-- Indice -->
+  <!-- Index -->
   <% scenarios = @test_plan.test_scenarios.to_a %>
   <% if scenarios.size > 1 %>
+  <% scenarios.each_slice(8).with_index do |chunk, chunk_index| %>
   <div class="toc">
-    <div class="toc-title">Índice de Cenários</div>
+    <div class="toc-title"><%= chunk_index == 0 ? 'Scenario Index' : 'Scenario Index (cont.)' %></div>
     <table class="toc-table">
-      <% scenarios.each_with_index do |s, i| %>
+      <% chunk.each_with_index do |s, i| %>
+        <% real_index = chunk_index * 8 + i %>
         <tr>
-          <td class="toc-num"><a href="#scenario-<%= i + 1 %>"><span><%= i + 1 %></span></a></td>
-          <td class="toc-name"><a href="#scenario-<%= i + 1 %>"><%= s.title %></a></td>
+          <td class="toc-num"><a href="#scenario-<%= real_index + 1 %>"><span><%= real_index + 1 %></span></a></td>
+          <td class="toc-name"><a href="#scenario-<%= real_index + 1 %>"><%= s.title %></a></td>
           <td class="toc-status">
             <span class="badge badge-<%= s.status %>">
-              <%= s.status == 'approved' ? 'Aprovado' : s.status == 'failed' ? 'Reprovado' : 'Pendente' %>
+              <%= s.status == 'approved' ? 'Approved' : s.status == 'failed' ? 'Failed' : 'Pending' %>
             </span>
           </td>
         </tr>
@@ -437,9 +517,10 @@
     </table>
   </div>
   <% end %>
+  <% end %>
 
-  <!-- Cenarios -->
-  <div class="section-title">Cenários de Teste</div>
+  <!-- Scenarios -->
+  <div class="section-title">Test Scenarios</div>
 
   <% scenarios.each_with_index do |scenario, index| %>
   <div class="scenario" id="scenario-<%= index + 1 %>">
@@ -449,29 +530,29 @@
         <span class="scenario-title"><%= scenario.title %></span>
       </div>
       <span class="badge badge-<%= scenario.status %>">
-        <%= scenario.status == 'approved' ? 'Aprovado' : scenario.status == 'failed' ? 'Reprovado' : 'Pendente' %>
+        <%= scenario.status == 'approved' ? 'Approved' : scenario.status == 'failed' ? 'Failed' : 'Pending' %>
       </span>
     </div>
 
     <div class="scenario-body">
       <div class="steps">
         <div class="step step-given">
-          <span class="step-label">Dado que</span>
+          <span class="step-label">Given</span>
           <div class="step-content"><%= scenario.given %></div>
         </div>
         <div class="step step-when">
-          <span class="step-label">Quando</span>
+          <span class="step-label">When</span>
           <div class="step-content"><%= scenario.when_step %></div>
         </div>
         <div class="step step-then">
-          <span class="step-label">Então</span>
+          <span class="step-label">Then</span>
           <div class="step-content"><%= scenario.then_step %></div>
         </div>
       </div>
 
       <% if scenario.evidence_files.attached? %>
       <div class="evidence">
-        <div class="evidence-label">Evidências</div>
+        <div class="evidence-label">Evidence</div>
         <% scenario.evidence_files.each do |file| %>
           <% if file.image? %>
             <div style="page-break-inside: avoid;">
@@ -490,6 +571,8 @@
   </div>
   <% end %>
 
-  </div>
+      </td></tr>
+    </tbody>
+  </table>
 </body>
 </html>

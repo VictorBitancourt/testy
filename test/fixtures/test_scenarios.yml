@@ -1,62 +1,62 @@
 login_success:
   test_plan: login_plan
-  title: Login com credenciais validas
-  given: Usuario esta na pagina de login
-  when_step: Preenche email e senha corretos e clica em Entrar
-  then_step: Sistema redireciona para o dashboard
+  title: Login with valid credentials
+  given: User is on the login page
+  when_step: Fills in correct email and password and clicks Sign In
+  then_step: System redirects to the dashboard
   status: approved
   position: 0
 
 login_failure:
   test_plan: login_plan
-  title: Login com senha incorreta
-  given: Usuario esta na pagina de login
-  when_step: Preenche email correto e senha incorreta e clica em Entrar
-  then_step: Sistema exibe mensagem de erro
+  title: Login with incorrect password
+  given: User is on the login page
+  when_step: Fills in correct email and incorrect password and clicks Sign In
+  then_step: System displays an error message
   status: pending
   position: 1
 
 login_approved:
   test_plan: login_plan
-  title: Login com autenticacao dois fatores
-  given: Usuario com 2FA ativado esta na pagina de login
-  when_step: Preenche credenciais e codigo 2FA corretos
-  then_step: Sistema redireciona para o dashboard
+  title: Login with two-factor authentication
+  given: User with 2FA enabled is on the login page
+  when_step: Fills in credentials and correct 2FA code
+  then_step: System redirects to the dashboard
   status: approved
   position: 2
 
 checkout_step1:
   test_plan: approved_plan
-  title: Adicionar item ao carrinho
-  given: Usuario esta na pagina do produto
-  when_step: Clica em adicionar ao carrinho
-  then_step: Item aparece no carrinho
+  title: Add item to cart
+  given: User is on the product page
+  when_step: Clicks add to cart
+  then_step: Item appears in the cart
   status: approved
   position: 0
 
 checkout_step2:
   test_plan: approved_plan
-  title: Finalizar compra
-  given: Usuario esta no carrinho com itens
-  when_step: Clica em finalizar compra e confirma
-  then_step: Pedido e criado com sucesso
+  title: Complete purchase
+  given: User is in the cart with items
+  when_step: Clicks complete purchase and confirms
+  then_step: Order is created successfully
   status: approved
   position: 1
 
 payment_success:
   test_plan: failed_plan
-  title: Pagamento com cartao valido
-  given: Usuario esta na pagina de pagamento
-  when_step: Preenche dados do cartao valido e confirma
-  then_step: Pagamento e aprovado
+  title: Payment with valid card
+  given: User is on the payment page
+  when_step: Fills in valid card data and confirms
+  then_step: Payment is approved
   status: approved
   position: 0
 
 payment_failure:
   test_plan: failed_plan
-  title: Pagamento com cartao invalido
-  given: Usuario esta na pagina de pagamento
-  when_step: Preenche dados do cartao invalido e confirma
-  then_step: Sistema exibe erro de pagamento
+  title: Payment with invalid card
+  given: User is on the payment page
+  when_step: Fills in invalid card data and confirms
+  then_step: System displays payment error
   status: failed
   position: 1

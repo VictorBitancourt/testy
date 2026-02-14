@@ -161,6 +161,22 @@ docker run -d \
   ghcr.io/victorbitancourt/testy:latest
 ```
 
+## Password Reset
+
+If a user forgets their password, an admin with server access can reset it:
+
+```bash
+bin/rails password:reset
+```
+
+The task will prompt for the username and a new password (input is hidden).
+
+For Docker deployments:
+
+```bash
+docker exec -it <container_name> bin/rails password:reset
+```
+
 ## Contributing
 
 1. Fork the repository

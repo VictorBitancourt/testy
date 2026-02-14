@@ -25,17 +25,17 @@ class TestPlan < ApplicationRecord
     end
   end
 
-  scope :nao_iniciado, -> { where.not(id: TestScenario.select(:test_plan_id)) }
+  scope :not_started, -> { where.not(id: TestScenario.select(:test_plan_id)) }
 
-  scope :aprovado, -> {
+  scope :approved_plans, -> {
     where(id: TestScenario.select(:test_plan_id)
       .group(:test_plan_id)
       .having("COUNT(*) = COUNT(CASE WHEN status = 'approved' THEN 1 END)"))
   }
 
-  scope :reprovado, -> { where(id: TestScenario.where(status: "failed").select(:test_plan_id)) }
+  scope :failed_plans, -> { where(id: TestScenario.where(status: "failed").select(:test_plan_id)) }
 
-  scope :em_andamento, -> {
+  scope :in_progress, -> {
     has_scenarios = TestScenario.select(:test_plan_id)
     has_failed = TestScenario.where(status: "failed").select(:test_plan_id)
     all_approved = TestScenario.select(:test_plan_id)
@@ -49,13 +49,13 @@ class TestPlan < ApplicationRecord
 
   def derived_status
     if test_scenarios.empty?
-      "nao_iniciado"
+      "not_started"
     elsif test_scenarios.any? { |s| s.status == "failed" }
-      "reprovado"
+      "failed"
     elsif test_scenarios.all? { |s| s.status == "approved" }
-      "aprovado"
+      "approved"
     else
-      "em_andamento"
+      "in_progress"
     end
   end
 

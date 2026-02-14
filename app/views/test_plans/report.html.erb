@@ -367,8 +367,8 @@
       </svg>
     </div>
     <div class="header-info">
-      <h1>Relatório de Testes</h1>
-      <p>Gerado em <%= Date.today.strftime('%d/%m/%Y') %></p>
+      <h1>Test Report</h1>
+      <p>Generated on <%= Date.today.strftime('%m/%d/%Y') %></p>
     </div>
   </div>
 
@@ -384,15 +384,15 @@
     <div class="summary-grid">
       <div class="summary-item">
         <span class="number"><%= @test_plan.total_scenarios %></span>
-        <span class="label">Total de Casos</span>
+        <span class="label">Total Cases</span>
       </div>
       <div class="summary-item">
         <span class="number"><%= @test_plan.approved_scenarios %></span>
-        <span class="label">Aprovados</span>
+        <span class="label">Approved</span>
       </div>
       <div class="summary-item">
         <span class="number"><%= @test_plan.qa_name %></span>
-        <span class="label">QA Responsável</span>
+        <span class="label">Responsible QA</span>
       </div>
     </div>
   </div>
@@ -400,7 +400,7 @@
   <% scenarios = @test_plan.test_scenarios.to_a %>
   <% if scenarios.size > 1 %>
   <div class="toc">
-    <div class="toc-title">Índice de Cenários</div>
+    <div class="toc-title">Scenario Index</div>
     <table class="toc-table">
       <% scenarios.each_with_index do |s, i| %>
         <tr>
@@ -408,7 +408,7 @@
           <td class="toc-name"><a href="#scenario-<%= i + 1 %>" data-turbo="false"><%= s.title %></a></td>
           <td class="toc-status">
             <span class="toc-badge status-<%= s.status %>">
-              <%= s.status == 'approved' ? '✓ Aprovado' : s.status == 'failed' ? '✗ Reprovado' : '⋯ Pendente' %>
+              <%= s.status == 'approved' ? '✓ Approved' : s.status == 'failed' ? '✗ Failed' : '⋯ Pending' %>
             </span>
           </td>
         </tr>
@@ -424,30 +424,30 @@
           <%= index + 1 %>. <%= scenario.title %>
         </div>
         <div class="scenario-status status-<%= scenario.status %>">
-          <%= scenario.status == 'approved' ? '✓ Aprovado' : scenario.status == 'failed' ? '✗ Reprovado' : '⋯ Pendente' %>
+          <%= scenario.status == 'approved' ? '✓ Approved' : scenario.status == 'failed' ? '✗ Failed' : '⋯ Pending' %>
         </div>
       </div>
       
       <div class="scenario-steps">
         <div class="step step-given">
-          <div class="step-label">Dado que</div>
+          <div class="step-label">Given</div>
           <div class="step-content"><%= scenario.given %></div>
         </div>
         
         <div class="step step-when">
-          <div class="step-label">Quando</div>
+          <div class="step-label">When</div>
           <div class="step-content"><%= scenario.when_step %></div>
         </div>
         
         <div class="step step-then">
-          <div class="step-label">Então</div>
+          <div class="step-label">Then</div>
           <div class="step-content"><%= scenario.then_step %></div>
         </div>
       </div>
       
       <% if scenario.evidence_files.attached? %>
         <div class="evidences">
-          <div class="evidences-title">📎 Evidências Anexadas:</div>
+          <div class="evidences-title">📎 Attached Evidence:</div>
           <div class="evidence-grid">
             <% scenario.evidence_files.first(4).each do |file| %>
               <% if file.image? %>

@@ -12,7 +12,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       start_new_session_for @user
-      redirect_to root_path, notice: "Usuário criado com sucesso!"
+      redirect_to root_path, notice: "User created successfully!"
     else
       render :new, status: :unprocessable_entity
     end
@@ -24,6 +24,8 @@ class RegistrationsController < ApplicationController
     end
 
     def require_no_users
-      redirect_to root_path if User.any?
+      if User.any?
+        redirect_to root_path
+      end
     end
 end

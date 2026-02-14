@@ -210,7 +210,7 @@ export default class extends Controller {
         body: JSON.stringify({ scenario_ids: ids })
       })
     } catch (error) {
-      console.error("Erro ao salvar ordem:", error)
+      console.error("Error saving order:", error)
     }
   }
 }

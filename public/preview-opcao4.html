@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Opção 4 — Tag/pill colorida no label</title>
+  <style>
+    :root {
+      --canvas: oklch(20% 0.0195 232.58);
+      --surface: oklch(26% 0.022 232);
+      --surface-raised: oklch(30% 0.024 232);
+      --ink-darkest: oklch(96% 0.002 252);
+      --ink-darker: oklch(92% 0.003 254);
+      --ink-dark: oklch(84% 0.005 256);
+      --ink-medium: oklch(66% 0.008 258);
+      --ink-lighter: oklch(40% 0.026 262);
+
+      --fz-blue-darkest: oklch(26% 0.126 264);
+      --fz-blue-dark: oklch(57.02% 0.1895 260.46);
+      --fz-blue-light: oklch(84.04% 0.0719 255.29);
+
+      --fz-violet-darkest: oklch(26% 0.148 292);
+      --fz-violet-dark: oklch(58% 0.216 287.6);
+      --fz-violet-light: oklch(84.08% 0.0791 283.47);
+
+      --fz-green-darkest: oklch(26% 0.071 149);
+      --fz-green-dark: oklch(55% 0.162 147);
+      --fz-green-light: oklch(83.92% 0.0772 145.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--canvas);
+      color: var(--ink-darkest);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: var(--ink-darkest);
+    }
+
+    .subtitle {
+      color: var(--ink-medium);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .section-label {
+      font-size: 13px;
+      color: var(--ink-medium);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    /* ── Current (for comparison) ── */
+    .current .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .current .box {
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+
+    .current .box-blue { background: var(--fz-blue-darkest); border-left-color: var(--fz-blue-dark); }
+    .current .box-violet { background: var(--fz-violet-darkest); border-left-color: var(--fz-violet-dark); }
+    .current .box-green { background: var(--fz-green-darkest); border-left-color: var(--fz-green-dark); }
+
+    .current .box-blue .label { color: var(--fz-blue-light); }
+    .current .box-violet .label { color: var(--fz-violet-light); }
+    .current .box-green .label { color: var(--fz-green-light); }
+
+    /* ── Option 4a: Pill label, neutral box with subtle tint ── */
+    .option4a .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .option4a .box {
+      background: var(--surface);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--ink-lighter);
+    }
+
+    .option4a .pill {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .option4a .pill-blue { background: var(--fz-blue-dark); color: white; }
+    .option4a .pill-violet { background: var(--fz-violet-dark); color: white; }
+    .option4a .pill-green { background: var(--fz-green-dark); color: white; }
+
+    /* ── Option 4b: Pill label, tinted background (no border) ── */
+    .option4b .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .option4b .box-blue { background: var(--fz-blue-darkest); }
+    .option4b .box-violet { background: var(--fz-violet-darkest); }
+    .option4b .box-green { background: var(--fz-green-darkest); }
+
+    .option4b .box {
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .option4b .pill {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .option4b .pill-blue { background: var(--fz-blue-dark); color: white; }
+    .option4b .pill-violet { background: var(--fz-violet-dark); color: white; }
+    .option4b .pill-green { background: var(--fz-green-dark); color: white; }
+
+    /* ── Option 4c: Pill label + thin colored border ── */
+    .option4c .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .option4c .box {
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .option4c .box-blue { background: var(--fz-blue-darkest); border: 1px solid var(--fz-blue-dark); }
+    .option4c .box-violet { background: var(--fz-violet-darkest); border: 1px solid var(--fz-violet-dark); }
+    .option4c .box-green { background: var(--fz-green-darkest); border: 1px solid var(--fz-green-dark); }
+
+    .option4c .pill {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .option4c .pill-blue { background: var(--fz-blue-dark); color: white; }
+    .option4c .pill-violet { background: var(--fz-violet-dark); color: white; }
+    .option4c .pill-green { background: var(--fz-green-dark); color: white; }
+
+    /* ── Option 4d: Pill outline (ghost) + tinted box ── */
+    .option4d .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .option4d .box {
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .option4d .box-blue { background: var(--fz-blue-darkest); }
+    .option4d .box-violet { background: var(--fz-violet-darkest); }
+    .option4d .box-green { background: var(--fz-green-darkest); }
+
+    .option4d .pill {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+      background: transparent;
+    }
+
+    .option4d .pill-blue { border: 1.5px solid var(--fz-blue-light); color: var(--fz-blue-light); }
+    .option4d .pill-violet { border: 1.5px solid var(--fz-violet-light); color: var(--fz-violet-light); }
+    .option4d .pill-green { border: 1.5px solid var(--fz-green-light); color: var(--fz-green-light); }
+
+    /* ── Shared ── */
+    .label {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .content {
+      color: var(--ink-darker);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--ink-lighter);
+      margin: 32px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Opção 4 — Tag/pill colorida no label</h1>
+  <p class="subtitle">O destaque vai para o label em vez da borda da caixa</p>
+
+  <hr>
+
+  <div class="current">
+    <p class="section-label">Atual (referência)</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <p class="label">Dado que:</p>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <p class="label">Quando:</p>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <p class="label">Então:</p>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="option4a">
+    <p class="section-label">4a — Pill preenchida + caixa neutra com borda</p>
+    <div class="grid">
+      <div class="box">
+        <span class="pill pill-blue">Dado que</span>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box">
+        <span class="pill pill-violet">Quando</span>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box">
+        <span class="pill pill-green">Então</span>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="option4b">
+    <p class="section-label">4b — Pill preenchida + fundo tintado (sem borda)</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <span class="pill pill-blue">Dado que</span>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <span class="pill pill-violet">Quando</span>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <span class="pill pill-green">Então</span>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="option4c">
+    <p class="section-label">4c — Pill preenchida + fundo tintado + borda colorida fina</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <span class="pill pill-blue">Dado que</span>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <span class="pill pill-violet">Quando</span>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <span class="pill pill-green">Então</span>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="option4d">
+    <p class="section-label">4d — Pill outline (ghost) + fundo tintado</p>
+    <div class="grid">
+      <div class="box box-blue">
+        <span class="pill pill-blue">Dado que</span>
+        <p class="content">O usuário está logado no sistema e possui permissão de administrador</p>
+      </div>
+      <div class="box box-violet">
+        <span class="pill pill-violet">Quando</span>
+        <p class="content">Ele acessa a página de gerenciamento de usuários e clica em "Adicionar"</p>
+      </div>
+      <div class="box box-green">
+        <span class="pill pill-green">Então</span>
+        <p class="content">O formulário de cadastro é exibido com todos os campos obrigatórios</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

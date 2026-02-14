@@ -9,12 +9,11 @@ class TestScenario < ApplicationRecord
   before_create :set_default_position
 
   private
+    def set_default_status
+      self.status ||= "pending"
+    end
 
-  def set_default_status
-    self.status ||= 'pending'
-  end
-
-  def set_default_position
-    self.position ||= (test_plan.test_scenarios.maximum(:position) || -1) + 1
-  end
+    def set_default_position
+      self.position ||= (test_plan.test_scenarios.maximum(:position) || -1) + 1
+    end
 end

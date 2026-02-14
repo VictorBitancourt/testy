@@ -9,7 +9,7 @@ export default class extends Controller {
 
     const prompt = this.promptTarget.value.trim()
     if (!prompt) {
-      alert("Digite uma descrição do cenário que deseja testar.")
+      alert("Enter a description of the scenario you want to test.")
       return
     }
 
@@ -29,7 +29,7 @@ export default class extends Controller {
       const data = await response.json()
 
       if (!response.ok) {
-        alert(data.error || "Erro ao gerar cenário.")
+        alert(data.error || "Error generating scenario.")
         return
       }
 
@@ -40,8 +40,8 @@ export default class extends Controller {
 
       this.promptTarget.value = ""
     } catch (error) {
-      console.error("Erro ao gerar cenário:", error)
-      alert("Erro ao comunicar com a IA. Tente novamente.")
+      console.error("Error generating scenario:", error)
+      alert("Error communicating with AI. Please try again.")
     } finally {
       this.buttonTarget.disabled = false
       this.spinnerTarget.classList.add("hidden")

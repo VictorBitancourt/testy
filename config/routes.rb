@@ -8,16 +8,10 @@ Rails.application.routes.draw do
   root "test_plans#index"
 
   resources :test_plans do
-    member do
-      get :report
-    end
+    resource :report, only: :show, controller: "test_plans/reports"
+    resource :scenario_order, only: :update, controller: "test_plans/scenario_orders"
     resources :test_scenarios, only: [ :create, :update, :destroy ] do
-      member do
-        patch :update_status
-      end
-      collection do
-        patch :reorder
-      end
+      resource :status, only: :update, controller: "test_scenarios/statuses"
     end
   end
 end

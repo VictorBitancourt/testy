@@ -45,6 +45,109 @@
   color: oklch(40% 0.026 262);
 }
 
+/* Step boxes — hover glow */
+.step-box {
+  border: 1px solid oklch(40% 0.026 262);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.step-box-blue:hover {
+  border-color: oklch(57.02% 0.1895 260.46);
+  box-shadow: 0 0 0 1px oklch(57.02% 0.1895 260.46), 0 0 12px oklch(57.02% 0.1895 260.46 / 0.35);
+}
+
+.step-box-violet:hover {
+  border-color: oklch(58% 0.216 287.6);
+  box-shadow: 0 0 0 1px oklch(58% 0.216 287.6), 0 0 12px oklch(58% 0.216 287.6 / 0.35);
+}
+
+.step-box-green:hover {
+  border-color: oklch(55% 0.162 147);
+  box-shadow: 0 0 0 1px oklch(55% 0.162 147), 0 0 12px oklch(55% 0.162 147 / 0.35);
+}
+
+/* Inline-edit textareas — dark scrollbar */
+.step-box textarea {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(40% 0.026 262) transparent;
+}
+
+.step-box textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.step-box textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.step-box textarea::-webkit-scrollbar-thumb {
+  background: oklch(40% 0.026 262);
+  border-radius: 3px;
+}
+
+.step-box textarea::-webkit-scrollbar-thumb:hover {
+  background: oklch(50% 0.026 262);
+}
+
+/* Scenario card — hover glow (suppressed when a step-box is hovered) */
+.scenario-card {
+  border: 1px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.scenario-card:hover {
+  border-color: oklch(57.02% 0.1895 260.46);
+  box-shadow: 0 0 0 1px oklch(57.02% 0.1895 260.46), 0 0 12px oklch(57.02% 0.1895 260.46 / 0.35);
+}
+
+.scenario-card:has(.step-box:hover) {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* Confirm modal */
+.confirm-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.55);
+  display: flex; align-items: center; justify-content: center;
+  animation: confirm-fade-in 0.15s ease-out;
+}
+.confirm-modal-dialog {
+  background: oklch(26% 0.022 232);
+  border: 1px solid oklch(40% 0.026 262);
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  max-width: 26rem; width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.confirm-modal-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s;
+}
+.confirm-modal-cancel {
+  background: oklch(30% 0.024 232);
+  color: oklch(84% 0.005 256);
+}
+.confirm-modal-cancel:hover {
+  background: oklch(36% 0.024 232);
+}
+.confirm-modal-ok {
+  background: oklch(59% 0.19 38);
+  color: white;
+}
+.confirm-modal-ok:hover {
+  background: oklch(52% 0.17 38);
+}
+@keyframes confirm-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @theme {
   /* Fizzy Dark — Canvas & Surface */
   --color-canvas: oklch(20% 0.0195 232.58);

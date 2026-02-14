@@ -1,9 +1,17 @@
-<div class="min-h-screen bg-canvas py-12 px-4">
+<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
   <div class="max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-8 mt-6">
-      <h1 class="text-4xl font-bold text-ink-darkest">Planos de Teste</h1>
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-ink-darkest">Welcome back, <%= Current.user.username %></h1>
+        <p class="text-sm text-ink-medium mt-1">
+          <%= TestPlan.count %> plans ·
+          <%= TestPlan.approved_plans.count %> approved ·
+          <%= TestPlan.in_progress.count %> in progress ·
+          <%= TestPlan.failed_plans.count %> failed
+        </p>
+      </div>
       <%= link_to new_test_plan_path, class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
-        + Novo Plano
+        + New Plan
         <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">N</span>
       <% end %>
     </div>
@@ -22,21 +30,21 @@
           <% if params[:date_until].present? %>
             <input type="hidden" name="date_until" value="<%= params[:date_until] %>">
           <% end %>
-          <input type="text" name="search" value="<%= @search %>" placeholder="Buscar por nome, QA ou tag..."
+          <input type="text" name="search" value="<%= @search %>" placeholder="Search by name, QA or tag..."
                  class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest placeholder-ink-medium focus:ring-2 focus:ring-fz-blue-light focus:outline-none w-64">
           <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
-            Buscar
+            Search
           </button>
         <% end %>
 
         <span class="text-sm font-semibold text-ink-dark mr-1">Status:</span>
         <%
           status_options = [
-            { value: nil,            label: "Todos",         active_bg: "bg-ink-dark",          inactive_bg: "bg-surface-raised text-ink-dark hover:bg-ink-lightest" },
-            { value: "aprovado",     label: "Aprovado",      active_bg: "bg-fz-green-dark",     inactive_bg: "bg-fz-green-darkest text-fz-green-light hover:bg-fz-green-darker" },
-            { value: "reprovado",    label: "Reprovado",     active_bg: "bg-fz-red-dark",       inactive_bg: "bg-fz-red-darkest text-fz-red-light hover:bg-fz-red-darker" },
-            { value: "em_andamento", label: "Em andamento",  active_bg: "bg-fz-yellow-medium",  inactive_bg: "bg-fz-yellow-darkest text-fz-yellow-light hover:bg-fz-yellow-darker" },
-            { value: "nao_iniciado", label: "Não iniciado", active_bg: "bg-fz-blue-dark",      inactive_bg: "bg-fz-blue-darkest text-fz-blue-light hover:bg-fz-blue-darker" },
+            { value: nil,            label: "All",           active_bg: "bg-ink-dark",          inactive_bg: "bg-surface-raised text-ink-dark hover:bg-ink-lightest" },
+            { value: "approved",     label: "Approved",      active_bg: "bg-fz-green-dark",     inactive_bg: "bg-fz-green-darkest text-fz-green-light hover:bg-fz-green-darker" },
+            { value: "failed",       label: "Failed",        active_bg: "bg-fz-red-dark",       inactive_bg: "bg-fz-red-darkest text-fz-red-light hover:bg-fz-red-darker" },
+            { value: "in_progress",  label: "In Progress",   active_bg: "bg-fz-yellow-medium",  inactive_bg: "bg-fz-yellow-darkest text-fz-yellow-light hover:bg-fz-yellow-darker" },
+            { value: "not_started",  label: "Not Started",   active_bg: "bg-fz-blue-dark",      inactive_bg: "bg-fz-blue-darkest text-fz-blue-light hover:bg-fz-blue-darker" },
           ]
           current_status = params[:status]
         %>
@@ -71,20 +79,20 @@
           <input type="hidden" name="search" value="<%= @search %>">
         <% end %>
         <div>
-          <label for="date_from" class="block text-xs font-semibold text-ink-medium mb-1">De</label>
+          <label for="date_from" class="block text-xs font-semibold text-ink-medium mb-1">From</label>
           <input type="date" name="date_from" id="date_from" value="<%= params[:date_from] %>"
                  class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
         </div>
         <div>
-          <label for="date_until" class="block text-xs font-semibold text-ink-medium mb-1">Ate</label>
+          <label for="date_until" class="block text-xs font-semibold text-ink-medium mb-1">To</label>
           <input type="date" name="date_until" id="date_until" value="<%= params[:date_until] %>"
                  class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
         </div>
         <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
-          Filtrar por data
+          Filter by date
         </button>
         <% if @filters_active %>
-          <%= link_to "Limpar filtros", test_plans_path, class: "text-sm text-fz-red-light hover:text-fz-red-dark font-semibold underline ml-2" %>
+          <%= link_to "Clear filters", test_plans_path, class: "text-sm text-fz-red-light hover:text-fz-red-dark font-semibold underline ml-2" %>
         <% end %>
       <% end %>
     </div>
@@ -95,14 +103,14 @@
         <table class="w-full text-left">
           <thead>
             <tr class="border-b border-ink-lighter">
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider">Nome</th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider">Name</th>
               <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider">QA</th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider">Criado por</th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center">Cenarios</th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider">Created by</th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center">Scenarios</th>
               <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center">Status</th>
               <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center">Tags</th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider">Data</th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center">Acoes</th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider">Date</th>
+              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-ink-lighter/30">
@@ -119,14 +127,14 @@
                 </td>
                 <td class="px-4 py-3 text-center">
                   <% case status %>
-                  <% when "aprovado" %>
-                    <span class="inline-block bg-fz-green-dark text-white text-xs font-bold px-2.5 py-1 rounded-full">APROVADO</span>
-                  <% when "reprovado" %>
-                    <span class="inline-block bg-fz-red-dark text-white text-xs font-bold px-2.5 py-1 rounded-full">REPROVADO</span>
-                  <% when "em_andamento" %>
-                    <span class="inline-block bg-fz-yellow-medium text-white text-xs font-bold px-2.5 py-1 rounded-full">EM ANDAMENTO</span>
-                  <% when "nao_iniciado" %>
-                    <span class="inline-block bg-fz-blue-dark text-white text-xs font-bold px-2.5 py-1 rounded-full">NÃO INICIADO</span>
+                  <% when "approved" %>
+                    <span class="inline-block bg-fz-green-dark text-white text-xs font-bold px-2.5 py-1 rounded-full">APPROVED</span>
+                  <% when "failed" %>
+                    <span class="inline-block bg-fz-red-dark text-white text-xs font-bold px-2.5 py-1 rounded-full">FAILED</span>
+                  <% when "in_progress" %>
+                    <span class="inline-block bg-fz-yellow-medium text-white text-xs font-bold px-2.5 py-1 rounded-full">IN PROGRESS</span>
+                  <% when "not_started" %>
+                    <span class="inline-block bg-fz-blue-dark text-white text-xs font-bold px-2.5 py-1 rounded-full">NOT STARTED</span>
                   <% end %>
                 </td>
                 <td class="px-4 py-3 text-center">
@@ -141,19 +149,19 @@
                 </td>
                 <td class="px-4 py-3 text-center">
                   <div class="flex items-center justify-center gap-2">
-                    <%= link_to plan, class: "text-fz-blue-light hover:text-fz-blue-medium transition", title: "Ver" do %>
+                    <%= link_to plan, class: "text-fz-blue-light hover:text-fz-blue-medium transition", title: "View" do %>
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
                     <% end %>
                     <% if current_user_admin? || plan.user == Current.user %>
-                      <%= link_to edit_test_plan_path(plan), class: "text-ink-medium hover:text-fz-yellow-light transition", title: "Editar" do %>
+                      <%= link_to edit_test_plan_path(plan), class: "text-ink-medium hover:text-fz-yellow-light transition", title: "Edit" do %>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                       <% end %>
-                      <%= link_to test_plan_path(plan), data: { turbo_method: :delete, turbo_confirm: "Tem certeza que deseja remover este plano?" }, class: "text-ink-medium hover:text-fz-red-light transition", title: "Remover" do %>
+                      <%= link_to test_plan_path(plan), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to remove this plan?" }, class: "text-ink-medium hover:text-fz-red-light transition", title: "Remove" do %>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
@@ -176,12 +184,12 @@
     <% else %>
       <div class="bg-surface rounded-xl shadow-lg p-12 text-center">
         <% if @filters_active %>
-          <p class="text-ink-medium text-lg mb-4">Nenhum plano encontrado com os filtros aplicados.</p>
-          <%= link_to "Limpar filtros", test_plans_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" %>
+          <p class="text-ink-medium text-lg mb-4">No plans found with the applied filters.</p>
+          <%= link_to "Clear filters", test_plans_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" %>
         <% else %>
-          <p class="text-ink-medium text-lg mb-4">Nenhum plano de teste criado ainda.</p>
+          <p class="text-ink-medium text-lg mb-4">No test plans created yet.</p>
           <%= link_to new_test_plan_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" do %>
-            Criar Primeiro Plano
+            Create First Plan
           <% end %>
         <% end %>
       </div>

@@ -8,6 +8,11 @@ module SessionTestHelper
     end
   end
 
+  def logout_and_sign_in_as(user)
+    sign_out
+    sign_in_as user
+  end
+
   def sign_out
     Current.session&.destroy!
     cookies.delete("session_id")
