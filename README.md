@@ -12,7 +12,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 
 - **Test Plans** — group related scenarios under a named plan assigned to a QA
 - **Tags** — categorize plans with tags (e.g. "login", "sprint-23", "regressão") and search by them
-- **Scenarios (Given/When/Then)** — structured BDD format without the overhead of a full framework
+- **Scenarios (Given/When/Then)** — structured Gherkin format without the overhead of a full framework
 - **Drag & Drop Reorder** — reorder scenarios by dragging them, with smooth FLIP animations and a visual drop zone; order is persisted and reflected in reports
 - **Evidence Attachments** — upload screenshots and files directly on each scenario
 - **One-Click Approve/Reject** — mark scenarios as approved or failed inline
