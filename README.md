@@ -4,7 +4,7 @@
 
 # Testy
 
-An opinionated test management tool for QA teams that value simplicity over configuration. Create test plans, write scenarios in Given/When/Then format, attach evidence, and export PDF reports — nothing more, nothing less.
+A testy, opinionated test management tool for QA teams that value simplicity over configuration. Create test plans, write scenarios in Given/When/Then format, attach evidence, and export PDF reports — nothing more, nothing less.
 
 Most test management tools drown you in fields, workflows, and integrations before you can write your first test case. Testy takes the opposite approach: it gives you exactly what you need and stays out of the way.
 
