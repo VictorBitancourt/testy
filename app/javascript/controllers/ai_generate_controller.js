@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["prompt", "title", "given", "when", "then", "button", "spinner"]
+  static targets = ["prompt", "button", "spinner", "result"]
   static values = { planId: Number }
 
   async generate(event) {
@@ -9,15 +9,16 @@ export default class extends Controller {
 
     const prompt = this.promptTarget.value.trim()
     if (!prompt) {
-      alert("Enter a description of the scenario you want to test.")
+      alert("Enter a description of the feature you want to test.")
       return
     }
 
     this.buttonTarget.disabled = true
     this.spinnerTarget.classList.remove("hidden")
+    this.resultTarget.classList.add("hidden")
 
     try {
-      const response = await fetch(`/test_plans/${this.planIdValue}/test_scenarios/generate`, {
+      const response = await fetch(`/test_plans/${this.planIdValue}/ai_generation`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,18 +30,17 @@ export default class extends Controller {
       const data = await response.json()
 
       if (!response.ok) {
-        alert(data.error || "Error generating scenario.")
+        alert(data.error || "Error generating scenarios.")
         return
       }
 
-      this.titleTarget.value = data.title || ""
-      this.givenTarget.value = data.given || ""
-      this.whenTarget.value = data.when_step || ""
-      this.thenTarget.value = data.then_step || ""
-
+      this.resultTarget.textContent = `${data.count} scenarios created successfully!`
+      this.resultTarget.classList.remove("hidden")
       this.promptTarget.value = ""
+
+      setTimeout(() => window.location.reload(), 1200)
     } catch (error) {
-      console.error("Error generating scenario:", error)
+      console.error("Error generating scenarios:", error)
       alert("Error communicating with AI. Please try again.")
     } finally {
       this.buttonTarget.disabled = false

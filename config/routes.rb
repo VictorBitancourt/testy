@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   root "test_plans#index"
 
   resources :test_plans do
+    resource :ai_generation, only: :create, controller: "test_plans/ai_generations"
     resource :report, only: :show, controller: "test_plans/reports"
     resource :scenario_order, only: :update, controller: "test_plans/scenario_orders"
     resources :test_scenarios, only: [ :create, :update, :destroy ] do

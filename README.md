@@ -4,7 +4,7 @@
 
 # Testy
 
-A testy, opinionated test management tool for QA teams that value simplicity over configuration. Create test plans, write scenarios in Given/When/Then format, attach evidence, and export PDF reports — nothing more, nothing less.
+A testy, opinionated test management tool for QA teams that value simplicity over configuration. Create test plans, write scenarios in Given/When/Then format, generate scenarios with AI, attach evidence, and export PDF reports — nothing more, nothing less.
 
 Most test management tools drown you in fields, workflows, and integrations before you can write your first test case. Testy takes the opposite approach: it gives you exactly what you need and stays out of the way.
 
@@ -13,6 +13,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Test Plans** — group related scenarios under a named plan assigned to a QA
 - **Tags** — categorize plans with tags (e.g. "login", "sprint-23", "regressão") and search by them
 - **Scenarios (Given/When/Then)** — structured Gherkin format without the overhead of a full framework
+- **AI Scenario Generation** — describe a feature in plain text and let Gemini generate 5-15 test scenarios automatically, covering happy paths, edge cases, boundary values, and equivalence partitioning
 - **Drag & Drop Reorder** — reorder scenarios by dragging them, with smooth FLIP animations and a visual drop zone; order is persisted and reflected in reports
 - **Evidence Attachments** — upload screenshots and files directly on each scenario
 - **One-Click Approve/Reject** — mark scenarios as approved or failed inline
@@ -32,6 +33,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 | Frontend | Tailwind CSS v4, Hotwire (Turbo + Stimulus) |
 | File Storage | Active Storage (local disk) |
 | PDF | ferrum_pdf (Chrome headless) |
+| AI | Gemini API (Google) |
 | Deploy | Kamal-ready (Docker + Thruster) |
 
 ## Getting Started
@@ -48,6 +50,9 @@ bundle install
 
 # Setup database
 bin/rails db:setup
+
+# (Optional) Set Gemini API key for AI scenario generation
+export GEMINI_API_KEY=your_key_here
 
 # Start the server
 bin/dev

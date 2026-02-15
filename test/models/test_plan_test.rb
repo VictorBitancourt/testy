@@ -172,4 +172,25 @@ class TestPlanTest < ActiveSupport::TestCase
   test "scope tagged_with returns empty when no plans match" do
     assert_empty TestPlan.tagged_with("nonexistent")
   end
+
+  test "generate_scenarios_with_ai returns error for blank prompt" do
+    plan = test_plans(:login_plan)
+    result = plan.generate_scenarios_with_ai("")
+
+    assert_equal false, result[:success]
+    assert_match(/description/, result[:error])
+  end
+
+  test "generate_scenarios_with_ai returns error when API key missing" do
+    plan = test_plans(:login_plan)
+    original_key = ENV["GEMINI_API_KEY"]
+    ENV["GEMINI_API_KEY"] = nil
+
+    result = plan.generate_scenarios_with_ai("Login feature")
+
+    assert_equal false, result[:success]
+    assert_match(/GEMINI_API_KEY/, result[:error])
+  ensure
+    ENV["GEMINI_API_KEY"] = original_key
+  end
 end
