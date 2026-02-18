@@ -216,6 +216,13 @@ class TestPlansControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "regular user can view report of any plan" do
+    logout_and_sign_in_as users(:regular_user)
+
+    get test_plan_report_path(test_plans(:login_plan))
+    assert_response :success
+  end
+
   test "admin can edit any plan" do
     get edit_test_plan_path(test_plans(:login_plan))
     assert_response :success

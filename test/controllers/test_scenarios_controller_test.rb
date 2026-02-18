@@ -159,6 +159,59 @@ class TestScenariosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
+  test "update via JSON resets status to pending" do
+    plan = test_plans(:login_plan)
+    scenario = test_scenarios(:login_success)
+    assert_equal "approved", scenario.status
+
+    patch test_plan_test_scenario_path(plan, scenario), params: {
+      test_scenario: { given: "Updated given" }
+    }, as: :json
+
+    assert_response :success
+    body = response.parsed_body
+    assert body["success"]
+    assert_equal "pending", body["scenario"]["status"]
+    assert_equal "Updated given", body["scenario"]["given"]
+    assert_equal "pending", scenario.reload.status
+  end
+
+  test "update via JSON returns fields" do
+    plan = test_plans(:login_plan)
+    scenario = test_scenarios(:login_failure)
+
+    patch test_plan_test_scenario_path(plan, scenario), params: {
+      test_scenario: { given: "New given", when_step: "New when", then_step: "New then" }
+    }, as: :json
+
+    assert_response :success
+    body = response.parsed_body
+    assert_equal "New given", body["scenario"]["given"]
+    assert_equal "New when", body["scenario"]["when_step"]
+    assert_equal "New then", body["scenario"]["then_step"]
+  end
+
+  test "update via JSON with invalid params returns error" do
+    plan = test_plans(:login_plan)
+    scenario = test_scenarios(:login_success)
+
+    patch test_plan_test_scenario_path(plan, scenario), params: {
+      test_scenario: { title: "" }
+    }, as: :json
+
+    assert_response :unprocessable_entity
+    assert_not response.parsed_body["success"]
+  end
+
+  test "regular user cannot reorder scenarios on another user's plan" do
+    logout_and_sign_in_as users(:regular_user)
+
+    patch test_plan_scenario_order_path(test_plans(:login_plan)),
+      params: { scenario_ids: [ test_scenarios(:login_success).id ] }, as: :json
+
+    assert_redirected_to root_path
+  end
+
   test "regular user can create scenario on own plan" do
     logout_and_sign_in_as users(:regular_user)
     own_plan = TestPlan.create!(name: "My Plan", qa_name: "QA", user: users(:regular_user))

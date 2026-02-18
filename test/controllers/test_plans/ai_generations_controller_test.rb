@@ -85,11 +85,14 @@ class TestPlans::AiGenerationsControllerTest < ActionDispatch::IntegrationTest
   private
 
   def stub_generate_scenarios(result)
-    TestPlan.alias_method :_original_generate_scenarios_with_ai, :generate_scenarios_with_ai
-    TestPlan.define_method(:generate_scenarios_with_ai) { |_prompt| result }
+    original_new = AiScenarioGenerator.method(:new)
+    AiScenarioGenerator.define_singleton_method(:new) do |plan|
+      fake = Object.new
+      fake.define_singleton_method(:call) { |_prompt| result }
+      fake
+    end
     yield
   ensure
-    TestPlan.alias_method :generate_scenarios_with_ai, :_original_generate_scenarios_with_ai
-    TestPlan.remove_method :_original_generate_scenarios_with_ai
+    AiScenarioGenerator.define_singleton_method(:new, original_new)
   end
 end

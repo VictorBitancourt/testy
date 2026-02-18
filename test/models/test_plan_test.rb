@@ -193,4 +193,74 @@ class TestPlanTest < ActiveSupport::TestCase
   ensure
     ENV["GEMINI_API_KEY"] = original_key
   end
+
+  test "generate_scenarios_with_ai handles timeout" do
+    plan = test_plans(:login_plan)
+    original_key = ENV["GEMINI_API_KEY"]
+    ENV["GEMINI_API_KEY"] = "test-key"
+
+    stub_ai_call_api(->(*) { raise Net::ReadTimeout }) do
+      result = plan.generate_scenarios_with_ai("Login feature")
+
+      assert_equal false, result[:success]
+      assert_match(/timed out/, result[:error])
+    end
+  ensure
+    ENV["GEMINI_API_KEY"] = original_key
+  end
+
+  test "generate_scenarios_with_ai handles JSON parse error" do
+    plan = test_plans(:login_plan)
+    original_key = ENV["GEMINI_API_KEY"]
+    ENV["GEMINI_API_KEY"] = "test-key"
+
+    stub_ai_call_api(->(*) { "not valid json at all" }) do
+      result = plan.generate_scenarios_with_ai("Login feature")
+
+      assert_equal false, result[:success]
+      assert_match(/parse/, result[:error])
+    end
+  ensure
+    ENV["GEMINI_API_KEY"] = original_key
+  end
+
+  test "generate_scenarios_with_ai rolls back on validation failure" do
+    plan = test_plans(:login_plan)
+    original_key = ENV["GEMINI_API_KEY"]
+    ENV["GEMINI_API_KEY"] = "test-key"
+
+    gemini_response = {
+      "candidates" => [ {
+        "content" => {
+          "parts" => [ {
+            "text" => '[{"title":"Test","given":"G","when_step":"W","then_step":"T"},{"title":"","given":"G","when_step":"W","then_step":"T"}]'
+          } ]
+        }
+      } ]
+    }.to_json
+
+    stub_ai_call_api(->(*) { gemini_response }) do
+      initial_count = plan.test_scenarios.count
+      result = plan.generate_scenarios_with_ai("Login feature")
+
+      assert_equal false, result[:success]
+      assert_equal initial_count, plan.test_scenarios.reload.count
+    end
+  ensure
+    ENV["GEMINI_API_KEY"] = original_key
+  end
+
+  private
+
+  def stub_ai_call_api(fake_call_api)
+    original_new = AiScenarioGenerator.method(:new)
+    AiScenarioGenerator.define_singleton_method(:new) do |plan|
+      generator = original_new.call(plan)
+      generator.define_singleton_method(:call_api) { |*args| fake_call_api.call(*args) }
+      generator
+    end
+    yield
+  ensure
+    AiScenarioGenerator.define_singleton_method(:new, original_new)
+  end
 end

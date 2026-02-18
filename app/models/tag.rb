@@ -6,5 +6,5 @@ class Tag < ApplicationRecord
 
   normalizes :name, with: ->(name) { name.strip.downcase }
 
-  scope :search, ->(query) { where("name LIKE ?", "%#{query}%") }
+  scope :search, ->(query) { where("name LIKE ?", "%#{sanitize_sql_like(query)}%") }
 end

@@ -66,7 +66,7 @@ Open [http://localhost:3000](http://localhost:3000). On first access, you'll be 
 bin/rails test
 ```
 
-153 tests, 504 assertions — covering models, controllers, authentication, authorization, and filter behavior.
+Covers models, controllers, authentication, authorization, and filter behavior.
 
 ## How It Works
 

@@ -103,15 +103,36 @@ export default class extends Controller {
       textEl.replaceWith(textarea)
     })
 
-    // Show save/cancel buttons
+    // Show file upload + save/cancel buttons
     let actionsDiv = card.querySelector('.inline-edit-actions')
     if (!actionsDiv) {
       actionsDiv = document.createElement('div')
-      actionsDiv.className = 'inline-edit-actions flex gap-2 mt-3'
+      actionsDiv.className = 'inline-edit-actions mt-3 space-y-3'
+
+      const fileId = `edit-evidence-${scenarioId}`
       actionsDiv.innerHTML = `
-        <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer">Save</button>
-        <button type="button" data-action="click->scenario#cancelEdit" data-scenario-id="${scenarioId}" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg font-semibold transition cursor-pointer">Cancel</button>
+        <div>
+          <label class="cursor-pointer inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-4 py-2 rounded-lg transition text-sm">
+            📎 Upload Evidence
+            <input type="file" id="${fileId}" multiple accept="image/*,.pdf" class="hidden" />
+          </label>
+          <span class="text-sm text-ink-medium ml-2" data-file-count>No file selected</span>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer">Save</button>
+          <button type="button" data-action="click->scenario#cancelEdit" data-scenario-id="${scenarioId}" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg font-semibold transition cursor-pointer">Cancel</button>
+        </div>
       `
+
+      const fileInput = actionsDiv.querySelector(`#${fileId}`)
+      const fileCount = actionsDiv.querySelector('[data-file-count]')
+      fileInput.addEventListener('change', () => {
+        const count = fileInput.files.length
+        fileCount.textContent = count === 0 ? 'No file selected' :
+                                count === 1 ? '1 file selected' :
+                                `${count} files selected`
+      })
+
       const gridDiv = card.querySelector('.grid')
       gridDiv.after(actionsDiv)
     }
@@ -124,21 +145,38 @@ export default class extends Controller {
     const given = card.querySelector('textarea[name="given"]').value
     const whenStep = card.querySelector('textarea[name="when_step"]').value
     const thenStep = card.querySelector('textarea[name="then_step"]').value
+    const fileInput = card.querySelector('.inline-edit-actions input[type="file"]')
+
+    const formData = new FormData()
+    formData.append('test_scenario[given]', given)
+    formData.append('test_scenario[when_step]', whenStep)
+    formData.append('test_scenario[then_step]', thenStep)
+
+    if (fileInput && fileInput.files.length > 0) {
+      for (const file of fileInput.files) {
+        formData.append('test_scenario[evidence_files][]', file)
+      }
+    }
 
     try {
       const response = await fetch(`/test_plans/${this.getTestPlanId()}/test_scenarios/${scenarioId}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json',
           'X-CSRF-Token': this.getCSRFToken()
         },
-        body: JSON.stringify({ test_scenario: { given: given, when_step: whenStep, then_step: thenStep } })
+        body: formData
       })
 
       const data = await response.json()
 
       if (data.success) {
+        // Reload if files were attached so evidence renders server-side
+        if (fileInput && fileInput.files.length > 0) {
+          window.location.reload()
+          return
+        }
+
         this._restoreStepText(card, data.scenario)
         delete card.dataset.editing
         card.draggable = true
