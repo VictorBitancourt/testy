@@ -13,4 +13,7 @@ export PORT="${PORT:-3000}"
 export RUBY_DEBUG_OPEN="true"
 export RUBY_DEBUG_LAZY="true"
 
+# Prepare database (create if needed, run pending migrations)
+bundle exec rails db:prepare
+
 exec foreman start -f Procfile.dev "$@"

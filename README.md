@@ -156,12 +156,15 @@ Open [http://localhost:3000](http://localhost:3000). On first access, you'll be 
 
 Data is persisted in a Docker volume (`testy_storage`). A `SECRET_KEY_BASE` is generated automatically on first boot.
 
+To enable AI scenario generation, uncomment `GEMINI_API_KEY` in `docker-compose.yml` and set your key before starting.
+
 ### Docker Run
 
 ```bash
 docker run -d \
   -p 3000:80 \
   -e SOLID_QUEUE_IN_PUMA=true \
+  -e GEMINI_API_KEY=your_key_here \
   -v testy_storage:/rails/storage \
   ghcr.io/victorbitancourt/testy:latest
 ```
