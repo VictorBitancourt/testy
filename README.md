@@ -22,6 +22,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Pagination** — paginated plan listing for large datasets
 - **PDF Reports** — export a formatted report with table of contents (clickable anchors), summary, scenarios, and evidence
 - **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans, users manage their own
+- **Bilingual (EN / PT-BR)** — full interface in English and Brazilian Portuguese; switch languages with one click, preference saved in cookie
 
 ## Tech Stack
 
@@ -143,24 +144,23 @@ One Given, one When, one Then. If you can't describe the scenario in three conci
 
 ## Deployment
 
-### Docker Compose
+### Docker Compose (recommended)
 
 ```bash
-# Generate a secret key
-export SECRET_KEY_BASE=$(rails secret)
-
-# Start
+git clone https://github.com/VictorBitancourt/testy.git
+cd testy
 docker compose up -d
 ```
 
 Open [http://localhost:3000](http://localhost:3000). On first access, you'll be prompted to create the admin user.
+
+Data is persisted in a Docker volume (`testy_storage`). A `SECRET_KEY_BASE` is generated automatically on first boot.
 
 ### Docker Run
 
 ```bash
 docker run -d \
   -p 3000:80 \
-  -e SECRET_KEY_BASE=$(rails secret) \
   -e SOLID_QUEUE_IN_PUMA=true \
   -v testy_storage:/rails/storage \
   ghcr.io/victorbitancourt/testy:latest
