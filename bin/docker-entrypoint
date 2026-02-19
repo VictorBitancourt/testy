@@ -1,5 +1,17 @@
 #!/bin/bash -e
 
+# Generate and persist SECRET_KEY_BASE if not provided
+if [ -z "$SECRET_KEY_BASE" ]; then
+  SECRET_FILE="/rails/storage/.secret_key_base"
+  if [ -f "$SECRET_FILE" ]; then
+    export SECRET_KEY_BASE="$(cat "$SECRET_FILE")"
+  else
+    export SECRET_KEY_BASE="$(openssl rand -hex 64)"
+    mkdir -p /rails/storage
+    echo "$SECRET_KEY_BASE" > "$SECRET_FILE"
+  fi
+fi
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
