@@ -1,0 +1,27 @@
+en:
+  controllers:
+    sessions:
+      rate_limited: "Try again later."
+      invalid_credentials: "Invalid username or password."
+    registrations:
+      created: "User created successfully!"
+    test_plans:
+      created: "Test plan created successfully!"
+      updated: "Test plan updated!"
+      removed: "Test plan removed!"
+    test_scenarios:
+      created: "Scenario added!"
+      create_error: "Error adding scenario."
+      updated: "Scenario updated!"
+      update_error: "Error updating scenario."
+      removed: "Scenario removed!"
+    users:
+      created: "User created successfully!"
+      password_reset: "Password reset successfully!"
+      cannot_delete_self: "You cannot delete yourself."
+      removed: "User removed successfully!"
+    authentication:
+      admin_restricted: "Access restricted to administrators."
+      no_permission: "You do not have permission for this action."
+    ai_generations:
+      prompt_blank: "Please enter a feature description."

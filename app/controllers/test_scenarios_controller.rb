@@ -7,9 +7,9 @@ class TestScenariosController < ApplicationController
     @test_scenario = @test_plan.test_scenarios.build(test_scenario_params)
 
     if @test_scenario.save
-      redirect_to @test_plan, notice: "Scenario added!"
+      redirect_to @test_plan, notice: t('controllers.test_scenarios.created')
     else
-      redirect_to @test_plan, alert: "Error adding scenario."
+      redirect_to @test_plan, alert: t('controllers.test_scenarios.create_error')
     end
   end
 
@@ -17,9 +17,9 @@ class TestScenariosController < ApplicationController
     respond_to do |format|
       format.html do
         if @test_scenario.update(test_scenario_params)
-          redirect_to @test_plan, notice: "Scenario updated!"
+          redirect_to @test_plan, notice: t('controllers.test_scenarios.updated')
         else
-          redirect_to @test_plan, alert: "Error updating scenario."
+          redirect_to @test_plan, alert: t('controllers.test_scenarios.update_error')
         end
       end
       format.json do
@@ -34,7 +34,7 @@ class TestScenariosController < ApplicationController
 
   def destroy
     @test_scenario.destroy
-    redirect_to @test_plan, notice: "Scenario removed!"
+    redirect_to @test_plan, notice: t('controllers.test_scenarios.removed')
   end
 
   private

@@ -3,15 +3,15 @@
     <!-- Back -->
     <div class="mb-4">
       <%= link_to root_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
-        ← Back
+        &larr; <%= t('users.index.back') %>
         <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
       <% end %>
     </div>
 
     <div class="flex justify-between items-center mb-8">
-      <h1 class="text-4xl font-bold text-ink-darkest">User Management</h1>
+      <h1 class="text-4xl font-bold text-ink-darkest"><%= t('users.index.title') %></h1>
       <%= link_to new_user_path, class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition" do %>
-        + New User
+        <%= t('users.index.new_user') %>
       <% end %>
     </div>
 
@@ -19,9 +19,9 @@
       <table class="w-full">
         <thead>
           <tr class="bg-surface-raised text-ink-dark text-sm uppercase tracking-wide">
-            <th class="px-6 py-4 text-left font-semibold">Username</th>
-            <th class="px-6 py-4 text-left font-semibold">Role</th>
-            <th class="px-6 py-4 text-right font-semibold">Actions</th>
+            <th class="px-6 py-4 text-left font-semibold"><%= t('users.index.th_username') %></th>
+            <th class="px-6 py-4 text-left font-semibold"><%= t('users.index.th_role') %></th>
+            <th class="px-6 py-4 text-right font-semibold"><%= t('users.index.th_actions') %></th>
           </tr>
         </thead>
         <tbody>
@@ -38,11 +38,11 @@
               <td class="px-6 py-4 text-right">
                 <div class="flex justify-end gap-2">
                   <%= link_to edit_user_path(user), class: "bg-fz-yellow-medium hover:bg-fz-yellow-dark text-white text-sm font-semibold px-4 py-2 rounded-lg transition" do %>
-                    Reset Password
+                    <%= t('users.index.reset_password') %>
                   <% end %>
                   <% if user != Current.user %>
-                    <%= button_to user_path(user), method: :delete, data: { turbo_confirm: "Are you sure you want to delete #{user.username}?" }, class: "bg-fz-red-dark hover:bg-fz-red-darker text-white text-sm font-semibold px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
-                      Delete
+                    <%= button_to user_path(user), method: :delete, data: { turbo_confirm: t('users.index.confirm_delete', username: user.username) }, class: "bg-fz-red-dark hover:bg-fz-red-darker text-white text-sm font-semibold px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
+                      <%= t('users.index.delete') %>
                     <% end %>
                   <% end %>
                 </div>

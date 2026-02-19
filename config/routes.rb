@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resource :locale, only: :update
   resource :session, only: [ :new, :create, :destroy ]
   resource :registration, only: [ :new, :create ]
   resources :users, except: [:show]

@@ -430,8 +430,8 @@
   <!-- Fixed visual footer at the bottom of each page -->
   <div class="pdf-footer">
     <img src="data:image/png;base64,<%= logo_b64 %>" width="16" height="16" />
-    <div class="footer-text">Test Management Made Simple</div>
-    <div class="footer-date"><%= Time.zone.now.strftime('%m/%d/%Y at %H:%M') %></div>
+    <div class="footer-text"><%= t('test_plans.report_pdf.footer_tagline') %></div>
+    <div class="footer-date"><%= l(Time.zone.now, format: :short_datetime) %></div>
   </div>
 
   <table class="page-table">
@@ -449,14 +449,14 @@
     <div class="logo-container">
       <img src="data:image/png;base64,<%= logo_b64 %>" width="100" height="100" />
     </div>
-    <div class="report-title">Test Report</div>
-    <div class="report-date">Generated on <%= Time.zone.today.strftime('%B %d, %Y') %></div>
+    <div class="report-title"><%= t('test_plans.report_pdf.test_report') %></div>
+    <div class="report-date"><%= t('test_plans.report_pdf.generated_on', date: l(Time.zone.today, format: :month_day_year)) %></div>
   </div>
 
   <!-- Plan Info -->
   <div class="plan-info">
     <div class="plan-name"><%= @test_plan.name %></div>
-    <div class="plan-qa">Responsible QA: <strong><%= @test_plan.qa_name %></strong></div>
+    <div class="plan-qa"><%= t('test_plans.report_pdf.responsible_qa') %> <strong><%= @test_plan.qa_name %></strong></div>
     <% if @test_plan.tags.any? %>
       <div style="margin-top: 12px;">
         <% @test_plan.tags.each do |tag| %>
@@ -470,19 +470,19 @@
   <div class="metrics">
     <div class="metric metric-total">
       <span class="metric-number"><%= @test_plan.total_scenarios %></span>
-      <span class="metric-label">Total</span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.total') %></span>
     </div>
     <div class="metric metric-approved">
       <span class="metric-number"><%= @test_plan.approved_scenarios %></span>
-      <span class="metric-label">Approved</span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.approved') %></span>
     </div>
     <div class="metric metric-failed">
       <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'failed').count %></span>
-      <span class="metric-label">Failed</span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.failed') %></span>
     </div>
     <div class="metric metric-pending">
       <span class="metric-number"><%= @test_plan.test_scenarios.where(status: 'pending').count %></span>
-      <span class="metric-label">Pending</span>
+      <span class="metric-label"><%= t('test_plans.report_pdf.pending') %></span>
     </div>
   </div>
 
@@ -490,8 +490,8 @@
   <!-- Success Banner -->
   <div class="success-banner">
     <div class="success-icon">&#10003;</div>
-    <div class="success-title">All Scenarios Approved!</div>
-    <div class="success-subtitle">Completed by <%= @test_plan.qa_name %> on <%= Time.zone.today.strftime('%m/%d/%Y') %></div>
+    <div class="success-title"><%= t('test_plans.report_pdf.all_approved_title') %></div>
+    <div class="success-subtitle"><%= t('test_plans.report_pdf.all_approved_subtitle', qa: @test_plan.qa_name, date: l(Time.zone.today, format: :short_date)) %></div>
   </div>
   <% end %>
 
@@ -500,7 +500,7 @@
   <% if scenarios.size > 1 %>
   <% scenarios.each_slice(8).with_index do |chunk, chunk_index| %>
   <div class="toc">
-    <div class="toc-title"><%= chunk_index == 0 ? 'Scenario Index' : 'Scenario Index (cont.)' %></div>
+    <div class="toc-title"><%= chunk_index == 0 ? t('test_plans.report_pdf.scenario_index') : t('test_plans.report_pdf.scenario_index_cont') %></div>
     <table class="toc-table">
       <% chunk.each_with_index do |s, i| %>
         <% real_index = chunk_index * 8 + i %>
@@ -509,7 +509,7 @@
           <td class="toc-name"><a href="#scenario-<%= real_index + 1 %>"><%= s.title %></a></td>
           <td class="toc-status">
             <span class="badge badge-<%= s.status %>">
-              <%= s.status == 'approved' ? 'Approved' : s.status == 'failed' ? 'Failed' : 'Pending' %>
+              <%= s.status == 'approved' ? t('test_plans.report_pdf.status_approved') : s.status == 'failed' ? t('test_plans.report_pdf.status_failed') : t('test_plans.report_pdf.status_pending') %>
             </span>
           </td>
         </tr>
@@ -520,7 +520,7 @@
   <% end %>
 
   <!-- Scenarios -->
-  <div class="section-title">Test Scenarios</div>
+  <div class="section-title"><%= t('test_plans.report_pdf.test_scenarios') %></div>
 
   <% scenarios.each_with_index do |scenario, index| %>
   <div class="scenario" id="scenario-<%= index + 1 %>">
@@ -530,29 +530,29 @@
         <span class="scenario-title"><%= scenario.title %></span>
       </div>
       <span class="badge badge-<%= scenario.status %>">
-        <%= scenario.status == 'approved' ? 'Approved' : scenario.status == 'failed' ? 'Failed' : 'Pending' %>
+        <%= scenario.status == 'approved' ? t('test_plans.report_pdf.status_approved') : scenario.status == 'failed' ? t('test_plans.report_pdf.status_failed') : t('test_plans.report_pdf.status_pending') %>
       </span>
     </div>
 
     <div class="scenario-body">
       <div class="steps">
         <div class="step step-given">
-          <span class="step-label">Given</span>
+          <span class="step-label"><%= t('test_plans.report_pdf.given') %></span>
           <div class="step-content"><%= scenario.given %></div>
         </div>
         <div class="step step-when">
-          <span class="step-label">When</span>
+          <span class="step-label"><%= t('test_plans.report_pdf.when') %></span>
           <div class="step-content"><%= scenario.when_step %></div>
         </div>
         <div class="step step-then">
-          <span class="step-label">Then</span>
+          <span class="step-label"><%= t('test_plans.report_pdf.then') %></span>
           <div class="step-content"><%= scenario.then_step %></div>
         </div>
       </div>
 
       <% if scenario.evidence_files.attached? %>
       <div class="evidence">
-        <div class="evidence-label">Evidence</div>
+        <div class="evidence-label"><%= t('test_plans.report_pdf.evidence') %></div>
         <% scenario.evidence_files.each do |file| %>
           <% if file.image? %>
             <div style="page-break-inside: avoid;">

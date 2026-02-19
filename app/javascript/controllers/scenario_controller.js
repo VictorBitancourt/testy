@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { t } from "i18n_helper"
 
 export default class extends Controller {
   static targets = ["container", "stamp"]
@@ -11,7 +12,7 @@ export default class extends Controller {
     const button = event.currentTarget
     const scenarioId = button.dataset.scenarioId
     const status = button.dataset.status
-    
+
     try {
       const response = await fetch(`/test_plans/${this.getTestPlanId()}/test_scenarios/${scenarioId}/status`, {
         method: 'PATCH',
@@ -21,49 +22,49 @@ export default class extends Controller {
         },
         body: JSON.stringify({ status: status })
       })
-      
+
       const data = await response.json()
-      
+
       if (data.success) {
         // Update the entire card
         const card = document.querySelector(`[data-scenario-id="${scenarioId}"]`)
         card.dataset.scenarioStatus = status
-        
+
         // Find the buttons div
         const buttonsDiv = button.parentElement
-        
+
         // Remove all buttons
         buttonsDiv.querySelectorAll('button').forEach(btn => {
           if (btn.dataset.scenarioId) {
             btn.remove()
           }
         })
-        
+
         // Add status badge
         const badge = document.createElement('div')
-        badge.className = status === 'approved' 
-          ? 'bg-green-500 text-white px-6 py-2 rounded-lg font-semibold' 
+        badge.className = status === 'approved'
+          ? 'bg-green-500 text-white px-6 py-2 rounded-lg font-semibold'
           : 'bg-red-500 text-white px-6 py-2 rounded-lg font-semibold'
-        badge.textContent = status === 'approved' ? '✓ Approved' : '✗ Failed'
-        
+        badge.textContent = status === 'approved' ? `\u2713 ${t('scenario.approved')}` : `\u2717 ${t('scenario.failed')}`
+
         // Insert badge before the delete button
         buttonsDiv.insertBefore(badge, buttonsDiv.firstChild)
-        
+
         // Check if all are approved to show the stamp
         this.checkAllApproved()
       }
     } catch (error) {
       console.error('Error updating status:', error)
-      alert('Error updating the scenario status')
+      alert(t('scenario.error_status'))
     }
   }
 
   checkAllApproved() {
     const scenarios = this.containerTarget.querySelectorAll('.scenario-card')
-    const allApproved = Array.from(scenarios).every(card => 
+    const allApproved = Array.from(scenarios).every(card =>
       card.dataset.scenarioStatus === 'approved'
     )
-    
+
     if (allApproved && scenarios.length > 0) {
       this.stampTarget.classList.remove('hidden')
     } else {
@@ -113,14 +114,14 @@ export default class extends Controller {
       actionsDiv.innerHTML = `
         <div>
           <label class="cursor-pointer inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-4 py-2 rounded-lg transition text-sm">
-            📎 Upload Evidence
+            ${t('scenario.upload_evidence')}
             <input type="file" id="${fileId}" multiple accept="image/*,.pdf" class="hidden" />
           </label>
-          <span class="text-sm text-ink-medium ml-2" data-file-count>No file selected</span>
+          <span class="text-sm text-ink-medium ml-2" data-file-count>${t('scenario.no_file_selected')}</span>
         </div>
         <div class="flex gap-2">
-          <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer">Save</button>
-          <button type="button" data-action="click->scenario#cancelEdit" data-scenario-id="${scenarioId}" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg font-semibold transition cursor-pointer">Cancel</button>
+          <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer">${t('scenario.save')}</button>
+          <button type="button" data-action="click->scenario#cancelEdit" data-scenario-id="${scenarioId}" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg font-semibold transition cursor-pointer">${t('scenario.cancel')}</button>
         </div>
       `
 
@@ -128,9 +129,9 @@ export default class extends Controller {
       const fileCount = actionsDiv.querySelector('[data-file-count]')
       fileInput.addEventListener('change', () => {
         const count = fileInput.files.length
-        fileCount.textContent = count === 0 ? 'No file selected' :
-                                count === 1 ? '1 file selected' :
-                                `${count} files selected`
+        fileCount.textContent = count === 0 ? t('scenario.no_file_selected') :
+                                count === 1 ? t('scenario.one_file_selected') :
+                                t('scenario.files_selected', { count })
       })
 
       const gridDiv = card.querySelector('.grid')
@@ -189,11 +190,11 @@ export default class extends Controller {
           this.checkAllApproved()
         }
       } else {
-        alert('Error saving: ' + (data.errors || []).join(', '))
+        alert(t('scenario.error_saving', { errors: (data.errors || []).join(', ') }))
       }
     } catch (error) {
       console.error('Error saving scenario:', error)
-      alert('Error saving the scenario')
+      alert(t('scenario.error_saving_generic'))
     }
   }
 
@@ -238,14 +239,14 @@ export default class extends Controller {
       approveBtn.dataset.status = 'approved'
       approveBtn.dataset.scenarioId = scenarioId
       approveBtn.className = 'bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition'
-      approveBtn.textContent = '✓ Approve'
+      approveBtn.textContent = `\u2713 ${t('scenario.approve')}`
 
       const failBtn = document.createElement('button')
       failBtn.dataset.action = 'click->scenario#updateStatus'
       failBtn.dataset.status = 'failed'
       failBtn.dataset.scenarioId = scenarioId
       failBtn.className = 'bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition'
-      failBtn.textContent = '✗ Fail'
+      failBtn.textContent = `\u2717 ${t('scenario.fail')}`
 
       buttonsDiv.insertBefore(failBtn, buttonsDiv.firstChild)
       buttonsDiv.insertBefore(approveBtn, buttonsDiv.firstChild)

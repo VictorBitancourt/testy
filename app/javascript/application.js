@@ -1,7 +1,9 @@
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import "@hotwired/turbo-rails"
 import "controllers"
+import "i18n_helper"
 import { Turbo } from "@hotwired/turbo-rails"
+import { t } from "i18n_helper"
 
 Turbo.setConfirmMethod((message) => {
   return new Promise((resolve) => {
@@ -11,8 +13,8 @@ Turbo.setConfirmMethod((message) => {
       <div class="confirm-modal-dialog">
         <p style="margin:0 0 1.5rem;color:oklch(92% 0.003 254);font-size:0.95rem;line-height:1.5;">${message}</p>
         <div style="display:flex;justify-content:flex-end;gap:0.75rem;">
-          <button class="confirm-modal-btn confirm-modal-cancel">Cancel</button>
-          <button class="confirm-modal-btn confirm-modal-ok">Confirm</button>
+          <button class="confirm-modal-btn confirm-modal-cancel">${t('confirm_modal.cancel')}</button>
+          <button class="confirm-modal-btn confirm-modal-ok">${t('confirm_modal.confirm')}</button>
         </div>
       </div>
     `

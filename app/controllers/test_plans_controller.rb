@@ -42,7 +42,7 @@ class TestPlansController < ApplicationController
     @test_plan.user = Current.user
 
     if @test_plan.save
-      redirect_to @test_plan, notice: "Test plan created successfully!"
+      redirect_to @test_plan, notice: t('controllers.test_plans.created')
     else
       render :new, status: :unprocessable_entity
     end
@@ -53,7 +53,7 @@ class TestPlansController < ApplicationController
 
   def update
     if @test_plan.update(test_plan_params)
-      redirect_to @test_plan, notice: "Test plan updated!"
+      redirect_to @test_plan, notice: t('controllers.test_plans.updated')
     else
       render :edit, status: :unprocessable_entity
     end
@@ -61,7 +61,7 @@ class TestPlansController < ApplicationController
 
   def destroy
     @test_plan.destroy
-    redirect_to test_plans_path, notice: "Test plan removed!"
+    redirect_to test_plans_path, notice: t('controllers.test_plans.removed')
   end
 
   private

@@ -1,0 +1,28 @@
+en:
+  javascript:
+    confirm_modal:
+      cancel: "Cancel"
+      confirm: "Confirm"
+    scenario:
+      approved: "Approved"
+      failed: "Failed"
+      approve: "Approve"
+      fail: "Fail"
+      error_status: "Error updating the scenario status"
+      save: "Save"
+      cancel: "Cancel"
+      upload_evidence: "Upload Evidence"
+      no_file_selected: "No file selected"
+      one_file_selected: "1 file selected"
+      files_selected: "%{count} files selected"
+      error_saving: "Error saving: %{errors}"
+      error_saving_generic: "Error saving the scenario"
+    ai_generate:
+      enter_description: "Enter a description of the feature you want to test."
+      error_generating: "Error generating scenarios."
+      scenarios_created: "%{count} scenarios created successfully!"
+      error_communication: "Error communicating with AI. Please try again."
+    file_upload:
+      no_file: "No file selected"
+      one_file: "1 file selected"
+      files: "%{count} files selected"

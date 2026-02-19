@@ -2,13 +2,13 @@
   <div class="max-w-2xl mx-auto">
     <div class="mb-4">
       <%= link_to test_plans_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
-        ← Back
+        &larr; <%= t('test_plans.new.back') %>
         <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
       <% end %>
     </div>
 
     <div class="bg-surface rounded-xl shadow-lg p-8">
-      <h1 class="text-3xl font-bold text-ink-darkest mb-6">New Test Plan</h1>
+      <h1 class="text-3xl font-bold text-ink-darkest mb-6"><%= t('test_plans.new.title') %></h1>
 
       <%= render 'form', test_plan: @test_plan %>
     </div>

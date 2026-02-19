@@ -9,7 +9,7 @@
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     html {
       scroll-behavior: smooth;
     }
@@ -20,7 +20,7 @@
       background: white;
       padding: 40px;
     }
-    
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -29,27 +29,27 @@
       padding-bottom: 20px;
       margin-bottom: 40px;
     }
-    
+
     .logo {
       width: 120px;
       height: 120px;
     }
-    
+
     .header-info {
       text-align: right;
     }
-    
+
     .header-info h1 {
       color: #f5576c;
       font-size: 28px;
       margin-bottom: 8px;
     }
-    
+
     .header-info p {
       color: #666;
       font-size: 14px;
     }
-    
+
     .summary {
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: white;
@@ -58,37 +58,37 @@
       margin-bottom: 40px;
       box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
     }
-    
+
     .summary h2 {
       font-size: 24px;
       margin-bottom: 20px;
     }
-    
+
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
-    
+
     .summary-item {
       background: rgba(255, 255, 255, 0.2);
       padding: 15px;
       border-radius: 8px;
       text-align: center;
     }
-    
+
     .summary-item .number {
       font-size: 36px;
       font-weight: bold;
       display: block;
       margin-bottom: 5px;
     }
-    
+
     .summary-item .label {
       font-size: 14px;
       opacity: 0.9;
     }
-    
+
     <% if @test_plan.all_scenarios_approved? %>
     .stamp {
       position: absolute;
@@ -104,22 +104,22 @@
       text-align: center;
       box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
     }
-    
+
     .stamp .title {
       font-size: 32px;
       margin-bottom: 5px;
     }
-    
+
     .stamp .date {
       font-size: 12px;
       margin-bottom: 3px;
     }
-    
+
     .stamp .by {
       font-size: 10px;
     }
     <% end %>
-    
+
     .scenario {
       background: white;
       border: 2px solid #e5e7eb;
@@ -129,7 +129,7 @@
       page-break-inside: avoid;
       position: relative;
     }
-    
+
     .scenario-header {
       display: flex;
       justify-content: space-between;
@@ -138,14 +138,14 @@
       padding-bottom: 15px;
       border-bottom: 2px solid #f3f4f6;
     }
-    
+
     .scenario-title {
       font-size: 20px;
       font-weight: bold;
       color: #1f2937;
       flex: 1;
     }
-    
+
     .scenario-status {
       padding: 8px 20px;
       border-radius: 20px;
@@ -153,48 +153,48 @@
       font-weight: bold;
       text-transform: uppercase;
     }
-    
+
     .status-approved {
       background: #dcfce7;
       color: #166534;
     }
-    
+
     .status-failed {
       background: #fee2e2;
       color: #991b1b;
     }
-    
+
     .status-pending {
       background: #fef3c7;
       color: #92400e;
     }
-    
+
     .scenario-steps {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       margin-bottom: 20px;
     }
-    
+
     .step {
       background: #f9fafb;
       padding: 15px;
       border-radius: 8px;
       border-left: 4px solid;
     }
-    
+
     .step-given {
       border-left-color: #3b82f6;
     }
-    
+
     .step-when {
       border-left-color: #8b5cf6;
     }
-    
+
     .step-then {
       border-left-color: #22c55e;
     }
-    
+
     .step-label {
       font-weight: bold;
       font-size: 12px;
@@ -202,30 +202,30 @@
       margin-bottom: 8px;
       color: #666;
     }
-    
+
     .step-content {
       font-size: 14px;
       line-height: 1.5;
       color: #374151;
     }
-    
+
     .evidences {
       margin-top: 20px;
     }
-    
+
     .evidences-title {
       font-weight: bold;
       font-size: 14px;
       margin-bottom: 10px;
       color: #666;
     }
-    
+
     .evidence-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
     }
-    
+
     .evidence-item {
       width: 100%;
       height: 120px;
@@ -233,7 +233,7 @@
       border-radius: 8px;
       border: 2px solid #e5e7eb;
     }
-    
+
     .evidence-placeholder {
       width: 100%;
       height: 120px;
@@ -245,7 +245,7 @@
       font-size: 40px;
       border: 2px solid #e5e7eb;
     }
-    
+
     .toc {
       background: #f9fafb;
       border: 2px solid #e5e7eb;
@@ -331,12 +331,12 @@
       color: #666;
       font-size: 12px;
     }
-    
+
     @media print {
       body {
         padding: 20px;
       }
-      
+
       .scenario {
         page-break-inside: avoid;
       }
@@ -346,8 +346,8 @@
 <body>
   <% if @test_plan.all_scenarios_approved? %>
   <div class="stamp">
-    <div class="title">DONE</div>
-    <div class="date"><%= Date.today.strftime('%b %d, %Y').upcase %></div>
+    <div class="title"><%= t('test_plans.report.status_approved').upcase %></div>
+    <div class="date"><%= l(Date.today, format: :short_date).upcase %></div>
     <div class="by">by <%= @test_plan.qa_name %></div>
   </div>
   <% end %>
@@ -367,8 +367,8 @@
       </svg>
     </div>
     <div class="header-info">
-      <h1>Test Report</h1>
-      <p>Generated on <%= Date.today.strftime('%m/%d/%Y') %></p>
+      <h1><%= t('test_plans.report.test_report') %></h1>
+      <p><%= t('test_plans.report.generated_on', date: l(Date.today, format: :short_date)) %></p>
     </div>
   </div>
 
@@ -384,15 +384,15 @@
     <div class="summary-grid">
       <div class="summary-item">
         <span class="number"><%= @test_plan.total_scenarios %></span>
-        <span class="label">Total Cases</span>
+        <span class="label"><%= t('test_plans.report.total_cases') %></span>
       </div>
       <div class="summary-item">
         <span class="number"><%= @test_plan.approved_scenarios %></span>
-        <span class="label">Approved</span>
+        <span class="label"><%= t('test_plans.report.approved') %></span>
       </div>
       <div class="summary-item">
         <span class="number"><%= @test_plan.qa_name %></span>
-        <span class="label">Responsible QA</span>
+        <span class="label"><%= t('test_plans.report.responsible_qa') %></span>
       </div>
     </div>
   </div>
@@ -400,7 +400,7 @@
   <% scenarios = @test_plan.test_scenarios.to_a %>
   <% if scenarios.size > 1 %>
   <div class="toc">
-    <div class="toc-title">Scenario Index</div>
+    <div class="toc-title"><%= t('test_plans.report.scenario_index') %></div>
     <table class="toc-table">
       <% scenarios.each_with_index do |s, i| %>
         <tr>
@@ -408,7 +408,7 @@
           <td class="toc-name"><a href="#scenario-<%= i + 1 %>" data-turbo="false"><%= s.title %></a></td>
           <td class="toc-status">
             <span class="toc-badge status-<%= s.status %>">
-              <%= s.status == 'approved' ? '✓ Approved' : s.status == 'failed' ? '✗ Failed' : '⋯ Pending' %>
+              <%= s.status == 'approved' ? "&#10003; #{t('test_plans.report.status_approved')}" : s.status == 'failed' ? "&#10007; #{t('test_plans.report.status_failed')}" : "&#8943; #{t('test_plans.report.status_pending')}" %>
             </span>
           </td>
         </tr>
@@ -424,36 +424,36 @@
           <%= index + 1 %>. <%= scenario.title %>
         </div>
         <div class="scenario-status status-<%= scenario.status %>">
-          <%= scenario.status == 'approved' ? '✓ Approved' : scenario.status == 'failed' ? '✗ Failed' : '⋯ Pending' %>
+          <%= scenario.status == 'approved' ? "&#10003; #{t('test_plans.report.status_approved')}" : scenario.status == 'failed' ? "&#10007; #{t('test_plans.report.status_failed')}" : "&#8943; #{t('test_plans.report.status_pending')}" %>
         </div>
       </div>
-      
+
       <div class="scenario-steps">
         <div class="step step-given">
-          <div class="step-label">Given</div>
+          <div class="step-label"><%= t('test_plans.report.given') %></div>
           <div class="step-content"><%= scenario.given %></div>
         </div>
-        
+
         <div class="step step-when">
-          <div class="step-label">When</div>
+          <div class="step-label"><%= t('test_plans.report.when') %></div>
           <div class="step-content"><%= scenario.when_step %></div>
         </div>
-        
+
         <div class="step step-then">
-          <div class="step-label">Then</div>
+          <div class="step-label"><%= t('test_plans.report.then') %></div>
           <div class="step-content"><%= scenario.then_step %></div>
         </div>
       </div>
-      
+
       <% if scenario.evidence_files.attached? %>
         <div class="evidences">
-          <div class="evidences-title">📎 Attached Evidence:</div>
+          <div class="evidences-title"><%= t('test_plans.report.attached_evidence') %></div>
           <div class="evidence-grid">
             <% scenario.evidence_files.first(4).each do |file| %>
               <% if file.image? %>
                 <%= image_tag url_for(file), class: "evidence-item" %>
               <% else %>
-                <div class="evidence-placeholder">📄</div>
+                <div class="evidence-placeholder">&#128196;</div>
               <% end %>
             <% end %>
           </div>
@@ -463,7 +463,7 @@
   <% end %>
 
   <div class="footer">
-    <p><strong>Testy</strong> | Test Management Made Simple</p>
+    <p><strong>Testy</strong> | <%= t('test_plans.report.footer') %></p>
   </div>
 
   <script>

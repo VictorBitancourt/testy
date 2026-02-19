@@ -3,7 +3,7 @@
     <!-- Back -->
     <div class="mb-4">
       <%= link_to root_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
-        ← Back
+        &larr; <%= t('test_plans.show.back') %>
         <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
       <% end %>
     </div>
@@ -13,17 +13,17 @@
       <div id="stamp-container" data-scenario-target="stamp" class="hidden absolute -top-6 -right-6">
         <div class="bg-fz-green-dark text-white px-8 py-4 rounded-xl shadow-2xl transform rotate-12 border-4 border-fz-green-darker">
           <div class="text-center">
-            <div class="text-3xl font-bold">DONE</div>
-            <div class="text-sm"><%= Date.today.strftime('%b %d, %Y').upcase %></div>
+            <div class="text-3xl font-bold"><%= t('test_plans.show.done') %></div>
+            <div class="text-sm"><%= l(Date.today, format: :short_date).upcase %></div>
             <div class="text-xs">by <%= @test_plan.qa_name %></div>
           </div>
         </div>
       </div>
 
       <h1 class="text-3xl font-bold text-ink-darkest mb-2"><%= @test_plan.name %></h1>
-      <p class="text-ink-dark">Responsible QA: <span class="font-semibold"><%= @test_plan.qa_name %></span></p>
+      <p class="text-ink-dark"><%= t('test_plans.show.responsible_qa') %> <span class="font-semibold"><%= @test_plan.qa_name %></span></p>
       <p class="text-ink-medium text-sm mt-2">
-        <%= @test_plan.approved_scenarios %>/<%= @test_plan.total_scenarios %> scenarios approved
+        <%= t('test_plans.show.scenarios_approved', approved: @test_plan.approved_scenarios, total: @test_plan.total_scenarios) %>
       </p>
       <% if @test_plan.tags.any? %>
         <div class="flex flex-wrap gap-2 mt-3">
@@ -41,13 +41,13 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-fz-violet-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
           </svg>
-          Generate with AI
+          <%= t('test_plans.show.generate_with_ai') %>
         </h2>
 
         <div class="space-y-4">
           <div>
-            <label class="block font-semibold text-ink-darker mb-2">Feature Description</label>
-            <textarea data-ai-generate-target="prompt" rows="3" class="w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-violet-light" placeholder="Describe the feature you want to generate test scenarios for, e.g.: User login with email and password, including social login options"></textarea>
+            <label class="block font-semibold text-ink-darker mb-2"><%= t('test_plans.show.feature_description') %></label>
+            <textarea data-ai-generate-target="prompt" rows="3" class="w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-violet-light" placeholder="<%= t('test_plans.show.ai_placeholder') %>"></textarea>
           </div>
 
           <div class="flex items-center gap-4">
@@ -55,7 +55,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
               </svg>
-              Generate with AI
+              <%= t('test_plans.show.generate_with_ai') %>
             </button>
 
             <div data-ai-generate-target="spinner" class="hidden flex items-center gap-2 text-ink-medium">
@@ -63,7 +63,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
               </svg>
-              Generating scenarios...
+              <%= t('test_plans.show.generating') %>
             </div>
 
             <p data-ai-generate-target="result" class="hidden text-fz-green-dark font-semibold"></p>
@@ -73,42 +73,42 @@
 
       <!-- New scenario form -->
       <div class="bg-surface rounded-xl shadow-lg p-6 mb-8">
-        <h2 class="text-xl font-bold text-ink-darkest mb-4">+ Add New Scenario</h2>
+        <h2 class="text-xl font-bold text-ink-darkest mb-4"><%= t('test_plans.show.add_new_scenario') %></h2>
 
         <%= form_with model: [@test_plan, @new_scenario], class: "space-y-4" do |f| %>
           <div>
-            <%= f.label :title, "Scenario Title", class: "block font-semibold text-ink-darker mb-2" %>
-            <%= f.text_field :title, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "E.g.: Login with valid credentials" %>
+            <%= f.label :title, t('test_plans.show.scenario_title'), class: "block font-semibold text-ink-darker mb-2" %>
+            <%= f.text_field :title, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.scenario_title_placeholder') %>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <%= f.label :given, "Given", class: "block font-semibold text-ink-darker mb-2" %>
-              <%= f.text_area :given, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "E.g.: the user is on the login page" %>
+              <%= f.label :given, t('test_plans.show.given'), class: "block font-semibold text-ink-darker mb-2" %>
+              <%= f.text_area :given, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.given_placeholder') %>
             </div>
 
             <div>
-              <%= f.label :when_step, "When", class: "block font-semibold text-ink-darker mb-2" %>
-              <%= f.text_area :when_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "E.g.: they enter valid credentials" %>
+              <%= f.label :when_step, t('test_plans.show.when'), class: "block font-semibold text-ink-darker mb-2" %>
+              <%= f.text_area :when_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.when_placeholder') %>
             </div>
 
             <div>
-              <%= f.label :then_step, "Then", class: "block font-semibold text-ink-darker mb-2" %>
-              <%= f.text_area :then_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: "E.g.: they should be redirected" %>
+              <%= f.label :then_step, t('test_plans.show.then'), class: "block font-semibold text-ink-darker mb-2" %>
+              <%= f.text_area :then_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.then_placeholder') %>
             </div>
           </div>
 
           <div>
-            <%= f.label :evidence_files, "Evidence (images/files)", class: "block font-semibold text-ink-darker mb-2" %>
+            <%= f.label :evidence_files, t('test_plans.show.evidence_label'), class: "block font-semibold text-ink-darker mb-2" %>
             <label class="cursor-pointer inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-6 py-3 rounded-lg transition">
-              📎 Upload Evidence
+              <%= t('test_plans.show.upload_evidence') %>
               <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload" %>
             </label>
-            <p class="text-sm text-ink-medium mt-2" id="file-count">No file selected</p>
+            <p class="text-sm text-ink-medium mt-2" id="file-count"><%= t('test_plans.show.no_file_selected') %></p>
           </div>
 
           <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition flex items-center gap-2" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="c">
-            + Add Scenario
+            <%= t('test_plans.show.add_scenario') %>
             <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">C</span>
           </button>
         <% end %>
@@ -121,7 +121,7 @@
         <div class="bg-surface rounded-xl shadow-lg p-6 scenario-card" data-scenario-id="<%= scenario.id %>" data-scenario-status="<%= scenario.status %>" data-sortable-target="item" draggable="true" data-action="dragstart->sortable#dragStart dragover->sortable#dragOver dragend->sortable#dragEnd touchstart->sortable#touchStart">
           <div class="flex justify-between items-start mb-4">
             <div class="flex items-center gap-3">
-              <span class="cursor-grab active:cursor-grabbing text-ink-medium hover:text-ink-dark transition" title="Drag to reorder" data-drag-handle>
+              <span class="cursor-grab active:cursor-grabbing text-ink-medium hover:text-ink-dark transition" title="<%= t('test_plans.show.drag_reorder') %>" data-drag-handle>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
                 </svg>
@@ -132,30 +132,30 @@
             <div class="flex gap-2">
               <% if scenario.status == 'approved' %>
                 <div class="bg-fz-green-dark text-white px-6 py-2 rounded-lg font-semibold">
-                  ✓ Approved
+                  &#10003; <%= t('test_plans.show.approved') %>
                 </div>
               <% elsif scenario.status == 'failed' %>
                 <div class="bg-fz-red-dark text-white px-6 py-2 rounded-lg font-semibold">
-                  ✗ Failed
+                  &#10007; <%= t('test_plans.show.failed') %>
                 </div>
               <% else %>
                 <% if current_user_admin? || @test_plan.user == Current.user %>
                   <button data-action="click->scenario#updateStatus" data-status="approved" data-scenario-id="<%= scenario.id %>" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition">
-                    ✓ Approve
+                    &#10003; <%= t('test_plans.show.approve') %>
                   </button>
                   <button data-action="click->scenario#updateStatus" data-status="failed" data-scenario-id="<%= scenario.id %>" class="bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition">
-                    ✗ Fail
+                    &#10007; <%= t('test_plans.show.fail') %>
                   </button>
                 <% end %>
               <% end %>
               <% if current_user_admin? || @test_plan.user == Current.user %>
-                <button type="button" data-action="click->scenario#toggleEdit" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition cursor-pointer" title="Edit steps">
+                <button type="button" data-action="click->scenario#toggleEdit" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition cursor-pointer" title="<%= t('test_plans.index.edit') %>">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </button>
-                <%= button_to test_plan_test_scenario_path(@test_plan, scenario), method: :delete, data: { turbo_confirm: 'Are you sure you want to delete this scenario?' }, class: "bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
-                  🗑️
+                <%= button_to test_plan_test_scenario_path(@test_plan, scenario), method: :delete, data: { turbo_confirm: t('test_plans.show.confirm_delete_scenario') }, class: "bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
+                  &#128465;&#65039;
                 <% end %>
               <% end %>
             </div>
@@ -163,17 +163,17 @@
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div class="step-box step-box-blue bg-fz-blue-darkest p-4 rounded-lg cursor-pointer" data-step="given" data-action="click->scenario#toggleEdit">
-              <p class="font-semibold text-fz-blue-light mb-2">Given:</p>
+              <p class="font-semibold text-fz-blue-light mb-2"><%= t('test_plans.show.given') %>:</p>
               <p class="text-ink-darker break-words step-text"><%= scenario.given %></p>
             </div>
 
             <div class="step-box step-box-violet bg-fz-violet-darkest p-4 rounded-lg cursor-pointer" data-step="when" data-action="click->scenario#toggleEdit">
-              <p class="font-semibold text-fz-violet-light mb-2">When:</p>
+              <p class="font-semibold text-fz-violet-light mb-2"><%= t('test_plans.show.when') %>:</p>
               <p class="text-ink-darker break-words step-text"><%= scenario.when_step %></p>
             </div>
 
             <div class="step-box step-box-green bg-fz-green-darkest p-4 rounded-lg cursor-pointer" data-step="then" data-action="click->scenario#toggleEdit">
-              <p class="font-semibold text-fz-green-light mb-2">Then:</p>
+              <p class="font-semibold text-fz-green-light mb-2"><%= t('test_plans.show.then') %>:</p>
               <p class="text-ink-darker break-words step-text"><%= scenario.then_step %></p>
             </div>
           </div>
@@ -181,7 +181,7 @@
           <!-- Evidence -->
           <% if scenario.evidence_files.attached? %>
             <div class="mt-4">
-              <p class="font-semibold text-ink-darker mb-2">Evidence:</p>
+              <p class="font-semibold text-ink-darker mb-2"><%= t('test_plans.show.evidence') %></p>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <% scenario.evidence_files.each do |file| %>
                   <div class="relative group">
@@ -189,7 +189,7 @@
                       <%= image_tag file, class: "w-full h-32 object-cover rounded-lg shadow" %>
                     <% else %>
                       <div class="w-full h-32 bg-surface-raised rounded-lg flex items-center justify-center">
-                        <span class="text-4xl">📄</span>
+                        <span class="text-4xl">&#128196;</span>
                       </div>
                     <% end %>
                   </div>
@@ -205,7 +205,7 @@
     <% if @test_scenarios.any? %>
       <div class="mt-8 text-center">
         <%= link_to test_plan_report_path(@test_plan, format: :pdf), target: "_blank", class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold px-12 py-4 rounded-xl shadow-xl transition transform hover:scale-105" do %>
-          📄 Export PDF Report
+          &#128196; <%= t('test_plans.show.export_pdf') %>
         <% end %>
       </div>
     <% end %>
@@ -214,11 +214,13 @@
 
 <script>
   // Update file counter
-  document.getElementById('file-upload').addEventListener('change', function(e) {
+  document.getElementById('file-upload')?.addEventListener('change', function(e) {
     const count = e.target.files.length;
-    const text = count === 0 ? 'No file selected' :
-                 count === 1 ? '1 file selected' :
-                 `${count} files selected`;
+    const translations = JSON.parse(document.querySelector('meta[name="translations"]')?.content || '{}');
+    const fileUpload = translations.file_upload || {};
+    const text = count === 0 ? (fileUpload.no_file || 'No file selected') :
+                 count === 1 ? (fileUpload.one_file || '1 file selected') :
+                 (fileUpload.files || '%{count} files selected').replace('%{count}', count);
     document.getElementById('file-count').textContent = text;
   });
 </script>

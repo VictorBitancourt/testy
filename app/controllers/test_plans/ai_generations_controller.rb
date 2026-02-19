@@ -6,7 +6,7 @@ class TestPlans::AiGenerationsController < ApplicationController
     prompt = params[:prompt].to_s.strip
 
     if prompt.blank?
-      render json: { success: false, error: "Please enter a feature description." }, status: :unprocessable_entity
+      render json: { success: false, error: t('controllers.ai_generations.prompt_blank') }, status: :unprocessable_entity
       return
     end
 

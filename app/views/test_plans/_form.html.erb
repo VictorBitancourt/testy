@@ -1,7 +1,7 @@
 <%= form_with model: test_plan, class: "space-y-6" do |f| %>
   <% if test_plan.errors.any? %>
     <div class="bg-fz-red-darkest border border-fz-red-darker text-fz-red-light px-4 py-3 rounded-lg">
-      <p class="font-bold">Error saving:</p>
+      <p class="font-bold"><%= t('test_plans.form.error_saving') %></p>
       <ul class="list-disc list-inside">
         <% test_plan.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -11,24 +11,24 @@
   <% end %>
 
   <div>
-    <%= f.label :name, "Test Plan Name", class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_field :name, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: "E.g.: Login Tests - Sprint 23" %>
+    <%= f.label :name, t('test_plans.form.plan_name'), class: "block font-semibold text-ink-darker mb-2" %>
+    <%= f.text_field :name, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: t('test_plans.form.plan_name_placeholder') %>
   </div>
 
   <div>
-    <%= f.label :qa_name, "Responsible QA", class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_field :qa_name, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: "Your full name" %>
+    <%= f.label :qa_name, t('test_plans.form.responsible_qa'), class: "block font-semibold text-ink-darker mb-2" %>
+    <%= f.text_field :qa_name, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: t('test_plans.form.qa_placeholder') %>
   </div>
 
   <div data-controller="tag-input" class="relative">
-    <%= f.label :tag_list, "Tags", class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_field :tag_list, value: test_plan.tag_list, data: { tag_input_target: "input", action: "input->tag-input#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-violet-light focus:border-transparent", placeholder: "E.g.: login, sprint-23, regression", autocomplete: "off" %>
+    <%= f.label :tag_list, t('test_plans.form.tags'), class: "block font-semibold text-ink-darker mb-2" %>
+    <%= f.text_field :tag_list, value: test_plan.tag_list, data: { tag_input_target: "input", action: "input->tag-input#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-violet-light focus:border-transparent", placeholder: t('test_plans.form.tags_placeholder'), autocomplete: "off" %>
     <div data-tag-input-target="suggestions" class="hidden absolute z-10 w-full mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
-    <p class="text-xs text-ink-medium mt-1">Separate tags with commas</p>
+    <p class="text-xs text-ink-medium mt-1"><%= t('test_plans.form.tags_hint') %></p>
   </div>
 
   <div class="flex gap-4">
-    <%= f.submit (test_plan.new_record? ? "Create Plan" : "Update Plan"), class: "flex-1 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold py-3 rounded-lg cursor-pointer transition" %>
-    <%= link_to "Cancel", test_plans_path, class: "flex-1 bg-surface-raised hover:bg-ink-lightest text-ink-dark font-bold py-3 rounded-lg text-center transition" %>
+    <%= f.submit (test_plan.new_record? ? t('test_plans.form.create_plan') : t('test_plans.form.update_plan')), class: "flex-1 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold py-3 rounded-lg cursor-pointer transition" %>
+    <%= link_to t('test_plans.form.cancel'), test_plans_path, class: "flex-1 bg-surface-raised hover:bg-ink-lightest text-ink-dark font-bold py-3 rounded-lg text-center transition" %>
   </div>
 <% end %>

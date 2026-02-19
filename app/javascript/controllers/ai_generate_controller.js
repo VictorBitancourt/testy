@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { t } from "i18n_helper"
 
 export default class extends Controller {
   static targets = ["prompt", "button", "spinner", "result"]
@@ -9,7 +10,7 @@ export default class extends Controller {
 
     const prompt = this.promptTarget.value.trim()
     if (!prompt) {
-      alert("Enter a description of the feature you want to test.")
+      alert(t('ai_generate.enter_description'))
       return
     }
 
@@ -30,18 +31,18 @@ export default class extends Controller {
       const data = await response.json()
 
       if (!response.ok) {
-        alert(data.error || "Error generating scenarios.")
+        alert(data.error || t('ai_generate.error_generating'))
         return
       }
 
-      this.resultTarget.textContent = `${data.count} scenarios created successfully!`
+      this.resultTarget.textContent = t('ai_generate.scenarios_created', { count: data.count })
       this.resultTarget.classList.remove("hidden")
       this.promptTarget.value = ""
 
       setTimeout(() => window.location.reload(), 1200)
     } catch (error) {
       console.error("Error generating scenarios:", error)
-      alert("Error communicating with AI. Please try again.")
+      alert(t('ai_generate.error_communication'))
     } finally {
       this.buttonTarget.disabled = false
       this.spinnerTarget.classList.add("hidden")

@@ -66,13 +66,13 @@ module Authentication
 
     def require_admin
       unless current_user_admin?
-        redirect_to root_path, alert: "Access restricted to administrators."
+        redirect_to root_path, alert: I18n.t('controllers.authentication.admin_restricted')
       end
     end
 
     def authorize_plan_owner_or_admin(plan)
       unless current_user_admin? || plan.user == Current.user
-        redirect_to root_path, alert: "You do not have permission for this action."
+        redirect_to root_path, alert: I18n.t('controllers.authentication.no_permission')
       end
     end
 end

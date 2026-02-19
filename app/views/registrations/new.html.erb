@@ -15,8 +15,8 @@
     </div>
 
     <div class="bg-surface rounded-xl shadow-lg p-8 border border-ink-lighter">
-      <h1 class="text-2xl font-bold text-ink-darkest text-center mb-2">Initial Setup</h1>
-      <p class="text-sm text-ink-dark text-center mb-6">Create the admin user to get started.</p>
+      <h1 class="text-2xl font-bold text-ink-darkest text-center mb-2"><%= t('registrations.new.initial_setup') %></h1>
+      <p class="text-sm text-ink-dark text-center mb-6"><%= t('registrations.new.create_admin') %></p>
 
       <%= form_with model: @user, url: registration_path, class: "space-y-4" do |f| %>
         <% if @user.errors.any? %>
@@ -30,28 +30,38 @@
         <% end %>
 
         <div>
-          <label for="user_username" class="block text-sm font-medium text-ink-dark mb-1">Username</label>
+          <label for="user_username" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.username') %></label>
           <%= f.text_field :username, autocomplete: "username", autofocus: true, required: true,
               class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
         </div>
 
         <div>
-          <label for="user_password" class="block text-sm font-medium text-ink-dark mb-1">Password</label>
+          <label for="user_password" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.password') %></label>
           <%= f.password_field :password, autocomplete: "new-password", required: true,
               class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
         </div>
 
         <div>
-          <label for="user_password_confirmation" class="block text-sm font-medium text-ink-dark mb-1">Confirm Password</label>
+          <label for="user_password_confirmation" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.confirm_password') %></label>
           <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true,
               class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
         </div>
 
         <button type="submit"
                 class="w-full bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold py-2.5 rounded-lg shadow-lg transition">
-          Create User
+          <%= t('registrations.new.create_user') %>
         </button>
       <% end %>
+
+      <!-- Language switcher -->
+      <div class="flex items-center justify-center gap-1 mt-4">
+        <%= button_to locale_path(locale: :en), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :en ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+          <%= t('language.en') %>
+        <% end %>
+        <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :'pt-BR' ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+          <%= t('language.pt_br') %>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
