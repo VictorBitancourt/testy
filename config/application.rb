@@ -16,8 +16,8 @@ module TestPlanManager
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    config.i18n.available_locales = [:en, :'pt-BR']
+    config.i18n.available_locales = [ :en, :'pt-BR' ]
     config.i18n.default_locale = :en
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.yml')]
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.yml")]
   end
 end

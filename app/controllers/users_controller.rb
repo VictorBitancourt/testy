@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :require_admin
-  before_action :set_user, only: [:edit, :update, :destroy]
+  before_action :set_user, only: [ :edit, :update, :destroy ]
 
   def index
     @users = User.order(:username)
@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     @user = User.new(user_create_params)
 
     if @user.save
-      redirect_to users_path, notice: t('controllers.users.created')
+      redirect_to users_path, notice: t("controllers.users.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_update_params)
-      redirect_to users_path, notice: t('controllers.users.password_reset')
+      redirect_to users_path, notice: t("controllers.users.password_reset")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -33,10 +33,10 @@ class UsersController < ApplicationController
 
   def destroy
     if @user == Current.user
-      redirect_to users_path, alert: t('controllers.users.cannot_delete_self')
+      redirect_to users_path, alert: t("controllers.users.cannot_delete_self")
     else
       @user.destroy
-      redirect_to users_path, notice: t('controllers.users.removed')
+      redirect_to users_path, notice: t("controllers.users.removed")
     end
   end
 

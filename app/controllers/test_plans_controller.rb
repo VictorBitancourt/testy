@@ -1,8 +1,8 @@
 class TestPlansController < ApplicationController
   include Pagy::Method
 
-  before_action :set_test_plan, only: [:show, :edit, :update, :destroy]
-  before_action :authorize_owner_or_admin, only: [:edit, :update, :destroy]
+  before_action :set_test_plan, only: [ :show, :edit, :update, :destroy ]
+  before_action :authorize_owner_or_admin, only: [ :edit, :update, :destroy ]
 
   def index
     @test_plans = TestPlan.includes(:test_scenarios, :user, :tags).order(created_at: :desc)
@@ -42,7 +42,7 @@ class TestPlansController < ApplicationController
     @test_plan.user = Current.user
 
     if @test_plan.save
-      redirect_to @test_plan, notice: t('controllers.test_plans.created')
+      redirect_to @test_plan, notice: t("controllers.test_plans.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -53,7 +53,7 @@ class TestPlansController < ApplicationController
 
   def update
     if @test_plan.update(test_plan_params)
-      redirect_to @test_plan, notice: t('controllers.test_plans.updated')
+      redirect_to @test_plan, notice: t("controllers.test_plans.updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -61,7 +61,7 @@ class TestPlansController < ApplicationController
 
   def destroy
     @test_plan.destroy
-    redirect_to test_plans_path, notice: t('controllers.test_plans.removed')
+    redirect_to test_plans_path, notice: t("controllers.test_plans.removed")
   end
 
   private

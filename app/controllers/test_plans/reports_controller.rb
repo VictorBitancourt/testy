@@ -14,7 +14,7 @@ class TestPlans::ReportsController < ApplicationController
           margin_right: 0
         },
         template: "test_plans/report_pdf",
-        formats: [:html],
+        formats: [ :html ],
         layout: false,
         disposition: :inline,
         filename: "test_plan_#{@test_plan.id}.pdf"

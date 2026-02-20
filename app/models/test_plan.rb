@@ -60,7 +60,7 @@ class TestPlan < ApplicationRecord
   end
 
   def all_scenarios_approved?
-    test_scenarios.any? && test_scenarios.all? { |scenario| scenario.status == 'approved' }
+    test_scenarios.any? && test_scenarios.all? { |scenario| scenario.status == "approved" }
   end
 
   def total_scenarios
@@ -68,7 +68,7 @@ class TestPlan < ApplicationRecord
   end
 
   def approved_scenarios
-    test_scenarios.where(status: 'approved').count
+    test_scenarios.where(status: "approved").count
   end
 
   def generate_scenarios_with_ai(prompt)
