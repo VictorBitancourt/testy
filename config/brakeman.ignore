@@ -1,0 +1,51 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "809539e6f94a32fadd3d3cef10164d5cd9260dfa3ec85c349c150222e0c0d41e",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/controllers/bugs_controller.rb",
+      "line": 68,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Bug.where.not(params[:field].to_sym => ([nil, \"\"]))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "BugsController",
+        "method": "tag_suggestions"
+      },
+      "user_input": "params[:field].to_sym",
+      "confidence": "High",
+      "cwe_id": [
+        89
+      ],
+      "note": "Field is validated against whitelist before use"
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "85f2ed588ef6261d81ed31e7cd30ad53b57eed98b93deffd0d3a74c2f823a62c",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/users_controller.rb",
+      "line": 49,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:user).permit(:username, :password, :password_confirmation, :role)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "UsersController",
+        "method": "user_create_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Admin-only controller (require_admin before_action)"
+    }
+  ],
+  "brakeman_version": "8.0.2"
+}

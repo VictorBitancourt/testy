@@ -1,0 +1,26 @@
+open_bug:
+  title: Button not working on checkout page
+  description: The checkout button does not respond to clicks
+  status: open
+  feature_tag: checkout
+  cause_tag: ui
+  steps_to_reproduce: Click the checkout button
+  expected_result: Redirects to payment
+  obtained_result: Nothing happens
+  user: admin
+
+resolved_bug:
+  title: Login page crashes on empty password
+  description: Submitting the login form without a password causes a 500 error
+  status: resolved
+  feature_tag: login
+  cause_tag: validation
+  user: admin
+
+user_bug:
+  title: Profile image not loading
+  description: The profile image returns a 404
+  status: open
+  feature_tag: profile
+  cause_tag: storage
+  user: regular_user

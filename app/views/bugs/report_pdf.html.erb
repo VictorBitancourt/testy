@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      background: #f5f3ef;
+      height: 100%;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Table that controls header/footer repetition on each page */
+    .page-table {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+    }
+
+    .page-table td {
+      padding: 0;
+      border: none;
+    }
+
+    /* Top space repeated on each page */
+    .page-header-space {
+      height: 6mm;
+    }
+
+    /* Invisible tfoot — reserves space for page breaks */
+    .tfoot-spacer {
+      height: 20mm;
+    }
+
+    /* Fixed visual footer at the bottom of each page */
+    .pdf-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 20mm;
+      text-align: center;
+      padding-top: 4px;
+      border-top: 2px solid #e8e4dd;
+      background: #f5f3ef;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .pdf-footer img {
+      display: block;
+      margin: 0 auto 2px;
+    }
+
+    .pdf-footer .footer-text {
+      font-size: 9px;
+      color: #999;
+    }
+
+    .pdf-footer .footer-date {
+      font-size: 8px;
+      color: #bbb;
+    }
+
+    /* Main content */
+    td.page-content {
+      padding: 0 20mm;
+    }
+
+    /* Header */
+    /* Header com logo centralizado */
+    .header {
+      text-align: center;
+      padding: 20px 0 24px;
+      border-bottom: 3px solid #e8e4dd;
+      margin-bottom: 30px;
+    }
+
+    .logo-container {
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .report-title {
+      font-size: 14px;
+      color: #ef4444;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .report-date {
+      font-size: 13px;
+      color: #999;
+    }
+
+    /* Bug Info */
+    .bug-info {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .bug-id {
+      font-size: 13px;
+      color: #999;
+      font-family: monospace;
+    }
+
+    .bug-name {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .bug-meta {
+      font-size: 15px;
+      color: #666;
+    }
+
+    .bug-meta strong {
+      color: #ef4444;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-open {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-resolved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .tag-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-right: 6px;
+    }
+
+    .tag-feature {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .tag-cause {
+      background: #ef4444;
+      color: white;
+    }
+
+    /* Sections */
+    .section {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      page-break-inside: avoid;
+    }
+
+    .section-header {
+      padding: 18px 24px;
+      border-bottom: 2px solid #f5f3ef;
+      font-size: 14px;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-body {
+      padding: 24px;
+    }
+
+    .section-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #444;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Evidence */
+    .evidence-img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 2px solid #e8e4dd;
+      margin-bottom: 12px;
+    }
+
+    .evidence-file {
+      background: #f9f8f6;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <% require 'base64' %>
+  <% logo_b64 = Base64.strict_encode64(File.read(Rails.root.join('app/assets/images/testy-logo.png'))) %>
+
+  <!-- Fixed visual footer at the bottom of each page -->
+  <div class="pdf-footer">
+    <img src="data:image/png;base64,<%= logo_b64 %>" width="16" height="16" />
+    <div class="footer-text"><%= t('bugs.report_pdf.footer_tagline') %></div>
+    <div class="footer-date"><%= l(Time.zone.now, format: :short_datetime) %></div>
+  </div>
+
+  <table class="page-table">
+    <thead>
+      <tr><td><div class="page-header-space"></div></td></tr>
+    </thead>
+    <tfoot>
+      <tr><td><div class="tfoot-spacer"></div></td></tr>
+    </tfoot>
+    <tbody>
+      <tr><td class="page-content">
+
+  <!-- Header with Logo -->
+  <div class="header">
+    <div class="logo-container">
+      <img src="data:image/png;base64,<%= logo_b64 %>" width="100" height="100" />
+    </div>
+    <div class="report-title"><%= t('bugs.report_pdf.bug_report') %></div>
+    <div class="report-date"><%= t('bugs.report_pdf.generated_on', date: l(Time.zone.today, format: :month_day_year)) %></div>
+  </div>
+
+  <!-- Bug Info -->
+  <div class="bug-info">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div>
+        <div class="bug-id">#<%= @bug.id %></div>
+        <div class="bug-name"><%= @bug.title %></div>
+        <div class="bug-meta"><%= t('bugs.report_pdf.reported_by') %> <strong><%= @bug.user&.username %></strong></div>
+      </div>
+      <span class="badge badge-<%= @bug.status %>"><%= @bug.open? ? t('bugs.report_pdf.status_open') : t('bugs.report_pdf.status_resolved') %></span>
+    </div>
+    <% if @bug.feature_tag.present? || @bug.cause_tag.present? %>
+      <div style="margin-top: 12px;">
+        <% if @bug.feature_tag.present? %>
+          <span class="tag-badge tag-feature"><%= @bug.feature_tag %></span>
+        <% end %>
+        <% if @bug.cause_tag.present? %>
+          <span class="tag-badge tag-cause"><%= @bug.cause_tag %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Description -->
+  <div class="section">
+    <div class="section-header"><%= t('bugs.report_pdf.description') %></div>
+    <div class="section-body">
+      <div class="section-text"><%= @bug.description %></div>
+    </div>
+  </div>
+
+  <% if @bug.steps_to_reproduce.present? %>
+  <div class="section">
+    <div class="section-header"><%= t('bugs.report_pdf.steps_to_reproduce') %></div>
+    <div class="section-body">
+      <div class="section-text"><%= @bug.steps_to_reproduce %></div>
+    </div>
+  </div>
+  <% end %>
+
+  <% if @bug.obtained_result.present? %>
+  <div class="section">
+    <div class="section-header"><%= t('bugs.report_pdf.obtained_result') %></div>
+    <div class="section-body">
+      <div class="section-text"><%= @bug.obtained_result %></div>
+    </div>
+  </div>
+  <% end %>
+
+  <% if @bug.expected_result.present? %>
+  <div class="section">
+    <div class="section-header"><%= t('bugs.report_pdf.expected_result') %></div>
+    <div class="section-body">
+      <div class="section-text"><%= @bug.expected_result %></div>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Evidence -->
+  <% if @bug.evidence_files.attached? %>
+  <div class="section">
+    <div class="section-header"><%= t('bugs.report_pdf.evidence') %></div>
+    <div class="section-body">
+      <% @bug.evidence_files.each do |file| %>
+        <% if file.image? %>
+          <div style="page-break-inside: avoid;">
+            <img src="data:<%= file.content_type %>;base64,<%= Base64.strict_encode64(file.download) %>" class="evidence-img" />
+          </div>
+        <% else %>
+          <div class="evidence-file">
+            <div style="font-size: 24px;">&#128196;</div>
+            <div style="font-size: 12px; color: #666;"><%= file.filename %></div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+      </td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

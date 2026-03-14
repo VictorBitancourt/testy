@@ -1,0 +1,7 @@
+<% if test_scenarios.any? %>
+  <div class="mt-8 text-center">
+    <%= link_to test_plan_report_path(test_plan, format: :pdf), target: "_blank", class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold px-12 py-4 rounded-xl shadow-xl transition transform hover:scale-105" do %>
+      &#128196; <%= t('test_plans.show.export_pdf') %>
+    <% end %>
+  </div>
+<% end %>

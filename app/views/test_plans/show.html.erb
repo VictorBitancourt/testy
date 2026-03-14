@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;" data-controller="scenario" data-scenario-test-plan-id-value="<%= @test_plan.id %>">
+  <div class="max-w-6xl mx-auto">
+    <!-- Back -->
+    <div class="mb-4">
+      <%= link_to root_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+        &larr; <%= t('test_plans.show.back') %>
+        <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+      <% end %>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-surface rounded-xl shadow-lg p-6 mb-8 relative">
+      <div id="stamp-container" data-scenario-target="stamp" class="hidden absolute -top-6 -right-6">
+        <div class="bg-fz-green-dark text-white px-8 py-4 rounded-xl shadow-2xl transform rotate-12 border-4 border-fz-green-darker">
+          <div class="text-center">
+            <div class="text-3xl font-bold"><%= t('test_plans.show.done') %></div>
+            <div class="text-sm"><%= l(Date.today, format: :short_date).upcase %></div>
+            <div class="text-xs">by <%= @test_plan.qa_name %></div>
+          </div>
+        </div>
+      </div>
+
+      <h1 class="text-3xl font-bold text-ink-darkest mb-2"><%= @test_plan.name %></h1>
+      <p class="text-ink-dark"><%= t('test_plans.show.responsible_qa') %> <span class="font-semibold"><%= @test_plan.qa_name %></span></p>
+      <p class="text-ink-medium text-sm mt-2">
+        <%= t('test_plans.show.scenarios_approved', approved: @test_plan.approved_scenarios, total: @test_plan.total_scenarios) %>
+      </p>
+      <% if @test_plan.tags.any? %>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <% @test_plan.tags.each do |tag| %>
+            <%= link_to tag.name, test_plans_path(tag: tag.name), class: "inline-block bg-fz-violet-darkest text-fz-violet-light text-sm font-semibold px-3 py-1 rounded-full hover:bg-fz-violet-darker transition" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if current_user_admin? || @test_plan.user == Current.user %>
+      <%= render "test_plans/ai_generation_form", test_plan: @test_plan %>
+      <%= render "test_plans/new_scenario_form", test_plan: @test_plan, new_scenario: @new_scenario %>
+    <% end %>
+
+    <!-- Scenario List -->
+    <div class="space-y-6" id="scenarios-container" data-scenario-target="container" data-controller="sortable" data-sortable-url-value="<%= test_plan_scenario_order_path(@test_plan) %>">
+      <% @test_scenarios.each do |scenario| %>
+        <%= render "test_plans/scenario_card", scenario: scenario, test_plan: @test_plan %>
+      <% end %>
+    </div>
+
+    <%= render "test_plans/export_buttons", test_scenarios: @test_scenarios, test_plan: @test_plan %>
+  </div>
+</div>
+
+<script>
+  // Update file counter
+  document.getElementById('file-upload')?.addEventListener('change', function(e) {
+    const count = e.target.files.length;
+    const translations = JSON.parse(document.querySelector('meta[name="translations"]')?.content || '{}');
+    const fileUpload = translations.file_upload || {};
+    const text = count === 0 ? (fileUpload.no_file || 'No file selected') :
+                 count === 1 ? (fileUpload.one_file || '1 file selected') :
+                 (fileUpload.files || '%{count} files selected').replace('%{count}', count);
+    document.getElementById('file-count').textContent = text;
+  });
+</script>

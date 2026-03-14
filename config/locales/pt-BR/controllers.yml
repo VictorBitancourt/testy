@@ -1,0 +1,31 @@
+pt-BR:
+  controllers:
+    sessions:
+      rate_limited: "Tente novamente mais tarde."
+      invalid_credentials: "Usuário ou senha inválidos."
+    registrations:
+      created: "Usuário criado com sucesso!"
+    test_plans:
+      created: "Plano de teste criado com sucesso!"
+      updated: "Plano de teste atualizado!"
+      removed: "Plano de teste removido!"
+    test_scenarios:
+      created: "Cenário adicionado!"
+      create_error: "Erro ao adicionar cenário."
+      updated: "Cenário atualizado!"
+      update_error: "Erro ao atualizar cenário."
+      removed: "Cenário removido!"
+    users:
+      created: "Usuário criado com sucesso!"
+      password_reset: "Senha redefinida com sucesso!"
+      cannot_delete_self: "Você não pode excluir a si mesmo."
+      removed: "Usuário removido com sucesso!"
+    bugs:
+      created: "Bug reportado com sucesso!"
+      updated: "Bug atualizado!"
+      removed: "Bug removido!"
+    authentication:
+      admin_restricted: "Acesso restrito a administradores."
+      no_permission: "Você não tem permissão para esta ação."
+    ai_generations:
+      prompt_blank: "Por favor, insira uma descrição da funcionalidade."

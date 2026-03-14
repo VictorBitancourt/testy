@@ -1,0 +1,19 @@
+module ActiveStorage
+  module AuthorizeBlob
+    extend ActiveSupport::Concern
+
+    included do
+      include Rails.application.routes.url_helpers
+      include Authentication
+
+      before_action :authorize_blob_access
+    end
+
+    private
+
+    def authorize_blob_access
+      attachment = ::ActiveStorage::Attachment.find_by(blob_id: @blob.id)
+      head(:not_found) unless attachment
+    end
+  end
+end

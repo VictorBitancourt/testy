@@ -1,0 +1,5 @@
+admin_session:
+  user: admin
+
+regular_user_session:
+  user: regular_user
