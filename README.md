@@ -134,25 +134,25 @@ Bugs also have individual PDF reports with description, steps to reproduce, obta
 
 When tools allow AND, scenarios inevitably turn into click-by-click scripts:
 
-> **Given** the user is on the login page
-> **And** the user has a valid account
-> **And** the browser is Chrome
-> **When** the user clicks the email field
-> **And** types "user@email.com"
-> **And** clicks the password field
-> **And** types "123456"
-> **And** clicks the submit button
-> **Then** the page redirects to /dashboard
-> **And** the welcome message is visible
-> **And** the session cookie is set
+> **Given** the user is on the login page  
+> **And** the user has a valid account  
+> **And** the browser is Chrome  
+> **When** the user clicks the email field  
+> **And** types "user@email.com"  
+> **And** clicks the password field  
+> **And** types "123456"  
+> **And** clicks the submit button  
+> **Then** the page redirects to /dashboard  
+> **And** the welcome message is visible  
+> **And** the session cookie is set  
 
 This is not a test scenario — it's a manual test script. It's fragile, unreadable for non-technical stakeholders, and describes *how* instead of *what*.
 
 Testy forces you to write scenarios that describe **behavior**, not **procedure**:
 
-> **Given** a registered user
-> **When** they log in with valid credentials
-> **Then** they are redirected to the dashboard
+> **Given** a registered user  
+> **When** they log in with valid credentials  
+> **Then** they are redirected to the dashboard  
 
 One Given, one When, one Then. If you can't describe the scenario in three concise sentences, it's probably more than one scenario. This keeps tests readable by both developers and business people, which is the whole point of Gherkin — a shared language, not a step recorder.
 

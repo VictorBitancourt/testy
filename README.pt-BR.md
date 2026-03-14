@@ -133,25 +133,25 @@ Bugs também têm relatórios PDF individuais com descrição, passos para repro
 
 Quando ferramentas permitem E, os cenários inevitavelmente transformam-se em scripts clique-a-clique:
 
-> **Dado que** o utilizador está na página de login
-> **E** o utilizador tem uma conta válida
-> **E** o browser é Chrome
-> **Quando** o utilizador clica no campo de email
-> **E** escreve "user@email.com"
-> **E** clica no campo de password
-> **E** escreve "123456"
-> **E** clica no botão de submit
-> **Então** a página redireciona para /dashboard
-> **E** a mensagem de boas-vindas está visível
-> **E** o cookie de sessão está definido
+> **Dado que** o utilizador está na página de login  
+> **E** o utilizador tem uma conta válida  
+> **E** o browser é Chrome  
+> **Quando** o utilizador clica no campo de email  
+> **E** escreve "user@email.com"  
+> **E** clica no campo de password  
+> **E** escreve "123456"  
+> **E** clica no botão de submit  
+> **Então** a página redireciona para /dashboard  
+> **E** a mensagem de boas-vindas está visível  
+> **E** o cookie de sessão está definido  
 
 Isto não é um cenário de teste — é um script de teste manual. É frágil, ilegível para stakeholders não-técnicos, e descreve *como* em vez de *o quê*.
 
 O Testy obriga o QA a escrever cenários que descrevem **comportamento**, não **procedimento**:
 
-> **Dado que** um utilizador registado
-> **Quando** faz login com credenciais válidas
-> **Então** é redirecionado para o dashboard
+> **Dado que** um utilizador registado  
+> **Quando** faz login com credenciais válidas  
+> **Então** é redirecionado para o dashboard  
 
 Um Dado que, um Quando, um Então. Se o QA não conseguir descrever o cenário em três frases concisas, provavelmente se trata de mais de um cenário. Isto mantém os testes legíveis tanto para desenvolvedores quanto para pessoas de negócio, que é o propósito do Gherkin — uma linguagem comum, não um roteiro de cliques.
 
