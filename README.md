@@ -2,6 +2,10 @@
   <img src="app/assets/images/testy-logo.png" width="200" alt="Testy Logo" />
 </p>
 
+<p align="center">
+  <strong>English</strong> · <a href="README.pt-BR.md">Português (BR)</a>
+</p>
+
 # Testy
 
 A testy, opinionated test management tool for QA teams that value simplicity over configuration. Create test plans, write scenarios in Given/When/Then format, generate scenarios with AI, attach evidence, and export PDF reports — nothing more, nothing less.
@@ -15,13 +19,17 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Scenarios (Given/When/Then)** — structured Gherkin format without the overhead of a full framework
 - **AI Scenario Generation** — describe a feature in plain text and let Gemini generate 5-15 test scenarios automatically, covering happy paths, edge cases, boundary values, and equivalence partitioning
 - **Drag & Drop Reorder** — reorder scenarios by dragging them, with smooth FLIP animations and a visual drop zone; order is persisted and reflected in reports
-- **Evidence Attachments** — upload screenshots and files directly on each scenario
+- **Evidence Attachments** — upload screenshots and files directly on each scenario or bug
 - **One-Click Approve/Reject** — mark scenarios as approved or failed inline
 - **Derived Status** — plan status is computed automatically from its scenarios (no manual updates)
-- **Search & Filters** — search plans by name, QA, or tag; filter by status and date range
-- **Pagination** — paginated plan listing for large datasets
-- **PDF Reports** — export a formatted report with table of contents (clickable anchors), summary, scenarios, and evidence
-- **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans, users manage their own
+- **Bug Tracking** — report bugs with title, description, steps to reproduce, obtained vs expected results, and evidence attachments; tag by feature and root cause; mark as open or resolved
+- **Bug ↔ Scenario Link** — associate failed scenarios with bugs; a scenario cannot be approved while a bug is linked to it
+- **Root Causes Dashboard** — aggregated view of bugs grouped by cause tag and feature tag, with bar charts for quick analysis
+- **Search & Filters** — search plans by name, QA, or tag; search bugs by ID, title, or description; filter by status, tags, and date range
+- **Pagination** — paginated plan and bug listings for large datasets
+- **PDF Reports** — export formatted reports for both test plans and individual bugs, with table of contents (clickable anchors), summary, scenarios, and evidence
+- **Keyboard Shortcuts** — navigate quickly with single-key shortcuts (N for new, B for back, R for root causes, P for plans)
+- **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans and bugs, users manage their own
 - **Bilingual (EN / PT-BR)** — full interface in English and Brazilian Portuguese; switch languages with one click, preference saved in cookie
 
 ## Tech Stack
@@ -79,12 +87,22 @@ User (username, password_digest, role)
   +-- Session (user_agent, ip_address)
   |
   +-- TestPlan (name, qa_name)
+  |     |
+  |     +-- TestScenario (title, given, when, then, status, position)
+  |     |     |
+  |     |     +-- Evidence Files (Active Storage)
+  |     |     |
+  |     |     +-- Bug (optional link)
+  |     |
+  |     +-- Tags (many-to-many via TestPlanTag)
+  |
+  +-- Bug (title, description, steps_to_reproduce, obtained_result, expected_result, status)
         |
-        +-- TestScenario (title, given, when, then, status, position)
-        |     |
-        |     +-- Evidence Files (Active Storage)
+        +-- Evidence Files (Active Storage)
         |
-        +-- Tags (many-to-many via TestPlanTag)
+        +-- feature_tag, cause_tag (free-form tags with autocomplete)
+        |
+        +-- TestScenarios (linked failed scenarios)
 ```
 
 ### Derived Status
@@ -98,6 +116,8 @@ Plan status is not a stored field. It's computed from the scenarios:
 | Failed | At least one scenario is `failed` |
 | In Progress | Has scenarios, none failed, but not all approved |
 
+A scenario cannot be approved while it has a bug linked to it — the bug must be unlinked or resolved first.
+
 ### PDF Export
 
 Each plan has an "Export PDF Report" button that generates a formatted document with:
@@ -105,6 +125,8 @@ Each plan has an "Export PDF Report" button that generates a formatted document 
 - Plan summary (total scenarios, approved count, QA name, tags)
 - Each scenario with Given/When/Then steps and status
 - Attached evidence images
+
+Bugs also have individual PDF reports with description, steps to reproduce, obtained vs expected results, and evidence.
 
 ## Design Decisions
 
