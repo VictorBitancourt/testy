@@ -32,6 +32,28 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans and bugs, users manage their own
 - **Bilingual (EN / PT-BR)** — full interface in English and Brazilian Portuguese; switch languages with one click, preference saved in cookie
 
+## Screenshots
+
+### Test Plans Dashboard
+
+![Test Plans Dashboard](docs/screenshots/dashboard.png)
+
+### Test Scenarios (Given/When/Then)
+
+![Test Scenarios](docs/screenshots/scenarios.png)
+
+### Bug Tracking
+
+![Bug Tracking](docs/screenshots/bug-jar.png)
+
+### PDF Reports
+
+<p align="center">
+  <img src="docs/screenshots/report-test.png" width="45%" alt="Test Plan Report" />
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/report-bug.png" width="45%" alt="Bug Report" />
+</p>
+
 ## Tech Stack
 
 | Layer | Choice |
