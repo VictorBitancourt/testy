@@ -31,28 +31,6 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 - **Autenticação e Perfis** — login com username/password com perfis de administrador e utilizador comum
 - **Bilingue (EN / PT-BR)** — interface completa em inglês e português brasileiro; alterna idiomas com um clique!
 
-## Screenshots
-
-### Dashboard de Planos de Teste
-
-![Dashboard de Planos de Teste](docs/screenshots/dashboard.png)
-
-### Cenários de Teste (Dado que / Quando / Então)
-
-![Cenários de Teste](docs/screenshots/scenarios.png)
-
-### Rastreamento de Bugs
-
-![Rastreamento de Bugs](docs/screenshots/bug-jar.png)
-
-### Relatórios PDF
-
-<p align="center">
-  <img src="docs/screenshots/report-test.png" width="45%" alt="Relatório de Plano de Teste" />
-  &nbsp;&nbsp;
-  <img src="docs/screenshots/report-bug.png" width="45%" alt="Relatório de Bug" />
-</p>
-
 ## Stack Tecnológica
 
 | Camada | Escolha |
