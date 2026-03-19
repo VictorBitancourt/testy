@@ -39,7 +39,7 @@ module Authentication
     end
 
     def redirect_to_setup
-      if request.path != new_registration_path
+      if User.none? && request.path != new_registration_path
         redirect_to new_registration_path
       end
     end
