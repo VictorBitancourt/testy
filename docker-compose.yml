@@ -1,6 +1,7 @@
 services:
   testy:
-    image: ghcr.io/victorbitancourt/testy:latest
+    build: .
+    image: testy:latest
     ports:
       - "3000:80"
     environment:
