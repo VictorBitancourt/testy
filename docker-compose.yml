@@ -1,6 +1,7 @@
 services:
   testy:
     build: .
+    platform: linux/amd64
     image: testy:latest
     ports:
       - "3000:80"
