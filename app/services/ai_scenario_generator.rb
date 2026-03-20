@@ -3,7 +3,7 @@ require "net/http"
 class AiScenarioGenerator
   ApiError = Class.new(StandardError)
 
-  DEFAULT_MODEL = "gemini-2.0-flash"
+  DEFAULT_MODEL = "gemini-2.5-flash"
   DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
 
   def initialize(test_plan)
