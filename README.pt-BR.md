@@ -177,7 +177,11 @@ Abre [http://localhost:3000](http://localhost:3000). No primeiro acesso, será s
 
 Os dados são persistidos num volume Docker (`testy_storage`). Um `SECRET_KEY_BASE` é gerado automaticamente no primeiro uso.
 
-Para ativar a geração de cenários com IA, descomente `GEMINI_API_KEY` no `docker-compose.yml` e defina sua chave antes de iniciar.
+Para ativar a geração de cenários com IA, passe a chave da API Gemini:
+
+```bash
+GEMINI_API_KEY=your_key_here docker compose up -d
+```
 
 ### Docker Run
 
