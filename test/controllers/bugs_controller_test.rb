@@ -141,6 +141,17 @@ class BugsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
+  test "report" do
+    get bug_report_path(bugs(:open_bug))
+    assert_response :success
+  end
+
+  test "report pdf" do
+    get bug_report_path(bugs(:open_bug), format: :pdf)
+    assert_response :success
+    assert_equal "application/pdf", response.content_type
+  end
+
   # Authorization tests
 
   test "regular user can view bugs" do
