@@ -189,6 +189,8 @@ GEMINI_API_KEY=your_key_here docker compose up -d
 docker run -d \
   -p 3000:80 \
   -e SOLID_QUEUE_IN_PUMA=true \
+  -e FORCE_SSL=false \
+  -e ASSUME_SSL=false \
   -e GEMINI_API_KEY=your_key_here \
   -v testy_storage:/rails/storage \
   testy:latest
