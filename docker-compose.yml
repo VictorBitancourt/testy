@@ -10,7 +10,7 @@ services:
       HTTP_PORT: "80"
       FORCE_SSL: "false"
       ASSUME_SSL: "false"
-      # GEMINI_API_KEY: "your_key_here"  # Optional: enables AI scenario generation
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"  # Optional: pass via GEMINI_API_KEY=key docker compose up -d
     volumes:
       - testy_storage:/rails/storage
     restart: unless-stopped
