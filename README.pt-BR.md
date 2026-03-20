@@ -187,7 +187,7 @@ docker run -d \
   -e SOLID_QUEUE_IN_PUMA=true \
   -e GEMINI_API_KEY=your_key_here \
   -v testy_storage:/rails/storage \
-  ghcr.io/victorbitancourt/testy:latest
+  testy:latest
 ```
 
 ## Reset de Password
