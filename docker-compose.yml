@@ -8,6 +8,8 @@ services:
     environment:
       SOLID_QUEUE_IN_PUMA: "true"
       HTTP_PORT: "80"
+      FORCE_SSL: "false"
+      ASSUME_SSL: "false"
       # GEMINI_API_KEY: "your_key_here"  # Optional: enables AI scenario generation
     volumes:
       - testy_storage:/rails/storage
