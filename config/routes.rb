@@ -1,4 +1,20 @@
 Rails.application.routes.draw do
+  namespace :api do
+    namespace :v1 do
+      post "auth/login", to: "auth#login"
+      delete "auth/logout", to: "auth#logout"
+
+      resources :test_plans, only: [ :index, :show, :create, :update, :destroy ] do
+        resources :test_scenarios, only: [ :create, :update, :destroy ] do
+          resources :screenshots, only: [ :create ]
+        end
+      end
+
+      resources :bugs, only: [ :index, :show, :create, :update, :destroy ]
+      resources :tags, only: [ :index ]
+    end
+  end
+
   resource :locale, only: :update
   resource :session, only: [ :new, :create, :destroy ]
   resource :registration, only: [ :new, :create ]

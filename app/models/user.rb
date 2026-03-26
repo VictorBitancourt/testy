@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
   has_secure_password
   has_many :sessions, dependent: :destroy
+  has_many :api_tokens, dependent: :destroy
   has_many :test_plans, dependent: :nullify
   has_many :bugs, dependent: :destroy
 

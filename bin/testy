@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+MCP_CONFIG="$PROJECT_DIR/.claude/mcp.json"
+
+TESTY_MODEL="${TESTY_MODEL:-sonnet}"
+TESTY_URL="${TESTY_BASE_URL:-http://localhost:3000}"
+TOKEN_DIR="$HOME/.config/testy"
+TOKEN_FILE="$TOKEN_DIR/token"
+
+if ! command -v claude &>/dev/null; then
+  echo "Error: 'claude' CLI not found. Install it with: npm install -g @anthropic-ai/claude-code" >&2
+  exit 1
+fi
+
+# --- login / logout commands (handled directly, no Claude needed) ---
+
+case "${1:-}" in
+  login)
+    if [ $# -lt 3 ]; then
+      echo "Usage: testy login <username> <password>" >&2
+      exit 1
+    fi
+    response=$(curl -sf -X POST "$TESTY_URL/api/v1/auth/login" \
+      -H "Content-Type: application/json" \
+      -d "{\"username\":\"$2\",\"password\":\"$3\"}" 2>&1) || {
+      echo "Login failed. Is the Testy server running at $TESTY_URL?" >&2
+      exit 1
+    }
+    token=$(echo "$response" | ruby -rjson -e 'puts JSON.parse(STDIN.read)["token"]' 2>/dev/null) || {
+      echo "Login failed: $(echo "$response" | ruby -rjson -e 'puts JSON.parse(STDIN.read)["error"]' 2>/dev/null || echo "invalid credentials")" >&2
+      exit 1
+    }
+    mkdir -p "$TOKEN_DIR"
+    echo "$token" > "$TOKEN_FILE"
+    chmod 600 "$TOKEN_FILE"
+    username=$(echo "$response" | ruby -rjson -e 'puts JSON.parse(STDIN.read).dig("user","username")' 2>/dev/null)
+    echo "Logged in as $username. Token saved."
+    exit 0
+    ;;
+  logout)
+    rm -f "$TOKEN_FILE"
+    echo "Logged out. Token removed."
+    exit 0
+    ;;
+  whoami)
+    if [ -f "$TOKEN_FILE" ]; then
+      echo "Authenticated (token saved at $TOKEN_FILE)"
+    else
+      echo "Not logged in. Run: testy login <user> <password>" >&2
+      exit 1
+    fi
+    exit 0
+    ;;
+esac
+
+# --- Check authentication ---
+
+if [ ! -f "$TOKEN_FILE" ]; then
+  echo "Not logged in. Run: testy login <username> <password>" >&2
+  exit 1
+fi
+
+export TESTY_API_TOKEN="$(cat "$TOKEN_FILE")"
+
+# --- System prompt ---
+
+SYSTEM_PROMPT="You are the Testy CLI — an AI assistant for the Testy test management platform.
+The user is already authenticated. Do NOT call testy_login — the session is pre-authenticated.
+
+Available tools:
+- testy_list_test_plans / testy_get_test_plan / testy_create_test_plan / testy_update_test_plan / testy_delete_test_plan
+- testy_create_test_scenario / testy_update_test_scenario / testy_delete_test_scenario
+- testy_list_bugs / testy_get_bug / testy_create_bug / testy_update_bug / testy_delete_bug
+- testy_list_tags
+- testy_capture_screenshot — navigate to a URL, take a screenshot, and attach it as evidence to a scenario (all in one step)
+- testy_attach_screenshot — attach a base64-encoded screenshot as evidence (for advanced use)
+
+Playwright browser tools (for automated testing):
+- browser_navigate / browser_snapshot / browser_click / browser_type / browser_screenshot
+- browser_close / browser_go_back / browser_go_forward / browser_wait
+- browser_press_key / browser_select_option / browser_hover / browser_drag
+- browser_tab_new / browser_tab_select / browser_tab_close / browser_tab_list
+
+Rules:
+- Always respond in the same language as the user.
+- Be concise and direct.
+- When listing items, format them in a clear, readable way.
+- When creating or modifying items, confirm what was done.
+- Do NOT use file-editing tools (Edit, Write) or Bash commands — only use the Testy MCP and Playwright tools.
+
+## Executing test scenarios with Playwright
+
+When asked to execute/run test scenarios, follow this workflow for EACH scenario:
+
+1. **Read the scenario** — use testy_get_test_plan to get the scenario details (given/when/then steps).
+2. **Execute in the browser** — use Playwright tools to perform the steps:
+   - browser_navigate to go to the target URL
+   - browser_snapshot to see the current page state (accessibility tree)
+   - browser_click / browser_type / browser_press_key to interact with elements
+   - browser_wait if needed for page loads
+3. **Capture evidence** — use testy_capture_screenshot with the current URL to take a screenshot and attach it as evidence. This does everything in one call (captures + attaches). Do NOT use browser_screenshot for evidence — it cannot be forwarded to the API.
+4. **Update the scenario status** — use testy_update_test_scenario to set status to 'approved' if the 'then' step was satisfied, or 'failed' if not.
+5. **Close the browser** — use browser_close immediately when done with all scenarios.
+
+IMPORTANT: Do NOT stop after navigating. You must complete ALL steps (interact, capture evidence, update status) for each scenario. Use browser_snapshot (not browser_screenshot) to read page content and decide what to click/type."
+
+MCP_TOOLS="mcp__testy__testy_login mcp__testy__testy_list_test_plans mcp__testy__testy_get_test_plan mcp__testy__testy_create_test_plan mcp__testy__testy_update_test_plan mcp__testy__testy_delete_test_plan mcp__testy__testy_create_test_scenario mcp__testy__testy_update_test_scenario mcp__testy__testy_delete_test_scenario mcp__testy__testy_list_bugs mcp__testy__testy_get_bug mcp__testy__testy_create_bug mcp__testy__testy_update_bug mcp__testy__testy_delete_bug mcp__testy__testy_list_tags mcp__testy__testy_attach_screenshot mcp__testy__testy_capture_screenshot mcp__playwright__browser_navigate mcp__playwright__browser_screenshot mcp__playwright__browser_click mcp__playwright__browser_type mcp__playwright__browser_snapshot mcp__playwright__browser_close mcp__playwright__browser_go_back mcp__playwright__browser_go_forward mcp__playwright__browser_wait mcp__playwright__browser_press_key mcp__playwright__browser_select_option mcp__playwright__browser_hover mcp__playwright__browser_drag mcp__playwright__browser_tab_new mcp__playwright__browser_tab_select mcp__playwright__browser_tab_close mcp__playwright__browser_tab_list"
+
+# --- Run Claude ---
+
+if [ $# -eq 0 ]; then
+  claude \
+    --mcp-config "$MCP_CONFIG" \
+    --append-system-prompt "$SYSTEM_PROMPT" \
+    --model "$TESTY_MODEL" \
+    --permission-mode bypassPermissions \
+    --allow-dangerously-skip-permissions \
+    --tools "$MCP_TOOLS"
+else
+  claude -p "$*" \
+    --mcp-config "$MCP_CONFIG" \
+    --append-system-prompt "$SYSTEM_PROMPT" \
+    --model "$TESTY_MODEL" \
+    --permission-mode bypassPermissions \
+    --allow-dangerously-skip-permissions \
+    --tools "$MCP_TOOLS"
+fi

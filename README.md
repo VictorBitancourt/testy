@@ -31,6 +31,8 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Keyboard Shortcuts** — navigate quickly with single-key shortcuts (N for new, B for back, R for root causes, P for plans)
 - **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans and bugs, users manage their own
 - **Bilingual (EN / PT-BR)** — full interface in English and Brazilian Portuguese; switch languages with one click, preference saved in cookie
+- **REST API** — full JSON API with token authentication for test plans, scenarios, bugs, tags, and screenshot attachments
+- **Testy CLI** — AI-powered command-line assistant that manages test plans, executes scenarios in the browser with Playwright, captures screenshots as evidence, and approves or rejects scenarios automatically — all from natural language commands
 
 ## Tech Stack
 
@@ -43,6 +45,8 @@ Most test management tools drown you in fields, workflows, and integrations befo
 | File Storage | Active Storage (local disk) |
 | PDF | ferrum_pdf (Chrome headless) |
 | AI | Gemini API (Google) |
+| CLI | Claude Code + MCP (Model Context Protocol) |
+| Browser Automation | Playwright MCP |
 | Deploy | Kamal-ready (Docker + Thruster) |
 
 ## Getting Started
@@ -76,6 +80,70 @@ bin/rails test
 ```
 
 Covers models, controllers, authentication, authorization, and filter behavior.
+
+## Testy CLI
+
+Testy includes an AI-powered command-line assistant that lets you manage test plans, execute scenarios in the browser, and capture evidence — all from natural language commands.
+
+### Prerequisites
+
+| Requirement | Purpose |
+|---|---|
+| Ruby 3.4+ and `bundle install` | Runs the Testy MCP server |
+| Node.js and `npm install` | Playwright MCP for browser automation |
+| Chromium or Chrome | Browser for screenshots and test execution |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | AI agent that powers the CLI |
+
+### Setup
+
+```bash
+# Install Node.js dependencies (Playwright MCP)
+npm install
+
+# If Chromium is not at /usr/bin/chromium, set:
+export CHROME_PATH=/path/to/chromium
+
+# If the Testy server is running on a different address:
+export TESTY_BASE_URL=http://192.168.1.x:3000
+
+# Log in (creates a local token)
+bin/testy login <username> <password>
+```
+
+### Usage
+
+```bash
+# Interactive mode
+bin/testy
+
+# Single command
+bin/testy "List all test plans"
+
+# Execute scenarios in the browser and capture evidence
+bin/testy "Execute the scenarios of the 'System Login' plan on http://localhost:3000"
+```
+
+### What happens when you execute scenarios
+
+1. The agent reads the scenario details (Given/When/Then)
+2. Opens a browser with Playwright and performs the steps (navigate, click, type)
+3. Captures a screenshot of the result and attaches it as evidence
+4. Approves or rejects the scenario based on the outcome
+
+### Other CLI commands
+
+```bash
+bin/testy logout   # Remove saved token
+bin/testy whoami   # Check authentication status
+```
+
+### Environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `TESTY_BASE_URL` | `http://localhost:3000` | Testy server URL |
+| `TESTY_MODEL` | `sonnet` | Claude model to use (`sonnet`, `opus`, `haiku`) |
+| `CHROME_PATH` | Auto-detected | Path to Chromium/Chrome binary |
 
 ## How It Works
 

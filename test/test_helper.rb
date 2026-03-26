@@ -20,6 +20,7 @@ end
 
 require_relative "test_helpers/ai_api_test_helper"
 require_relative "test_helpers/session_test_helper"
+require_relative "test_helpers/api_test_helper"
 
 module ActiveSupport
   class TestCase
@@ -38,6 +39,7 @@ end
 
 class ActionDispatch::IntegrationTest
   include SessionTestHelper
+  include ApiTestHelper
 end
 
 class ActionDispatch::SystemTestCase

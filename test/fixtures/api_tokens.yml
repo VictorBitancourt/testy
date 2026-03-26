@@ -1,0 +1,9 @@
+admin_token:
+  user: admin
+  token_digest: "05258614f5f52ac6f0a087ce31b554ad3e97a67e7b08f89fb06fff3abcb2de6f"
+  name: "Admin test token"
+
+user_token:
+  user: regular_user
+  token_digest: "75a70a69f676e65defc263579f73a6465ebbf32403fcdf39c4555b35efe87d6b"
+  name: "User test token"

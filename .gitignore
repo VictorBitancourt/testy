@@ -41,3 +41,12 @@
 /fizzy/
 /referencia/
 
+# Node
+/node_modules/
+
+# Playwright MCP
+/.playwright-mcp/
+
+# Claude Code local settings
+/.claude/settings.local.json
+
