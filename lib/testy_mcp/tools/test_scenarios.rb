@@ -17,7 +17,7 @@ module TestyMcp
           status: { type: "string", description: "Scenario status" },
           bug_id: { type: "integer", description: "Associated bug ID" }
         },
-        required: ["test_plan_id", "title", "given", "when_step", "then_step"]
+        required: [ "test_plan_id", "title", "given", "when_step", "then_step" ]
       )
 
       class << self
@@ -59,7 +59,7 @@ module TestyMcp
           status: { type: "string", description: "New status" },
           bug_id: { type: "integer", description: "Associated bug ID" }
         },
-        required: ["test_plan_id", "id"]
+        required: [ "test_plan_id", "id" ]
       )
 
       class << self
@@ -95,7 +95,7 @@ module TestyMcp
           test_plan_id: { type: "integer", description: "Parent test plan ID" },
           id: { type: "integer", description: "Test scenario ID" }
         },
-        required: ["test_plan_id", "id"]
+        required: [ "test_plan_id", "id" ]
       )
 
       class << self

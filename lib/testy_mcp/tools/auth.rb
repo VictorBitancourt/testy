@@ -12,7 +12,7 @@ module TestyMcp
           password: { type: "string", description: "Testy password" },
           token_name: { type: "string", description: "Name for the API token (default: mcp-session)" }
         },
-        required: ["username", "password"]
+        required: [ "username", "password" ]
       )
 
       class << self

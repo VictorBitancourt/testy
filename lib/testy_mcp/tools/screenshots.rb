@@ -73,7 +73,7 @@ module TestyMcp
           browser_path = ENV["CHROME_PATH"] || detect_browser_path
           unless browser_path
             return MCP::Tool::Response.new(
-              [{ type: "text", text: "Error: Could not find Chrome or Chromium. Set CHROME_PATH environment variable." }],
+              [ { type: "text", text: "Error: Could not find Chrome or Chromium. Set CHROME_PATH environment variable." } ],
               is_error: true
             )
           end
@@ -82,14 +82,14 @@ module TestyMcp
             browser = Ferrum::Browser.new(
               headless: true,
               browser_path: browser_path,
-              window_size: [1280, 720],
+              window_size: [ 1280, 720 ],
               timeout: 15
             )
             browser.goto(url)
             data = browser.screenshot(encoding: :base64)
           rescue => e
             return MCP::Tool::Response.new(
-              [{ type: "text", text: "Error capturing screenshot: #{e.message}" }],
+              [ { type: "text", text: "Error capturing screenshot: #{e.message}" } ],
               is_error: true
             )
           ensure

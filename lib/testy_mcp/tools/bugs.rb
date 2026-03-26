@@ -49,7 +49,7 @@ module TestyMcp
         properties: {
           id: { type: "integer", description: "Bug ID" }
         },
-        required: ["id"]
+        required: [ "id" ]
       )
 
       class << self
@@ -85,7 +85,7 @@ module TestyMcp
           cause_tag: { type: "string", description: "Root cause tag" },
           status: { type: "string", enum: %w[open resolved], description: "Bug status (default: open)" }
         },
-        required: ["title", "description"]
+        required: [ "title", "description" ]
       )
 
       class << self
@@ -129,7 +129,7 @@ module TestyMcp
           cause_tag: { type: "string", description: "New cause tag" },
           status: { type: "string", enum: %w[open resolved], description: "New status" }
         },
-        required: ["id"]
+        required: [ "id" ]
       )
 
       class << self
@@ -165,7 +165,7 @@ module TestyMcp
         properties: {
           id: { type: "integer", description: "Bug ID" }
         },
-        required: ["id"]
+        required: [ "id" ]
       )
 
       class << self

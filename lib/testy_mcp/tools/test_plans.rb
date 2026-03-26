@@ -44,7 +44,7 @@ module TestyMcp
         properties: {
           id: { type: "integer", description: "Test plan ID" }
         },
-        required: ["id"]
+        required: [ "id" ]
       )
 
       class << self
@@ -75,7 +75,7 @@ module TestyMcp
           qa_name: { type: "string", description: "QA responsible name" },
           tag_list: { type: "string", description: "Comma-separated tags" }
         },
-        required: ["name", "qa_name"]
+        required: [ "name", "qa_name" ]
       )
 
       class << self
@@ -108,7 +108,7 @@ module TestyMcp
           qa_name: { type: "string", description: "New QA responsible name" },
           tag_list: { type: "string", description: "Comma-separated tags" }
         },
-        required: ["id"]
+        required: [ "id" ]
       )
 
       class << self
@@ -138,7 +138,7 @@ module TestyMcp
         properties: {
           id: { type: "integer", description: "Test plan ID" }
         },
-        required: ["id"]
+        required: [ "id" ]
       )
 
       class << self
