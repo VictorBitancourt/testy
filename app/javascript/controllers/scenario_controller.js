@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { t } from "i18n_helper"
 
-const BUG_ICON = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l1.5 3M16 2l-1.5 3"/><path d="M9 5h6a4 4 0 014 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V9a4 4 0 014-4z"/><path d="M7 12v4a5 5 0 0010 0v-4"/><path d="M5 10H3m18 0h-2"/><path d="M5 14H3m18 0h-2"/><path d="M12 12v9"/></svg>'
+const BUG_ICON = '<span class="icon icon--bug icon--sm" aria-hidden="true"></span>'
 
 export default class extends Controller {
   static targets = ["container", "stamp"]
@@ -169,7 +169,7 @@ export default class extends Controller {
       actionsDiv.innerHTML = `
         <div>
           <label class="cursor-pointer inline-flex items-center gap-1.5 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-4 py-2 rounded-lg transition text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+<span class="icon icon--paperclip icon--sm" aria-hidden="true"></span>
             ${t('scenario.upload_evidence')}
             <input type="file" id="${fileId}" multiple accept="image/*,.pdf" class="hidden" />
           </label>
@@ -442,35 +442,29 @@ export default class extends Controller {
   }
 
   _showAlert(message) {
-    const overlay = document.createElement('div')
-    overlay.className = 'confirm-modal-overlay'
-
-    const dialog = document.createElement('div')
-    dialog.className = 'confirm-modal-dialog'
+    const dialog = document.createElement('dialog')
+    dialog.className = 'confirm-dialog'
 
     const p = document.createElement('p')
-    p.style.cssText = 'margin:0 0 1.5rem;color:oklch(92% 0.003 254);font-size:0.95rem;line-height:1.5;'
+    p.className = 'confirm-dialog__text'
     p.textContent = message
 
     const actions = document.createElement('div')
-    actions.style.cssText = 'display:flex;justify-content:flex-end;'
+    actions.className = 'confirm-dialog__actions'
 
     const okBtn = document.createElement('button')
-    okBtn.className = 'confirm-modal-btn confirm-modal-ok'
+    okBtn.className = 'confirm-dialog__btn confirm-dialog__ok'
     okBtn.textContent = 'OK'
 
-    const close = () => overlay.remove()
+    const close = () => { dialog.close(); dialog.remove() }
     okBtn.addEventListener('click', close)
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close() })
-    document.addEventListener('keydown', function handler(e) {
-      if (e.key === 'Escape' || e.key === 'Enter') { document.removeEventListener('keydown', handler); close() }
-    })
+    dialog.addEventListener('cancel', close)
 
     actions.appendChild(okBtn)
     dialog.appendChild(p)
     dialog.appendChild(actions)
-    overlay.appendChild(dialog)
-    document.body.appendChild(overlay)
+    document.body.appendChild(dialog)
+    dialog.showModal()
     okBtn.focus()
   }
 

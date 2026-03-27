@@ -6,18 +6,28 @@ module Api
       before_action -> { authorize_plan_owner_or_admin!(@test_plan) }
 
       def create
-        screenshot_params = params.require(:screenshot).permit(:filename, :content_type, :data)
+        if params.dig(:screenshot, :file).is_a?(ActionDispatch::Http::UploadedFile)
+          uploaded = params[:screenshot][:file]
+          filename = params.dig(:screenshot, :filename) || uploaded.original_filename
+          content_type = uploaded.content_type
+          if content_type.blank? || content_type == "application/octet-stream"
+            content_type = Rack::Mime.mime_type(File.extname(filename), "image/png")
+          end
+          io = uploaded
+        else
+          screenshot_params = params.require(:screenshot).permit(:filename, :content_type, :data)
+          content_type = screenshot_params[:content_type] || "image/png"
+          data = Base64.decode64(screenshot_params[:data])
+          filename = screenshot_params[:filename] || "screenshot-#{Time.current.strftime('%Y%m%d%H%M%S')}.png"
+          io = StringIO.new(data)
+        end
 
-        content_type = screenshot_params[:content_type] || "image/png"
         unless content_type.in?(Attachments::ALLOWED_CONTENT_TYPES)
           return render json: { error: "Content type '#{content_type}' not allowed. Allowed: #{Attachments::ALLOWED_CONTENT_TYPES.join(', ')}" }, status: :unprocessable_entity
         end
 
-        data = Base64.decode64(screenshot_params[:data])
-        filename = screenshot_params[:filename] || "screenshot-#{Time.current.strftime('%Y%m%d%H%M%S')}.png"
-
         @test_scenario.evidence_files.attach(
-          io: StringIO.new(data),
+          io: io,
           filename: filename,
           content_type: content_type
         )

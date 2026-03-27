@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <h1 class="text-3xl font-bold text-ink-darkest mb-2"><%= @test_plan.name %></h1>
+      <h1 class="text-3xl font-black text-ink-darkest mb-2"><%= @test_plan.name %></h1>
       <p class="text-ink-dark"><%= t('test_plans.show.responsible_qa') %> <span class="font-semibold"><%= @test_plan.qa_name %></span></p>
       <p class="text-ink-medium text-sm mt-2">
         <%= t('test_plans.show.scenarios_approved', approved: @test_plan.approved_scenarios, total: @test_plan.total_scenarios) %>
@@ -28,7 +28,7 @@
       <% if @test_plan.tags.any? %>
         <div class="flex flex-wrap gap-2 mt-3">
           <% @test_plan.tags.each do |tag| %>
-            <%= link_to tag.name, test_plans_path(tag: tag.name), class: "inline-block bg-fz-violet-darkest text-fz-violet-light text-sm font-semibold px-3 py-1 rounded-full hover:bg-fz-violet-darker transition" %>
+            <%= link_to tag.name, test_plans_path(tag: tag.name), class: tag_classes(:violet) %>
           <% end %>
         </div>
       <% end %>

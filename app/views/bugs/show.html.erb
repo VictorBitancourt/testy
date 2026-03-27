@@ -24,7 +24,7 @@
 
       <div class="flex items-start justify-between">
         <div>
-          <h1 class="text-3xl font-bold text-ink-darkest mb-2">
+          <h1 class="text-3xl font-black text-ink-darkest mb-2">
             <span class="text-ink-medium font-mono">#<%= @bug.id %></span> - <%= @bug.title %>
           </h1>
           <p class="text-ink-medium text-sm">
@@ -34,9 +34,9 @@
         </div>
         <div>
           <% if @bug.open? %>
-            <span class="inline-block bg-fz-yellow-medium text-white text-sm font-bold px-4 py-2 rounded-full"><%= t('bugs.show.status_open') %></span>
+            <span class="<%= badge_classes(:open) %>"><%= t('bugs.show.status_open') %></span>
           <% else %>
-            <span class="inline-block bg-fz-green-dark text-white text-sm font-bold px-4 py-2 rounded-full"><%= t('bugs.show.status_resolved') %></span>
+            <span class="<%= badge_classes(:resolved) %>"><%= t('bugs.show.status_resolved') %></span>
           <% end %>
         </div>
       </div>
@@ -44,12 +44,12 @@
       <% if @bug.feature_tag.present? || @bug.cause_tag.present? %>
         <div class="flex flex-wrap gap-2 mt-4">
           <% if @bug.feature_tag.present? %>
-            <%= link_to bugs_path(feature_tag: @bug.feature_tag), class: "inline-block bg-fz-blue-darkest text-fz-blue-light text-sm font-semibold px-3 py-1 rounded-full hover:bg-fz-blue-darker transition" do %>
+            <%= link_to bugs_path(feature_tag: @bug.feature_tag), class: tag_classes(:blue) do %>
               <%= t('bugs.show.feature_label') %> <%= @bug.feature_tag %>
             <% end %>
           <% end %>
           <% if @bug.cause_tag.present? %>
-            <%= link_to bugs_path(cause_tag: @bug.cause_tag), class: "inline-block bg-fz-red-darkest text-fz-red-light text-sm font-semibold px-3 py-1 rounded-full hover:bg-fz-red-darker transition" do %>
+            <%= link_to bugs_path(cause_tag: @bug.cause_tag), class: tag_classes(:red) do %>
               <%= t('bugs.show.cause_label') %> <%= @bug.cause_tag %>
             <% end %>
           <% end %>
@@ -123,11 +123,11 @@
                 </span>
               </div>
               <% if scenario.status == "approved" %>
-                <span class="bg-fz-green-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('bugs.show.scenario_approved') %></span>
+                <span class="<%= badge_classes(:approved) %>"><%= t('bugs.show.scenario_approved') %></span>
               <% elsif scenario.status == "failed" %>
-                <span class="bg-fz-red-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('bugs.show.scenario_failed') %></span>
+                <span class="<%= badge_classes(:failed) %>"><%= t('bugs.show.scenario_failed') %></span>
               <% else %>
-                <span class="bg-fz-yellow-medium text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('bugs.show.scenario_pending') %></span>
+                <span class="<%= badge_classes(:in_progress) %>"><%= t('bugs.show.scenario_pending') %></span>
               <% end %>
             </div>
           <% end %>
@@ -139,25 +139,25 @@
     <div class="flex flex-wrap items-center gap-4">
       <% if current_user_admin? || @bug.user == Current.user %>
         <% if @bug.open? %>
-          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "resolved" } }, class: "bg-fz-green-dark hover:bg-fz-green-darker text-white font-bold px-6 py-3 rounded-lg transition cursor-pointer" do %>
+          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "resolved" } }, class: btn_classes(:success, size: :lg) do %>
             &#10003; <%= t('bugs.show.resolve') %>
           <% end %>
         <% else %>
-          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "open" } }, class: "bg-fz-yellow-medium hover:bg-fz-yellow-darker text-white font-bold px-6 py-3 rounded-lg transition cursor-pointer" do %>
+          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "open" } }, class: btn_classes(:warning, size: :lg) do %>
             &#8634; <%= t('bugs.show.reopen') %>
           <% end %>
         <% end %>
 
-        <%= link_to edit_bug_path(@bug), class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold px-6 py-3 rounded-lg transition" do %>
+        <%= link_to edit_bug_path(@bug), class: btn_classes(:primary, size: :lg) do %>
           &#9998; <%= t('bugs.show.edit') %>
         <% end %>
 
-        <%= button_to bug_path(@bug), method: :delete, data: { turbo_confirm: t('bugs.show.confirm_delete') }, class: "bg-fz-red-dark hover:bg-fz-red-darker text-white font-bold px-6 py-3 rounded-lg transition cursor-pointer" do %>
+        <%= button_to bug_path(@bug), method: :delete, data: { turbo_confirm: t('bugs.show.confirm_delete') }, class: btn_classes(:danger, size: :lg) do %>
           &#128465;&#65039; <%= t('bugs.show.delete') %>
         <% end %>
       <% end %>
 
-      <%= link_to bug_report_path(@bug, format: :pdf), target: "_blank", class: "bg-surface-raised hover:bg-ink-lightest text-ink-dark font-bold px-6 py-3 rounded-lg transition" do %>
+      <%= link_to bug_report_path(@bug, format: :pdf), target: "_blank", class: btn_classes(:secondary, size: :lg) do %>
         &#128196; <%= t('bugs.show.export_pdf') %>
       <% end %>
     </div>

@@ -28,7 +28,7 @@
   </div>
 
   <div class="flex gap-4">
-    <%= f.submit (test_plan.new_record? ? t('test_plans.form.create_plan') : t('test_plans.form.update_plan')), class: "flex-1 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-bold py-3 rounded-lg cursor-pointer transition" %>
-    <%= link_to t('test_plans.form.cancel'), test_plans_path, class: "flex-1 bg-surface-raised hover:bg-ink-lightest text-ink-dark font-bold py-3 rounded-lg text-center transition" %>
+    <%= f.submit (test_plan.new_record? ? t('test_plans.form.create_plan') : t('test_plans.form.update_plan')), class: "flex-1 #{btn_classes(:primary, size: :lg)}" %>
+    <%= link_to t('test_plans.form.cancel'), test_plans_path, class: "flex-1 #{btn_classes(:secondary, size: :lg)} text-center" %>
   </div>
 <% end %>

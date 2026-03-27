@@ -10,7 +10,7 @@
 
     <!-- Header -->
     <div class="bg-surface rounded-xl shadow-lg p-6 mb-8 text-center">
-      <h1 class="text-3xl font-bold text-ink-darkest mb-2"><%= t('bugs.root_causes.title') %></h1>
+      <h1 class="text-3xl font-black text-ink-darkest mb-2"><%= t('bugs.root_causes.title') %></h1>
       <p class="text-ink-medium"><%= t('bugs.root_causes.subtitle', count: @total_bugs) %></p>
     </div>
 
@@ -57,8 +57,9 @@
         </div>
       <% end %>
     <% else %>
-      <div class="bg-surface rounded-xl shadow-lg p-12 text-center">
-        <p class="text-ink-medium text-lg"><%= t('bugs.root_causes.no_data') %></p>
+      <div class="blank-slate">
+        <span class="blank-slate__emoji">&#128200;</span>
+        <p class="blank-slate__text"><%= t('bugs.root_causes.no_data') %></p>
       </div>
     <% end %>
   </div>

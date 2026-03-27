@@ -2,7 +2,7 @@
   <div class="max-w-6xl mx-auto">
     <div class="flex justify-between items-center mb-8">
       <div class="flex items-center gap-3">
-        <%= link_to new_test_plan_path, class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
+        <%= link_to new_test_plan_path, class: "#{btn_classes(:primary)} flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
           <%= t('test_plans.index.new_plan') %>
           <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">N</span>
         <% end %>
@@ -14,15 +14,8 @@
         <%= t('test_plans.index.failed_count', count: TestPlan.failed_plans.count) %>
       </p>
       <div class="flex items-center gap-3">
-        <%= link_to bugs_path, class: "bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 2l1.5 3M16 2l-1.5 3" />
-            <path d="M9 5h6a4 4 0 014 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V9a4 4 0 014-4z" />
-            <path d="M7 12v4a5 5 0 0010 0v-4" />
-            <path d="M5 10H3m18 0h-2" />
-            <path d="M5 14H3m18 0h-2" />
-            <path d="M12 12v9" />
-          </svg>
+        <%= link_to bugs_path, class: "#{btn_classes(:primary)} flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+<%= icon_tag("bug") %>
           Bug Jar
           <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">B</span>
         <% end %>
@@ -45,7 +38,7 @@
           <% end %>
           <input type="text" name="search" value="<%= @search %>" placeholder="<%= t('test_plans.index.search_placeholder') %>"
                  class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest placeholder-ink-medium focus:ring-2 focus:ring-fz-blue-light focus:outline-none w-64">
-          <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
+          <button type="submit" class="<%= btn_classes(:primary, size: :sm) %>">
             <%= t('test_plans.index.search') %>
           </button>
         <% end %>
@@ -141,19 +134,19 @@
                 <td class="px-4 py-3 text-center">
                   <% case status %>
                   <% when "approved" %>
-                    <span class="inline-block bg-fz-green-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_approved').upcase %></span>
+                    <span class="<%= badge_classes(:approved) %>"><%= t('test_plans.index.status_approved').upcase %></span>
                   <% when "failed" %>
-                    <span class="inline-block bg-fz-red-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_failed').upcase %></span>
+                    <span class="<%= badge_classes(:failed) %>"><%= t('test_plans.index.status_failed').upcase %></span>
                   <% when "in_progress" %>
-                    <span class="inline-block bg-fz-yellow-medium text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_in_progress').upcase %></span>
+                    <span class="<%= badge_classes(:in_progress) %>"><%= t('test_plans.index.status_in_progress').upcase %></span>
                   <% when "not_started" %>
-                    <span class="inline-block bg-fz-blue-dark text-white text-xs font-bold px-2.5 py-1 rounded-full"><%= t('test_plans.index.status_not_started').upcase %></span>
+                    <span class="<%= badge_classes(:not_started) %>"><%= t('test_plans.index.status_not_started').upcase %></span>
                   <% end %>
                 </td>
                 <td class="px-4 py-3 text-center">
                   <div class="flex flex-wrap justify-center gap-1">
                     <% plan.tags.each do |tag| %>
-                      <%= link_to tag.name, test_plans_path(search: tag.name), class: "inline-block bg-fz-violet-darkest text-fz-violet-light text-xs font-semibold px-2 py-0.5 rounded-full hover:bg-fz-violet-darker transition" %>
+                      <%= link_to tag.name, test_plans_path(search: tag.name), class: tag_classes(:violet) %>
                     <% end %>
                   </div>
                 </td>
@@ -163,21 +156,14 @@
                 <td class="px-4 py-3 text-center">
                   <div class="flex items-center justify-center gap-2">
                     <%= link_to plan, class: "text-fz-blue-light hover:text-fz-blue-medium transition", title: t('test_plans.index.view') do %>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
+<%= icon_tag("eye") %>
                     <% end %>
                     <% if current_user_admin? || plan.user == Current.user %>
                       <%= link_to edit_test_plan_path(plan), class: "text-ink-medium hover:text-fz-yellow-light transition", title: t('test_plans.index.edit') do %>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
+<%= icon_tag("pencil") %>
                       <% end %>
                       <%= link_to test_plan_path(plan), data: { turbo_method: :delete, turbo_confirm: t('test_plans.index.confirm_remove_plan') }, class: "text-ink-medium hover:text-fz-red-light transition", title: t('test_plans.index.remove') do %>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+<%= icon_tag("trash") %>
                       <% end %>
                     <% end %>
                   </div>
@@ -195,13 +181,15 @@
         </div>
       <% end %>
     <% else %>
-      <div class="bg-surface rounded-xl shadow-lg p-12 text-center">
+      <div class="blank-slate">
         <% if @filters_active %>
-          <p class="text-ink-medium text-lg mb-4"><%= t('test_plans.index.no_plans_filtered') %></p>
-          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" %>
+          <span class="blank-slate__emoji">&#128270;</span>
+          <p class="blank-slate__text"><%= t('test_plans.index.no_plans_filtered') %></p>
+          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: btn_classes(:primary, size: :lg) %>
         <% else %>
-          <p class="text-ink-medium text-lg mb-4"><%= t('test_plans.index.no_plans_yet') %></p>
-          <%= link_to new_test_plan_path, class: "inline-block bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-8 py-3 rounded-lg" do %>
+          <span class="blank-slate__emoji">&#128203;</span>
+          <p class="blank-slate__text"><%= t('test_plans.index.no_plans_yet') %></p>
+          <%= link_to new_test_plan_path, class: btn_classes(:primary, size: :lg) do %>
             <%= t('test_plans.index.create_first_plan') %>
           <% end %>
         <% end %>

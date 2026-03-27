@@ -26,16 +26,10 @@ export default class extends Controller {
   }
 
   showMessage() {
-    const toast = document.createElement("div")
-    toast.className = "flash-message fixed top-4 right-4 bg-fz-green-dark text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in"
-    toast.textContent = "You found it. Now get back to testing :)"
-    document.body.appendChild(toast)
-
-    setTimeout(() => {
-      toast.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out"
-      toast.style.opacity = "0"
-      toast.style.transform = "translateX(100px)"
-      setTimeout(() => toast.remove(), 500)
-    }, 4000)
+    const flash = document.createElement("div")
+    flash.className = "flash flash--notice"
+    flash.setAttribute("data-controller", "flash")
+    flash.innerHTML = '<div class="flash__inner">You found it. Now get back to testing :)</div>'
+    document.body.appendChild(flash)
   }
 }

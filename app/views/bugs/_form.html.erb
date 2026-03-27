@@ -22,8 +22,8 @@
 
   <div>
     <label class="block font-semibold text-ink-darker mb-2"><%= t('bugs.form.evidence_label') %></label>
-    <label class="cursor-pointer inline-flex items-center gap-1.5 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-4 py-2 rounded-lg transition text-sm">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+    <label class="cursor-pointer <%= btn_classes(:primary, size: :sm) %>">
+<%= icon_tag("paperclip", size: :sm) %>
       <%= t('bugs.form.upload_evidence') %>
       <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "bug-file-upload" %>
     </label>
@@ -70,8 +70,8 @@
   </div>
 
   <div class="flex gap-4">
-    <%= f.submit (bug.new_record? ? t('bugs.form.create_bug') : t('bugs.form.update_bug')), class: "flex-1 bg-fz-red-dark hover:bg-fz-red-darker text-white font-bold py-3 rounded-lg cursor-pointer transition" %>
-    <%= link_to t('bugs.form.cancel'), bugs_path, class: "flex-1 bg-surface-raised hover:bg-ink-lightest text-ink-dark font-bold py-3 rounded-lg text-center transition" %>
+    <%= f.submit (bug.new_record? ? t('bugs.form.create_bug') : t('bugs.form.update_bug')), class: "flex-1 #{btn_classes(:danger, size: :lg)}" %>
+    <%= link_to t('bugs.form.cancel'), bugs_path, class: "flex-1 #{btn_classes(:secondary, size: :lg)} text-center" %>
   </div>
 <% end %>
 

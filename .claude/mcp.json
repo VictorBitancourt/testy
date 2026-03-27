@@ -1,12 +1,5 @@
 {
   "mcpServers": {
-    "testy": {
-      "command": "ruby",
-      "args": ["bin/testy-mcp"],
-      "env": {
-        "TESTY_BASE_URL": "http://localhost:3000"
-      }
-    },
     "playwright": {
       "command": "npx",
       "args": ["@playwright/mcp", "--executable-path", "/usr/bin/chromium"],

@@ -50,3 +50,7 @@
 # Claude Code local settings
 /.claude/settings.local.json
 
+# Screenshots e ficheiros temporários na raiz
+/*.png
+/login_page_snapshot.md
+

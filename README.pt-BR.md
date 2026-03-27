@@ -44,7 +44,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 | Armazenamento | Active Storage (disco local) |
 | PDF | ferrum_pdf (Chrome headless) |
 | IA | Gemini API (Google) |
-| CLI | Claude Code + MCP (Model Context Protocol) |
+| CLI | Go (Cobra) + Claude Code (modo IA) |
 | Automação de Browser | Playwright MCP |
 | Deploy | Kamal-ready (Docker + Thruster) |
 
@@ -88,19 +88,16 @@ O Testy inclui um assistente de linha de comando com IA que permite gerenciar pl
 
 | Requisito | Finalidade |
 |---|---|
-| Ruby 3.4+ e `bundle install` | Executa o servidor MCP do Testy |
-| Node.js e `npm install` | Playwright MCP para automação de browser |
-| Chromium ou Chrome | Browser para screenshots e execução de testes |
-| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | Agente de IA que alimenta o CLI |
+| Go 1.22+ (ou binário pré-compilado) | Binário do CLI (`cli/bin/testy`) |
+| Node.js e `npm install` | Playwright MCP para automação de browser (apenas modo IA) |
+| Chromium ou Chrome | Browser para screenshots e execução de testes (apenas modo IA) |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | Agente de IA que alimenta o `testy qa` (opcional) |
 
 ### Setup
 
 ```bash
-# Instalar dependências Node.js (Playwright MCP)
-npm install
-
-# Se o Chromium não estiver em /usr/bin/chromium, defina:
-export CHROME_PATH=/caminho/para/chromium
+# Compilar o CLI a partir do código-fonte (opcional — o binário pode já estar compilado)
+cd cli && make build && cd ..
 
 # Se o servidor Testy estiver num endereço diferente:
 export TESTY_BASE_URL=http://192.168.1.x:3000
@@ -109,20 +106,50 @@ export TESTY_BASE_URL=http://192.168.1.x:3000
 bin/testy login <username> <password>
 ```
 
-### Uso
+### Uso — Comandos Diretos do CLI
+
+O CLI disponibiliza comandos CRUD diretos para todos os recursos:
 
 ```bash
-# Modo interativo
-bin/testy
+# Planos de teste
+bin/testy plans list
+bin/testy plans show 1
+bin/testy plans create "Testes de Login" --qa "Victor"
 
-# Comando único
-bin/testy "Lista todos os planos de teste"
+# Cenários
+bin/testy scenarios create "Login válido" --plan 1 --given "..." --when "..." --then "..."
+bin/testy scenarios update 5 --plan 1 --status approved
 
-# Executar cenários no browser e capturar evidências
-bin/testy "Executa os cenários do plano 'System Login' em http://localhost:3000"
+# Bugs
+bin/testy bugs list --status open
+bin/testy bugs create "Botão partido" --description "..." --steps "..."
+
+# Tags & evidências
+bin/testy tags list
+bin/testy screenshots attach --plan 1 --scenario 5 --file screenshot.png
+
+# Verificação de saúde
+bin/testy doctor
 ```
 
-### O que acontece quando executa cenários
+Todos os comandos suportam as flags `--json`, `--md` e `--quiet` para formatos de saída.
+
+### Uso — Modo IA (testy qa)
+
+Para execução de testes com IA via Playwright, é necessário o Claude Code e Node.js:
+
+```bash
+# Instalar dependências Node.js (Playwright MCP)
+npm install
+
+# Modo IA interativo
+bin/testy qa
+
+# Comando IA único
+bin/testy qa "Executa os cenários do plano 'System Login' em http://localhost:3000"
+```
+
+### O que acontece quando executa cenários no modo IA
 
 1. O agente lê os detalhes do cenário (Dado que/Quando/Então)
 2. Abre um browser com Playwright e executa os passos (navegar, clicar, escrever)
@@ -132,8 +159,10 @@ bin/testy "Executa os cenários do plano 'System Login' em http://localhost:3000
 ### Outros comandos do CLI
 
 ```bash
-bin/testy logout   # Remove o token guardado
-bin/testy whoami   # Verifica o estado da autenticação
+bin/testy logout     # Remove o token guardado
+bin/testy whoami     # Verifica o estado da autenticação
+bin/testy commands   # Lista todos os comandos disponíveis
+bin/testy version    # Mostra a versão do CLI
 ```
 
 ### Variáveis de ambiente
@@ -141,8 +170,8 @@ bin/testy whoami   # Verifica o estado da autenticação
 | Variável | Padrão | Descrição |
 |---|---|---|
 | `TESTY_BASE_URL` | `http://localhost:3000` | URL do servidor Testy |
-| `TESTY_MODEL` | `sonnet` | Modelo Claude a usar (`sonnet`, `opus`, `haiku`) |
-| `CHROME_PATH` | Auto-detectado | Caminho para o binário Chromium/Chrome |
+| `TESTY_MODEL` | `sonnet` | Modelo Claude para modo IA (`sonnet`, `opus`, `haiku`) |
+| `CHROME_PATH` | Auto-detectado | Caminho para o binário Chromium/Chrome (modo IA) |
 
 ## Como Funciona
 

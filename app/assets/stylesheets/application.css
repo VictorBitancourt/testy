@@ -9,6 +9,40 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+/* ── Icon System (CSS mask) ────────────────────── */
+.icon {
+  display: inline-block;
+  width: var(--icon-size, 1.25em);
+  height: var(--icon-size, 1.25em);
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.icon--sm  { --icon-size: 1em; }
+.icon--lg  { --icon-size: 1.5em; }
+
+.icon--chevron-down { --svg: url("icons/chevron-down.svg"); }
+.icon--test-plans   { --svg: url("icons/test-plans.svg"); }
+.icon--bug          { --svg: url("icons/bug.svg"); }
+.icon--users        { --svg: url("icons/users.svg"); }
+.icon--sign-out     { --svg: url("icons/sign-out.svg"); }
+.icon--eye          { --svg: url("icons/eye.svg"); }
+.icon--pencil       { --svg: url("icons/pencil.svg"); }
+.icon--trash        { --svg: url("icons/trash.svg"); }
+.icon--chart-bar    { --svg: url("icons/chart-bar.svg"); }
+.icon--paperclip    { --svg: url("icons/paperclip.svg"); }
+.icon--sparkle      { --svg: url("icons/sparkle.svg"); }
+.icon--spinner      { --svg: url("icons/spinner.svg"); }
+.icon--drag-handle  { --svg: url("icons/drag-handle.svg"); }
+
 @keyframes sign-fall {
   0%   { transform: rotate(0deg); }
   20%  { transform: rotate(190deg); }
