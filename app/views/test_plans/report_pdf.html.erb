@@ -221,7 +221,7 @@
     }
 
     .toc-table tbody td {
-      padding: 7px 4px;
+      padding: 10px 4px;
       vertical-align: middle;
       background: white;
       border-bottom: 1px solid #f0ede8;
@@ -248,7 +248,8 @@
     }
 
     .toc-num {
-      width: 28px;
+      width: 36px;
+      min-width: 36px;
     }
 
     .toc-num span {
@@ -312,7 +313,12 @@
       border-bottom: 2px solid #f5f3ef;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+    }
+
+    .scenario-header > div {
+      display: flex;
+      align-items: flex-start;
     }
 
     .scenario-number {
@@ -321,12 +327,14 @@
       justify-content: center;
       width: 28px;
       height: 28px;
+      min-width: 28px;
       background: #f5576c;
       color: white;
       border-radius: 50%;
       font-weight: bold;
       font-size: 13px;
       margin-right: 12px;
+      margin-top: 2px;
     }
 
     .scenario-title {
