@@ -1,0 +1,35 @@
+/* ── Pagination (Pagy) ──────────────────────────── */
+@layer components {
+  .pagy {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .pagy a, .pagy span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    transition: all .15s;
+  }
+  .pagy a {
+    color: var(--color-fz-blue-light);
+    background: var(--color-surface-raised);
+  }
+  .pagy a:hover {
+    background: var(--color-ink-lighter);
+    color: var(--color-ink-darkest);
+  }
+  .pagy a.current, .pagy span.current {
+    background: var(--color-fz-blue-dark);
+    color: #fff;
+  }
+  .pagy span:not(.current) {
+    color: var(--color-ink-lighter);
+  }
+}

@@ -1,0 +1,219 @@
+/* ── Scenario Cards ─────────────────────────────── */
+@layer components {
+  .scenario-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-ink-lighter);
+    border-radius: 1em;
+    padding: var(--space-6);
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .scenario-card:hover {
+    border-color: color-mix(in oklch, var(--color-fz-blue-dark) 65%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-fz-blue-dark) 35%, transparent),
+                0 0 12px color-mix(in oklch, var(--color-fz-blue-dark) 20%, transparent);
+  }
+  .scenario-card:has(.step-box:hover) {
+    box-shadow: none;
+    border-color: var(--color-ink-lighter);
+  }
+
+  .scenario-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-4);
+  }
+
+  .scenario-card__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .scenario-card__title h3 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-ink-darkest);
+  }
+
+  .scenario-card__actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .scenario-card__steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  @media (min-width: 48rem) {
+    .scenario-card__steps { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Step boxes */
+  .step-box {
+    padding: var(--space-4);
+    border-radius: 0.5em;
+    cursor: pointer;
+    border: 1px solid;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .step-box__label {
+    font-weight: 700;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: var(--space-2);
+  }
+  .step-box__text {
+    color: var(--color-ink-darker);
+    overflow-wrap: break-word;
+  }
+
+  .step-box--blue {
+    background: color-mix(in oklch, var(--color-fz-blue-dark) 10%, var(--color-surface));
+    border-color: color-mix(in oklch, var(--color-fz-blue-dark) 30%, transparent);
+  }
+  .step-box--blue .step-box__label { color: var(--color-fz-blue-light); }
+  .step-box--blue:hover {
+    border-color: var(--color-fz-blue-dark);
+    box-shadow: 0 0 0 1px var(--color-fz-blue-dark),
+                0 0 10px color-mix(in oklch, var(--color-fz-blue-dark) 25%, transparent);
+  }
+
+  .step-box--violet {
+    background: color-mix(in oklch, var(--color-fz-violet-dark) 10%, var(--color-surface));
+    border-color: color-mix(in oklch, var(--color-fz-violet-dark) 30%, transparent);
+  }
+  .step-box--violet .step-box__label { color: var(--color-fz-violet-light); }
+  .step-box--violet:hover {
+    border-color: var(--color-fz-violet-dark);
+    box-shadow: 0 0 0 1px var(--color-fz-violet-dark),
+                0 0 10px color-mix(in oklch, var(--color-fz-violet-dark) 25%, transparent);
+  }
+
+  .step-box--green {
+    background: color-mix(in oklch, var(--color-fz-green-dark) 10%, var(--color-surface));
+    border-color: color-mix(in oklch, var(--color-fz-green-dark) 30%, transparent);
+  }
+  .step-box--green .step-box__label { color: var(--color-fz-green-light); }
+  .step-box--green:hover {
+    border-color: var(--color-fz-green-dark);
+    box-shadow: 0 0 0 1px var(--color-fz-green-dark),
+                0 0 10px color-mix(in oklch, var(--color-fz-green-dark) 25%, transparent);
+  }
+
+  .step-box textarea {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-lighter) transparent;
+  }
+
+  /* Status action buttons (approve/fail/reset) */
+  .scenario-btn {
+    padding: 0.45em 1.2em;
+    border-radius: 99rem;
+    font-weight: 600;
+    transition: filter .1s;
+    cursor: pointer;
+    border: 1px solid transparent;
+    color: #fff;
+  }
+  .scenario-btn:hover { filter: brightness(1.25); }
+  .scenario-btn--approved {
+    background: var(--color-fz-green-dark);
+    border-color: var(--color-fz-green-dark);
+  }
+  .scenario-btn--failed {
+    background: var(--color-fz-red-dark);
+    border-color: var(--color-fz-red-dark);
+  }
+  .scenario-btn--edit {
+    background: transparent;
+    border-color: var(--color-ink-light);
+    color: var(--color-ink-dark);
+  }
+  .scenario-btn--edit:hover { filter: brightness(1); background: rgba(255,255,255,0.06); }
+  .scenario-btn--delete {
+    background: transparent;
+    border-color: var(--color-ink-light);
+    color: var(--color-ink-dark);
+  }
+  .scenario-btn--delete:hover { filter: brightness(1); background: rgba(255,255,255,0.06); }
+
+  /* Evidence grid */
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  @media (min-width: 48rem) {
+    .evidence-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .evidence-item img {
+    width: 100%;
+    height: 8rem;
+    object-fit: cover;
+    border-radius: 0.5em;
+    border: 1px solid var(--color-ink-lighter);
+  }
+
+  .evidence-placeholder {
+    width: 100%;
+    height: 8rem;
+    background: var(--color-surface-raised);
+    border-radius: 0.5em;
+    border: 1px solid var(--color-ink-lighter);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.25rem;
+  }
+
+  /* Drag handle */
+  .drag-handle {
+    cursor: grab;
+    color: var(--color-ink-medium);
+    transition: color .1s;
+  }
+  .drag-handle:active { cursor: grabbing; }
+  .drag-handle:hover { color: var(--color-ink-dark); }
+
+  /* Bug association */
+  .bug-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .bug-link__name {
+    color: var(--color-fz-red-light);
+    font-weight: 600;
+    transition: color .1s;
+  }
+  .bug-link__name:hover { color: var(--color-fz-red-medium); }
+
+  .bug-link__remove {
+    color: var(--color-ink-medium);
+    font-size: var(--text-xs);
+    margin-left: var(--space-1);
+    cursor: pointer;
+    border: none;
+    background: none;
+    transition: color .1s;
+  }
+  .bug-link__remove:hover { color: var(--color-fz-red-light); }
+
+  .bug-associate-btn {
+    font-size: var(--text-sm);
+    color: var(--color-fz-red-light);
+    font-weight: 600;
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color .1s;
+  }
+  .bug-associate-btn:hover { color: var(--color-fz-red-medium); }
+}

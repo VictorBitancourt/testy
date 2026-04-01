@@ -1,34 +1,31 @@
-<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
-  <div class="max-w-4xl mx-auto">
-    <!-- Back -->
+<div class="page">
+  <div class="page__container--md">
     <div class="mb-4">
-      <%= link_to bugs_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+      <%= link_to bugs_path, class: "page__back", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
         &larr; <%= t('bugs.root_causes.back') %>
-        <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+        <span class="kbd">B</span>
       <% end %>
     </div>
 
-    <!-- Header -->
-    <div class="bg-surface rounded-xl shadow-lg p-6 mb-8 text-center">
-      <h1 class="text-3xl font-black text-ink-darkest mb-2"><%= t('bugs.root_causes.title') %></h1>
-      <p class="text-ink-medium"><%= t('bugs.root_causes.subtitle', count: @total_bugs) %></p>
+    <div class="panel mb-8 text-center">
+      <h1 class="text-3xl font-black mb-2"><%= t('bugs.root_causes.title') %></h1>
+      <p class="txt-ink-medium"><%= t('bugs.root_causes.subtitle', count: @total_bugs) %></p>
     </div>
 
     <% if @cause_counts.any? || @feature_counts.any? %>
-      <!-- By Cause -->
       <% if @cause_counts.any? %>
-        <div class="bg-surface rounded-xl shadow-lg p-6 mb-6">
-          <h2 class="text-xl font-bold text-ink-darkest mb-6"><%= t('bugs.root_causes.by_cause') %></h2>
+        <div class="panel mb-6">
+          <h2 class="text-xl font-bold mb-6"><%= t('bugs.root_causes.by_cause') %></h2>
           <% max_cause = @cause_counts.values.max %>
-          <div class="space-y-4">
+          <div class="stack">
             <% @cause_counts.each do |tag, count| %>
-              <%= link_to bugs_path(cause_tag: tag), class: "block group" do %>
-                <div class="flex justify-between items-center mb-1">
-                  <span class="text-sm font-semibold text-ink-dark group-hover:text-fz-red-light transition"><%= tag %></span>
-                  <span class="text-sm font-bold text-fz-red-light"><%= count %></span>
+              <%= link_to bugs_path(cause_tag: tag), class: "bar-chart__row" do %>
+                <div class="bar-chart__header">
+                  <span class="bar-chart__label bar-chart__label--red"><%= tag %></span>
+                  <span class="bar-chart__count--red"><%= count %></span>
                 </div>
-                <div class="w-full bg-surface-raised rounded-full h-6 overflow-hidden">
-                  <div class="h-full rounded-full transition-all duration-500 group-hover:opacity-80" style="width: <%= (count.to_f / max_cause * 100).round(1) %>%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                <div class="bar-chart__track">
+                  <div class="bar-chart__fill bar-chart__fill--red" style="width: <%= (count.to_f / max_cause * 100).round(1) %>%;"></div>
                 </div>
               <% end %>
             <% end %>
@@ -36,20 +33,19 @@
         </div>
       <% end %>
 
-      <!-- By Feature -->
       <% if @feature_counts.any? %>
-        <div class="bg-surface rounded-xl shadow-lg p-6 mb-6">
-          <h2 class="text-xl font-bold text-ink-darkest mb-6"><%= t('bugs.root_causes.by_feature') %></h2>
+        <div class="panel mb-6">
+          <h2 class="text-xl font-bold mb-6"><%= t('bugs.root_causes.by_feature') %></h2>
           <% max_feature = @feature_counts.values.max %>
-          <div class="space-y-4">
+          <div class="stack">
             <% @feature_counts.each do |tag, count| %>
-              <%= link_to bugs_path(feature_tag: tag), class: "block group" do %>
-                <div class="flex justify-between items-center mb-1">
-                  <span class="text-sm font-semibold text-ink-dark group-hover:text-fz-blue-light transition"><%= tag %></span>
-                  <span class="text-sm font-bold text-fz-blue-light"><%= count %></span>
+              <%= link_to bugs_path(feature_tag: tag), class: "bar-chart__row" do %>
+                <div class="bar-chart__header">
+                  <span class="bar-chart__label bar-chart__label--blue"><%= tag %></span>
+                  <span class="bar-chart__count--blue"><%= count %></span>
                 </div>
-                <div class="w-full bg-surface-raised rounded-full h-6 overflow-hidden">
-                  <div class="h-full rounded-full transition-all duration-500 group-hover:opacity-80" style="width: <%= (count.to_f / max_feature * 100).round(1) %>%; background: linear-gradient(90deg, #3b82f6, #2563eb);"></div>
+                <div class="bar-chart__track">
+                  <div class="bar-chart__fill bar-chart__fill--blue" style="width: <%= (count.to_f / max_feature * 100).round(1) %>%;"></div>
                 </div>
               <% end %>
             <% end %>

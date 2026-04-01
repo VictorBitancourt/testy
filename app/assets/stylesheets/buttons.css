@@ -1,0 +1,100 @@
+/* ── Buttons ────────────────────────────────────── */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    font-weight: 600;
+    font-size: 1em;
+    border-radius: 99rem;
+    padding: 0.5em 1.1em;
+    border: 1px solid var(--btn-border-color, transparent);
+    background: var(--btn-bg, var(--color-canvas));
+    color: var(--btn-color, var(--color-ink-darkest));
+    transition: 100ms ease-out;
+    transition-property: background-color, border-color, box-shadow, color, opacity, filter;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1.5;
+    position: relative;
+  }
+  .btn:hover { filter: brightness(1.25); }
+  .btn:disabled, .btn[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Variants */
+  .btn--primary {
+    --btn-bg: var(--color-fz-blue-dark);
+    --btn-border-color: var(--color-fz-blue-dark);
+    --btn-color: #fff;
+  }
+  .btn--danger {
+    --btn-bg: var(--color-fz-red-dark);
+    --btn-border-color: var(--color-fz-red-dark);
+    --btn-color: #fff;
+  }
+  .btn--success {
+    --btn-bg: var(--color-fz-green-dark);
+    --btn-border-color: var(--color-fz-green-dark);
+    --btn-color: #fff;
+  }
+  .btn--ai {
+    --btn-bg: var(--color-fz-violet-dark);
+    --btn-border-color: var(--color-fz-violet-dark);
+    --btn-color: #fff;
+  }
+  .btn--secondary {
+    --btn-bg: transparent;
+    --btn-border-color: var(--color-ink-light);
+    --btn-color: var(--color-ink-dark);
+  }
+  .btn--secondary:hover { filter: brightness(1); background: rgba(255,255,255,0.06); }
+  .btn--warning {
+    --btn-bg: var(--color-fz-yellow-medium);
+    --btn-border-color: var(--color-fz-yellow-medium);
+    --btn-color: #fff;
+  }
+  .btn--ghost {
+    --btn-bg: transparent;
+    --btn-border-color: transparent;
+    --btn-color: var(--color-ink-dark);
+  }
+  .btn--ghost:hover { filter: brightness(1); background: rgba(255,255,255,0.05); }
+
+  /* Sizes */
+  .btn--sm { font-size: var(--text-sm); padding: 0.35em 0.75em; }
+  .btn--lg { padding: 0.65em 1.6em; }
+
+  /* Keyboard shortcut badge inside button */
+  .kbd {
+    border: 1px solid currentColor;
+    border-radius: 0.3em;
+    box-shadow: 0 0.1em 0 currentColor;
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    font-weight: 600;
+    opacity: 0.5;
+    padding: 0 0.4em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  /* Inline link style for destructive text buttons */
+  .btn--link-danger {
+    background: transparent;
+    border: none;
+    color: var(--color-fz-red-dark);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+  }
+  .btn--link-danger:hover {
+    color: var(--color-fz-red-light);
+    filter: none;
+  }
+}

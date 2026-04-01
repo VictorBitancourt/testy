@@ -1,82 +1,82 @@
-<div class="bg-surface rounded-xl shadow-lg p-6 scenario-card" data-scenario-id="<%= scenario.id %>" data-scenario-status="<%= scenario.status %>" data-sortable-target="item" draggable="true" data-action="dragstart->sortable#dragStart dragover->sortable#dragOver dragend->sortable#dragEnd touchstart->sortable#touchStart">
-  <div class="flex justify-between items-start mb-4">
-    <div class="flex items-center gap-3">
-      <span class="cursor-grab active:cursor-grabbing text-ink-medium hover:text-ink-dark transition" title="<%= t('test_plans.show.drag_reorder') %>" data-drag-handle>
-<%= icon_tag("drag-handle") %>
+<div class="scenario-card" data-scenario-id="<%= scenario.id %>" data-scenario-status="<%= scenario.status %>" data-sortable-target="item" draggable="true" data-action="dragstart->sortable#dragStart dragover->sortable#dragOver dragend->sortable#dragEnd touchstart->sortable#touchStart">
+  <div class="scenario-card__header">
+    <div class="scenario-card__title">
+      <span class="drag-handle" title="<%= t('test_plans.show.drag_reorder') %>" data-drag-handle>
+        <%= icon_tag("drag-handle") %>
       </span>
-      <h3 class="text-xl font-bold text-ink-darkest"><%= scenario.title %></h3>
+      <h3><%= scenario.title %></h3>
     </div>
 
-    <div class="flex gap-2">
+    <div class="scenario-card__actions">
       <% if scenario.status == 'approved' %>
         <% if current_user_admin? || test_plan.user == Current.user %>
-          <button data-action="click->scenario#resetStatus" data-scenario-id="<%= scenario.id %>" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-6 py-2 rounded-lg font-semibold transition cursor-pointer" title="<%= t('test_plans.show.click_to_change') %>">
+          <button data-action="click->scenario#resetStatus" data-scenario-id="<%= scenario.id %>" class="scenario-btn scenario-btn--approved" title="<%= t('test_plans.show.click_to_change') %>">
             &#10003; <%= t('test_plans.show.approved') %>
           </button>
         <% else %>
-          <div class="bg-fz-green-dark text-white px-6 py-2 rounded-lg font-semibold">
+          <div class="scenario-btn scenario-btn--approved">
             &#10003; <%= t('test_plans.show.approved') %>
           </div>
         <% end %>
       <% elsif scenario.status == 'failed' %>
         <% if current_user_admin? || test_plan.user == Current.user %>
-          <button data-action="click->scenario#resetStatus" data-scenario-id="<%= scenario.id %>" class="bg-fz-red-dark hover:bg-fz-red-darker text-white px-6 py-2 rounded-lg font-semibold transition cursor-pointer" title="<%= t('test_plans.show.click_to_change') %>">
+          <button data-action="click->scenario#resetStatus" data-scenario-id="<%= scenario.id %>" class="scenario-btn scenario-btn--failed" title="<%= t('test_plans.show.click_to_change') %>">
             &#10007; <%= t('test_plans.show.failed') %>
           </button>
         <% else %>
-          <div class="bg-fz-red-dark text-white px-6 py-2 rounded-lg font-semibold">
+          <div class="scenario-btn scenario-btn--failed">
             &#10007; <%= t('test_plans.show.failed') %>
           </div>
         <% end %>
       <% else %>
         <% if current_user_admin? || test_plan.user == Current.user %>
-          <button data-action="click->scenario#updateStatus" data-status="approved" data-scenario-id="<%= scenario.id %>" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition">
+          <button data-action="click->scenario#updateStatus" data-status="approved" data-scenario-id="<%= scenario.id %>" class="scenario-btn scenario-btn--approved">
             &#10003; <%= t('test_plans.show.approve') %>
           </button>
-          <button data-action="click->scenario#updateStatus" data-status="failed" data-scenario-id="<%= scenario.id %>" class="bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition">
+          <button data-action="click->scenario#updateStatus" data-status="failed" data-scenario-id="<%= scenario.id %>" class="scenario-btn scenario-btn--failed">
             &#10007; <%= t('test_plans.show.fail') %>
           </button>
         <% end %>
       <% end %>
       <% if current_user_admin? || test_plan.user == Current.user %>
-        <button type="button" data-action="click->scenario#toggleEdit" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition cursor-pointer" title="<%= t('test_plans.index.edit') %>">
-<%= icon_tag("pencil") %>
+        <button type="button" data-action="click->scenario#toggleEdit" class="scenario-btn scenario-btn--edit" title="<%= t('test_plans.index.edit') %>">
+          <%= icon_tag("pencil") %>
         </button>
-        <%= button_to test_plan_test_scenario_path(test_plan, scenario), method: :delete, data: { turbo_confirm: t('test_plans.show.confirm_delete_scenario') }, class: "bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg transition border-0 cursor-pointer" do %>
+        <%= button_to test_plan_test_scenario_path(test_plan, scenario), method: :delete, data: { turbo_confirm: t('test_plans.show.confirm_delete_scenario') }, class: "scenario-btn scenario-btn--delete" do %>
           &#128465;&#65039;
         <% end %>
       <% end %>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-    <div class="step-box step-box-blue bg-fz-blue-darkest p-4 rounded-lg cursor-pointer" data-step="given" data-action="click->scenario#toggleEdit">
-      <p class="font-semibold text-fz-blue-light mb-2"><%= t('test_plans.show.given') %>:</p>
-      <p class="text-ink-darker break-words step-text"><%= scenario.given %></p>
+  <div class="scenario-card__steps">
+    <div class="step-box step-box--blue" data-step="given" data-action="click->scenario#toggleEdit">
+      <p class="step-box__label"><%= t('test_plans.show.given') %>:</p>
+      <p class="step-box__text step-text"><%= scenario.given %></p>
     </div>
 
-    <div class="step-box step-box-violet bg-fz-violet-darkest p-4 rounded-lg cursor-pointer" data-step="when" data-action="click->scenario#toggleEdit">
-      <p class="font-semibold text-fz-violet-light mb-2"><%= t('test_plans.show.when') %>:</p>
-      <p class="text-ink-darker break-words step-text"><%= scenario.when_step %></p>
+    <div class="step-box step-box--violet" data-step="when" data-action="click->scenario#toggleEdit">
+      <p class="step-box__label"><%= t('test_plans.show.when') %>:</p>
+      <p class="step-box__text step-text"><%= scenario.when_step %></p>
     </div>
 
-    <div class="step-box step-box-green bg-fz-green-darkest p-4 rounded-lg cursor-pointer" data-step="then" data-action="click->scenario#toggleEdit">
-      <p class="font-semibold text-fz-green-light mb-2"><%= t('test_plans.show.then') %>:</p>
-      <p class="text-ink-darker break-words step-text"><%= scenario.then_step %></p>
+    <div class="step-box step-box--green" data-step="then" data-action="click->scenario#toggleEdit">
+      <p class="step-box__label"><%= t('test_plans.show.then') %>:</p>
+      <p class="step-box__text step-text"><%= scenario.then_step %></p>
     </div>
   </div>
 
   <% if scenario.evidence_files.attached? %>
     <div class="mt-4">
-      <p class="font-semibold text-ink-darker mb-2"><%= t('test_plans.show.evidence') %></p>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <p class="font-semibold txt-ink-darker mb-2"><%= t('test_plans.show.evidence') %></p>
+      <div class="evidence-grid">
         <% scenario.evidence_files.each do |file| %>
-          <div class="relative group">
+          <div class="evidence-item">
             <% if file.image? %>
-              <%= image_tag file, class: "w-full h-32 object-cover rounded-lg shadow" %>
+              <%= image_tag file %>
             <% else %>
-              <div class="w-full h-32 bg-surface-raised rounded-lg flex items-center justify-center">
-                <span class="text-4xl">&#128196;</span>
+              <div class="evidence-placeholder">
+                <span>&#128196;</span>
               </div>
             <% end %>
           </div>
@@ -85,19 +85,18 @@
     </div>
   <% end %>
 
-  <%# Bug association %>
   <div class="bug-association-container mt-4" data-scenario-id="<%= scenario.id %>">
     <% if scenario.bug.present? %>
-      <div class="flex items-center gap-2 text-sm">
-<%= icon_tag("bug", size: :sm, class: "text-fz-red-light") %>
-        <%= link_to scenario.bug.display_name, bug_path(scenario.bug), class: "text-fz-red-light hover:text-fz-red-medium font-semibold" %>
+      <div class="bug-link">
+        <%= icon_tag("bug", size: :sm, class: "txt-red-light") %>
+        <%= link_to scenario.bug.display_name, bug_path(scenario.bug), class: "bug-link__name" %>
         <% if current_user_admin? || test_plan.user == Current.user %>
-          <button type="button" data-action="click->scenario#removeBug" data-scenario-id="<%= scenario.id %>" class="text-ink-medium hover:text-fz-red-light text-xs ml-1 cursor-pointer">&#10005;</button>
+          <button type="button" data-action="click->scenario#removeBug" data-scenario-id="<%= scenario.id %>" class="bug-link__remove">&#10005;</button>
         <% end %>
       </div>
     <% elsif scenario.status == 'failed' && (current_user_admin? || test_plan.user == Current.user) %>
-      <button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="<%= scenario.id %>" class="text-sm text-fz-red-light hover:text-fz-red-medium font-semibold cursor-pointer">
-<%= icon_tag("bug", size: :sm) %> <%= t('test_plans.show.associate_bug') %>
+      <button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="<%= scenario.id %>" class="bug-associate-btn">
+        <%= icon_tag("bug", size: :sm) %> <%= t('test_plans.show.associate_bug') %>
       </button>
     <% end %>
   </div>

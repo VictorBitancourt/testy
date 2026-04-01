@@ -1,6 +1,6 @@
 <% if test_scenarios.any? %>
   <div class="mt-8 text-center">
-    <%= link_to test_plan_report_path(test_plan, format: :pdf), target: "_blank", class: "#{btn_classes(:primary, size: :lg)} transform hover:scale-105" do %>
+    <%= link_to test_plan_report_path(test_plan, format: :pdf), target: "_blank", class: "btn btn--primary btn--lg" do %>
       &#128196; <%= t('test_plans.show.export_pdf') %>
     <% end %>
   </div>

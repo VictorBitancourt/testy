@@ -1,32 +1,31 @@
-<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
-  <div class="max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-8">
+<div class="page">
+  <div class="page__container">
+    <div class="page__header">
       <div class="flex items-center gap-3">
-        <%= link_to new_test_plan_path, class: "#{btn_classes(:primary)} flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
+        <%= link_to new_test_plan_path, class: "btn btn--primary", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
           <%= t('test_plans.index.new_plan') %>
-          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">N</span>
+          <span class="kbd">N</span>
         <% end %>
       </div>
-      <p class="text-sm text-ink-medium">
+      <p class="page__stats">
         <%= t('test_plans.index.plans_count', count: TestPlan.count) %> ·
         <%= t('test_plans.index.approved_count', count: TestPlan.approved_plans.count) %> ·
         <%= t('test_plans.index.in_progress_count', count: TestPlan.in_progress.count) %> ·
         <%= t('test_plans.index.failed_count', count: TestPlan.failed_plans.count) %>
       </p>
       <div class="flex items-center gap-3">
-        <%= link_to bugs_path, class: "#{btn_classes(:primary)} flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
-<%= icon_tag("bug") %>
+        <%= link_to bugs_path, class: "btn btn--primary", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+          <%= icon_tag("bug") %>
           Bug Jar
-          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+          <span class="kbd">B</span>
         <% end %>
       </div>
     </div>
 
     <%# === Filter Bar === %>
-    <div class="bg-surface rounded-xl shadow-md p-4 mb-6">
-      <%# Search + Status pills %>
-      <div class="flex flex-wrap items-center gap-2 mb-4">
-        <%= form_tag test_plans_path, method: :get, class: "flex items-center gap-2 mr-4" do %>
+    <div class="filter-bar">
+      <div class="filter-bar__row">
+        <%= form_tag test_plans_path, method: :get, class: "filter-bar__search" do %>
           <% if params[:status].present? %>
             <input type="hidden" name="status" value="<%= params[:status] %>">
           <% end %>
@@ -36,21 +35,20 @@
           <% if params[:date_until].present? %>
             <input type="hidden" name="date_until" value="<%= params[:date_until] %>">
           <% end %>
-          <input type="text" name="search" value="<%= @search %>" placeholder="<%= t('test_plans.index.search_placeholder') %>"
-                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest placeholder-ink-medium focus:ring-2 focus:ring-fz-blue-light focus:outline-none w-64">
-          <button type="submit" class="<%= btn_classes(:primary, size: :sm) %>">
+          <input type="text" name="search" value="<%= @search %>" placeholder="<%= t('test_plans.index.search_placeholder') %>" class="input input--sm input--search">
+          <button type="submit" class="btn btn--primary btn--sm">
             <%= t('test_plans.index.search') %>
           </button>
         <% end %>
 
-        <span class="text-sm font-semibold text-ink-dark mr-1"><%= t('test_plans.index.status_label') %></span>
+        <span class="filter-bar__label"><%= t('test_plans.index.status_label') %></span>
         <%
           status_options = [
-            { value: nil,            label: t('test_plans.index.status_all'),          active_bg: "bg-ink-dark",          inactive_bg: "bg-surface-raised text-ink-dark hover:bg-ink-lightest" },
-            { value: "approved",     label: t('test_plans.index.status_approved'),     active_bg: "bg-fz-green-dark",     inactive_bg: "bg-fz-green-darkest text-fz-green-light hover:bg-fz-green-darker" },
-            { value: "failed",       label: t('test_plans.index.status_failed'),       active_bg: "bg-fz-red-dark",       inactive_bg: "bg-fz-red-darkest text-fz-red-light hover:bg-fz-red-darker" },
-            { value: "in_progress",  label: t('test_plans.index.status_in_progress'),  active_bg: "bg-fz-yellow-medium",  inactive_bg: "bg-fz-yellow-darkest text-fz-yellow-light hover:bg-fz-yellow-darker" },
-            { value: "not_started",  label: t('test_plans.index.status_not_started'),  active_bg: "bg-fz-blue-dark",      inactive_bg: "bg-fz-blue-darkest text-fz-blue-light hover:bg-fz-blue-darker" },
+            { value: nil,            label: t('test_plans.index.status_all'),          active: "filter-pill--active-default",  inactive: "filter-pill--inactive" },
+            { value: "approved",     label: t('test_plans.index.status_approved'),     active: "filter-pill--active-green",    inactive: "filter-pill--inactive-green" },
+            { value: "failed",       label: t('test_plans.index.status_failed'),       active: "filter-pill--active-red",      inactive: "filter-pill--inactive-red" },
+            { value: "in_progress",  label: t('test_plans.index.status_in_progress'),  active: "filter-pill--active-yellow",   inactive: "filter-pill--inactive-yellow" },
+            { value: "not_started",  label: t('test_plans.index.status_not_started'),  active: "filter-pill--active-blue",     inactive: "filter-pill--inactive-blue" },
           ]
           current_status = params[:status]
         %>
@@ -69,15 +67,15 @@
             <% if @search.present? %>
               <input type="hidden" name="search" value="<%= @search %>">
             <% end %>
-            <button type="submit" class="px-4 py-1.5 rounded-full text-sm font-semibold transition <%= is_active ? "#{opt[:active_bg]} text-white" : opt[:inactive_bg] %>">
+            <button type="submit" class="filter-pill <%= is_active ? "filter-pill--active #{opt[:active]}" : opt[:inactive] %>">
               <%= opt[:label] %>
             </button>
           <% end %>
         <% end %>
       </div>
 
-      <%# Date filters %>
-      <%= form_tag test_plans_path, method: :get, class: "flex flex-wrap items-end gap-3" do %>
+      <% # Date filters %>
+      <%= form_tag test_plans_path, method: :get, class: "filter-bar__date-row" do %>
         <% if params[:status].present? %>
           <input type="hidden" name="status" value="<%= params[:status] %>">
         <% end %>
@@ -85,53 +83,50 @@
           <input type="hidden" name="search" value="<%= @search %>">
         <% end %>
         <div>
-          <label for="date_from" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('test_plans.index.date_from') %></label>
-          <input type="date" name="date_from" id="date_from" value="<%= params[:date_from] %>"
-                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+          <label for="date_from" class="filter-bar__date-label"><%= t('test_plans.index.date_from') %></label>
+          <input type="date" name="date_from" id="date_from" value="<%= params[:date_from] %>" class="input input--sm">
         </div>
         <div>
-          <label for="date_until" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('test_plans.index.date_to') %></label>
-          <input type="date" name="date_until" id="date_until" value="<%= params[:date_until] %>"
-                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+          <label for="date_until" class="filter-bar__date-label"><%= t('test_plans.index.date_to') %></label>
+          <input type="date" name="date_until" id="date_until" value="<%= params[:date_until] %>" class="input input--sm">
         </div>
-        <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
+        <button type="submit" class="btn btn--primary btn--sm">
           <%= t('test_plans.index.filter_by_date') %>
         </button>
         <% if @filters_active %>
-          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: "text-sm text-fz-red-light hover:text-fz-red-dark font-semibold underline ml-2" %>
+          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: "filter-bar__clear" %>
         <% end %>
       <% end %>
     </div>
 
     <% if @test_plans.any? %>
-      <%# === Table === %>
-      <div class="bg-surface rounded-xl shadow-lg overflow-x-auto">
-        <table class="w-full text-left">
+      <div class="table-container">
+        <table class="table">
           <thead>
-            <tr class="border-b border-ink-lighter">
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_name') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_qa') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_created_by') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_scenarios') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_status') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_tags') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('test_plans.index.th_date') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('test_plans.index.th_actions') %></th>
+            <tr>
+              <th><%= t('test_plans.index.th_name') %></th>
+              <th><%= t('test_plans.index.th_qa') %></th>
+              <th><%= t('test_plans.index.th_created_by') %></th>
+              <th class="text-center"><%= t('test_plans.index.th_scenarios') %></th>
+              <th class="text-center"><%= t('test_plans.index.th_status') %></th>
+              <th class="text-center"><%= t('test_plans.index.th_tags') %></th>
+              <th><%= t('test_plans.index.th_date') %></th>
+              <th class="text-center"><%= t('test_plans.index.th_actions') %></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-ink-lighter/30">
+          <tbody>
             <% @test_plans.each do |plan| %>
               <% status = plan.derived_status %>
-              <tr class="hover:bg-surface-raised/50 transition">
-                <td class="px-4 py-3">
-                  <%= link_to plan.name, plan, class: "text-fz-blue-light hover:text-fz-blue-medium font-semibold" %>
+              <tr>
+                <td>
+                  <%= link_to plan.name, plan, class: "link link--blue" %>
                 </td>
-                <td class="px-4 py-3 text-sm text-ink-dark"><%= plan.qa_name %></td>
-                <td class="px-4 py-3 text-sm text-ink-dark"><%= plan.user&.username || "—" %></td>
-                <td class="px-4 py-3 text-sm text-ink-dark text-center">
-                  <span class="text-fz-green-medium font-semibold"><%= plan.approved_scenarios %></span>/<%= plan.total_scenarios %>
+                <td><%= plan.qa_name %></td>
+                <td><%= plan.user&.username || "—" %></td>
+                <td class="text-center">
+                  <span class="txt-green-medium font-semibold"><%= plan.approved_scenarios %></span>/<%= plan.total_scenarios %>
                 </td>
-                <td class="px-4 py-3 text-center">
+                <td class="text-center">
                   <% case status %>
                   <% when "approved" %>
                     <span class="<%= badge_classes(:approved) %>"><%= t('test_plans.index.status_approved').upcase %></span>
@@ -143,27 +138,27 @@
                     <span class="<%= badge_classes(:not_started) %>"><%= t('test_plans.index.status_not_started').upcase %></span>
                   <% end %>
                 </td>
-                <td class="px-4 py-3 text-center">
+                <td class="text-center">
                   <div class="flex flex-wrap justify-center gap-1">
                     <% plan.tags.each do |tag| %>
                       <%= link_to tag.name, test_plans_path(search: tag.name), class: tag_classes(:violet) %>
                     <% end %>
                   </div>
                 </td>
-                <td class="px-4 py-3 text-sm text-ink-dark whitespace-nowrap">
+                <td class="whitespace-nowrap">
                   <%= l(plan.created_at.to_date, format: :short_date) %>
                 </td>
-                <td class="px-4 py-3 text-center">
-                  <div class="flex items-center justify-center gap-2">
-                    <%= link_to plan, class: "text-fz-blue-light hover:text-fz-blue-medium transition", title: t('test_plans.index.view') do %>
-<%= icon_tag("eye") %>
+                <td class="text-center">
+                  <div class="table__actions">
+                    <%= link_to plan, class: "icon-action icon-action--view", title: t('test_plans.index.view') do %>
+                      <%= icon_tag("eye") %>
                     <% end %>
                     <% if current_user_admin? || plan.user == Current.user %>
-                      <%= link_to edit_test_plan_path(plan), class: "text-ink-medium hover:text-fz-yellow-light transition", title: t('test_plans.index.edit') do %>
-<%= icon_tag("pencil") %>
+                      <%= link_to edit_test_plan_path(plan), class: "icon-action icon-action--edit", title: t('test_plans.index.edit') do %>
+                        <%= icon_tag("pencil") %>
                       <% end %>
-                      <%= link_to test_plan_path(plan), data: { turbo_method: :delete, turbo_confirm: t('test_plans.index.confirm_remove_plan') }, class: "text-ink-medium hover:text-fz-red-light transition", title: t('test_plans.index.remove') do %>
-<%= icon_tag("trash") %>
+                      <%= link_to test_plan_path(plan), data: { turbo_method: :delete, turbo_confirm: t('test_plans.index.confirm_remove_plan') }, class: "icon-action icon-action--delete", title: t('test_plans.index.remove') do %>
+                        <%= icon_tag("trash") %>
                       <% end %>
                     <% end %>
                   </div>
@@ -174,7 +169,6 @@
         </table>
       </div>
 
-      <%# === Pagination === %>
       <% if @pagy.pages > 1 %>
         <div class="mt-6 flex justify-center">
           <%== @pagy.series_nav %>
@@ -185,11 +179,11 @@
         <% if @filters_active %>
           <span class="blank-slate__emoji">&#128270;</span>
           <p class="blank-slate__text"><%= t('test_plans.index.no_plans_filtered') %></p>
-          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: btn_classes(:primary, size: :lg) %>
+          <%= link_to t('test_plans.index.clear_filters'), test_plans_path, class: "btn btn--primary btn--lg" %>
         <% else %>
           <span class="blank-slate__emoji">&#128203;</span>
           <p class="blank-slate__text"><%= t('test_plans.index.no_plans_yet') %></p>
-          <%= link_to new_test_plan_path, class: btn_classes(:primary, size: :lg) do %>
+          <%= link_to new_test_plan_path, class: "btn btn--primary btn--lg" do %>
             <%= t('test_plans.index.create_first_plan') %>
           <% end %>
         <% end %>

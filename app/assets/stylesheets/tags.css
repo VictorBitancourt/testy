@@ -1,0 +1,45 @@
+/* ── Tags ───────────────────────────────────────── */
+@layer components {
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.2em 0.7em;
+    border-radius: 99rem;
+    border: 1px solid;
+    transition: background-color .15s, border-color .15s, color .15s;
+  }
+
+  .tag--violet {
+    color: var(--color-fz-violet-light);
+    border-color: color-mix(in oklch, var(--color-fz-violet-dark) 55%, transparent);
+    background: color-mix(in oklch, var(--color-fz-violet-dark) 15%, transparent);
+  }
+  .tag--violet:hover {
+    background: color-mix(in oklch, var(--color-fz-violet-dark) 30%, transparent);
+    border-color: var(--color-fz-violet-dark);
+  }
+
+  .tag--blue {
+    color: var(--color-fz-blue-light);
+    border-color: color-mix(in oklch, var(--color-fz-blue-dark) 55%, transparent);
+    background: color-mix(in oklch, var(--color-fz-blue-dark) 15%, transparent);
+  }
+  .tag--blue:hover {
+    background: color-mix(in oklch, var(--color-fz-blue-dark) 30%, transparent);
+    border-color: var(--color-fz-blue-dark);
+  }
+
+  .tag--red {
+    color: var(--color-fz-red-light);
+    border-color: color-mix(in oklch, var(--color-fz-red-dark) 55%, transparent);
+    background: color-mix(in oklch, var(--color-fz-red-dark) 15%, transparent);
+  }
+  .tag--red:hover {
+    background: color-mix(in oklch, var(--color-fz-red-dark) 30%, transparent);
+    border-color: var(--color-fz-red-dark);
+  }
+}

@@ -1,34 +1,33 @@
-<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
-  <div class="max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-8">
+<div class="page">
+  <div class="page__container">
+    <div class="page__header">
       <div class="flex items-center gap-3">
-        <%= link_to new_bug_path, class: "#{btn_classes(:danger)} flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
+        <%= link_to new_bug_path, class: "btn btn--danger", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
           <%= t('bugs.index.new_bug') %>
-          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">N</span>
+          <span class="kbd">N</span>
         <% end %>
       </div>
-      <p class="text-sm text-ink-medium">
+      <p class="page__stats">
         <%= t('bugs.index.bugs_count', count: Bug.count) %> ·
         <%= t('bugs.index.open_count', count: Bug.open_bugs.count) %> ·
         <%= t('bugs.index.resolved_count', count: Bug.resolved.count) %>
       </p>
       <div class="flex items-center gap-3">
-        <%= link_to bug_root_causes_path, class: "#{btn_classes(:ai)} flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "r", name:"The Root Of All Evil" } do %>
-<%= icon_tag("chart-bar") %>
+        <%= link_to bug_root_causes_path, class: "btn btn--ai", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "r", name:"The Root Of All Evil" } do %>
+          <%= icon_tag("chart-bar") %>
           <%= t('bugs.index.root_causes') %>
-          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">R</span>
+          <span class="kbd">R</span>
         <% end %>
-        <%= link_to test_plans_path, class: "#{btn_classes(:primary)} flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "p" } do %>
+        <%= link_to test_plans_path, class: "btn btn--primary", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "p" } do %>
           <%= t('bugs.index.test_plans') %>
-          <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">P</span>
+          <span class="kbd">P</span>
         <% end %>
       </div>
     </div>
-    <%# === Filter Bar === %>
-    <div class="bg-surface rounded-xl shadow-md p-4 mb-6">
-      <%# Search + Status pills %>
-      <div class="flex flex-wrap items-center gap-2 mb-4">
-        <%= form_tag bugs_path, method: :get, class: "flex items-center gap-2 mr-4" do %>
+
+    <div class="filter-bar">
+      <div class="filter-bar__row">
+        <%= form_tag bugs_path, method: :get, class: "filter-bar__search" do %>
           <% if params[:status].present? %>
             <input type="hidden" name="status" value="<%= params[:status] %>">
           <% end %>
@@ -38,18 +37,18 @@
           <% if params[:date_until].present? %>
             <input type="hidden" name="date_until" value="<%= params[:date_until] %>">
           <% end %>
-          <input type="text" name="search" value="<%= @search %>" placeholder="<%= t('bugs.index.search_placeholder') %>"
-                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest placeholder-ink-medium focus:ring-2 focus:ring-fz-blue-light focus:outline-none w-64">
-          <button type="submit" class="<%= btn_classes(:primary, size: :sm) %>">
+          <input type="text" name="search" value="<%= @search %>" placeholder="<%= t('bugs.index.search_placeholder') %>" class="input input--sm input--search">
+          <button type="submit" class="btn btn--primary btn--sm">
             <%= t('bugs.index.search') %>
           </button>
         <% end %>
-        <span class="text-sm font-semibold text-ink-dark mr-1"><%= t('bugs.index.status_label') %></span>
+
+        <span class="filter-bar__label"><%= t('bugs.index.status_label') %></span>
         <%
           status_options = [
-            { value: nil,        label: t('bugs.index.status_all'),      active_bg: "bg-ink-dark",       inactive_bg: "bg-surface-raised text-ink-dark hover:bg-ink-lightest" },
-            { value: "open",     label: t('bugs.index.status_open'),     active_bg: "bg-fz-yellow-medium", inactive_bg: "bg-fz-yellow-darkest text-fz-yellow-light hover:bg-fz-yellow-darker" },
-            { value: "resolved", label: t('bugs.index.status_resolved'), active_bg: "bg-fz-green-dark",  inactive_bg: "bg-fz-green-darkest text-fz-green-light hover:bg-fz-green-darker" },
+            { value: nil,        label: t('bugs.index.status_all'),      active: "filter-pill--active-default",  inactive: "filter-pill--inactive" },
+            { value: "open",     label: t('bugs.index.status_open'),     active: "filter-pill--active-yellow",   inactive: "filter-pill--inactive-yellow" },
+            { value: "resolved", label: t('bugs.index.status_resolved'), active: "filter-pill--active-green",    inactive: "filter-pill--inactive-green" },
           ]
           current_status = params[:status]
         %>
@@ -68,14 +67,14 @@
             <% if @search.present? %>
               <input type="hidden" name="search" value="<%= @search %>">
             <% end %>
-            <button type="submit" class="px-4 py-1.5 rounded-full text-sm font-semibold transition <%= is_active ? "#{opt[:active_bg]} text-white" : opt[:inactive_bg] %>">
+            <button type="submit" class="filter-pill <%= is_active ? "filter-pill--active #{opt[:active]}" : opt[:inactive] %>">
               <%= opt[:label] %>
             </button>
           <% end %>
         <% end %>
       </div>
-      <%# Date filters %>
-      <%= form_tag bugs_path, method: :get, class: "flex flex-wrap items-end gap-3" do %>
+
+      <%= form_tag bugs_path, method: :get, class: "filter-bar__date-row" do %>
         <% if params[:status].present? %>
           <input type="hidden" name="status" value="<%= params[:status] %>">
         <% end %>
@@ -83,80 +82,78 @@
           <input type="hidden" name="search" value="<%= @search %>">
         <% end %>
         <div>
-          <label for="date_from" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('bugs.index.date_from') %></label>
-          <input type="date" name="date_from" id="date_from" value="<%= params[:date_from] %>"
-                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+          <label for="date_from" class="filter-bar__date-label"><%= t('bugs.index.date_from') %></label>
+          <input type="date" name="date_from" id="date_from" value="<%= params[:date_from] %>" class="input input--sm">
         </div>
         <div>
-          <label for="date_until" class="block text-xs font-semibold text-ink-medium mb-1"><%= t('bugs.index.date_to') %></label>
-          <input type="date" name="date_until" id="date_until" value="<%= params[:date_until] %>"
-                 class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none">
+          <label for="date_until" class="filter-bar__date-label"><%= t('bugs.index.date_to') %></label>
+          <input type="date" name="date_until" id="date_until" value="<%= params[:date_until] %>" class="input input--sm">
         </div>
-        <button type="submit" class="bg-fz-blue-dark hover:bg-fz-blue-darker text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition">
+        <button type="submit" class="btn btn--primary btn--sm">
           <%= t('bugs.index.filter_by_date') %>
         </button>
         <% if @filters_active %>
-          <%= link_to t('bugs.index.clear_filters'), bugs_path, class: "text-sm text-fz-red-light hover:text-fz-red-dark font-semibold underline ml-2" %>
+          <%= link_to t('bugs.index.clear_filters'), bugs_path, class: "filter-bar__clear" %>
         <% end %>
       <% end %>
     </div>
+
     <% if @bugs.any? %>
-      <%# === Table === %>
-      <div class="bg-surface rounded-xl shadow-lg overflow-x-auto">
-        <table class="w-full text-left">
+      <div class="table-container">
+        <table class="table">
           <thead>
-            <tr class="border-b border-ink-lighter">
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_id') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_title') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_feature') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_cause') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('bugs.index.th_status') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider"><%= t('bugs.index.th_date') %></th>
-              <th class="px-4 py-3 text-xs font-semibold text-ink-medium uppercase tracking-wider text-center"><%= t('bugs.index.th_actions') %></th>
+            <tr>
+              <th><%= t('bugs.index.th_id') %></th>
+              <th><%= t('bugs.index.th_title') %></th>
+              <th><%= t('bugs.index.th_feature') %></th>
+              <th><%= t('bugs.index.th_cause') %></th>
+              <th class="text-center"><%= t('bugs.index.th_status') %></th>
+              <th><%= t('bugs.index.th_date') %></th>
+              <th class="text-center"><%= t('bugs.index.th_actions') %></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-ink-lighter/30">
+          <tbody>
             <% @bugs.each do |bug| %>
-              <tr class="hover:bg-surface-raised/50 transition">
-                <td class="px-4 py-3 text-sm text-ink-medium font-mono">#<%= bug.id %></td>
-                <td class="px-4 py-3">
-                  <%= link_to bug.title, bug, class: "text-fz-red-light hover:text-fz-red-medium font-semibold" %>
+              <tr>
+                <td class="font-mono txt-ink-medium">#<%= bug.id %></td>
+                <td>
+                  <%= link_to bug.title, bug, class: "link link--red" %>
                 </td>
-                <td class="px-4 py-3 text-sm text-ink-dark">
+                <td>
                   <% if bug.feature_tag.present? %>
                     <%= link_to bug.feature_tag, bugs_path(feature_tag: bug.feature_tag), class: tag_classes(:blue) %>
                   <% else %>
-                    <span class="text-ink-medium">—</span>
+                    <span class="txt-ink-medium">—</span>
                   <% end %>
                 </td>
-                <td class="px-4 py-3 text-sm text-ink-dark">
+                <td>
                   <% if bug.cause_tag.present? %>
                     <%= link_to bug.cause_tag, bugs_path(cause_tag: bug.cause_tag), class: tag_classes(:red) %>
                   <% else %>
-                    <span class="text-ink-medium">—</span>
+                    <span class="txt-ink-medium">—</span>
                   <% end %>
                 </td>
-                <td class="px-4 py-3 text-center">
+                <td class="text-center">
                   <% if bug.open? %>
                     <span class="<%= badge_classes(:open) %>"><%= t('bugs.index.status_open').upcase %></span>
                   <% else %>
                     <span class="<%= badge_classes(:resolved) %>"><%= t('bugs.index.status_resolved').upcase %></span>
                   <% end %>
                 </td>
-                <td class="px-4 py-3 text-sm text-ink-dark whitespace-nowrap">
+                <td class="whitespace-nowrap">
                   <%= l(bug.created_at.to_date, format: :short_date) %>
                 </td>
-                <td class="px-4 py-3 text-center">
-                  <div class="flex items-center justify-center gap-2">
-                    <%= link_to bug, class: "text-fz-blue-light hover:text-fz-blue-medium transition", title: t('bugs.index.view') do %>
-<%= icon_tag("eye") %>
+                <td class="text-center">
+                  <div class="table__actions">
+                    <%= link_to bug, class: "icon-action icon-action--view", title: t('bugs.index.view') do %>
+                      <%= icon_tag("eye") %>
                     <% end %>
                     <% if current_user_admin? || bug.user == Current.user %>
-                      <%= link_to edit_bug_path(bug), class: "text-ink-medium hover:text-fz-yellow-light transition", title: t('bugs.index.edit') do %>
-<%= icon_tag("pencil") %>
+                      <%= link_to edit_bug_path(bug), class: "icon-action icon-action--edit", title: t('bugs.index.edit') do %>
+                        <%= icon_tag("pencil") %>
                       <% end %>
-                      <%= link_to bug_path(bug), data: { turbo_method: :delete, turbo_confirm: t('bugs.index.confirm_remove_bug') }, class: "text-ink-medium hover:text-fz-red-light transition", title: t('bugs.index.remove') do %>
-<%= icon_tag("trash") %>
+                      <%= link_to bug_path(bug), data: { turbo_method: :delete, turbo_confirm: t('bugs.index.confirm_remove_bug') }, class: "icon-action icon-action--delete", title: t('bugs.index.remove') do %>
+                        <%= icon_tag("trash") %>
                       <% end %>
                     <% end %>
                   </div>
@@ -166,7 +163,7 @@
           </tbody>
         </table>
       </div>
-      <%# === Pagination === %>
+
       <% if @pagy.pages > 1 %>
         <div class="mt-6 flex justify-center">
           <%== @pagy.series_nav %>
@@ -177,11 +174,11 @@
         <% if @filters_active %>
           <span class="blank-slate__emoji">&#128270;</span>
           <p class="blank-slate__text"><%= t('bugs.index.no_bugs_filtered') %></p>
-          <%= link_to t('bugs.index.clear_filters'), bugs_path, class: btn_classes(:primary, size: :lg) %>
+          <%= link_to t('bugs.index.clear_filters'), bugs_path, class: "btn btn--primary btn--lg" %>
         <% else %>
           <span class="blank-slate__emoji">&#128027;</span>
           <p class="blank-slate__text"><%= t('bugs.index.no_bugs_yet') %></p>
-          <%= link_to new_bug_path, class: btn_classes(:danger, size: :lg) do %>
+          <%= link_to new_bug_path, class: "btn btn--danger btn--lg" do %>
             <%= t('bugs.index.create_first_bug') %>
           <% end %>
         <% end %>

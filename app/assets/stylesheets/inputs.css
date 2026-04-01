@@ -1,0 +1,128 @@
+/* ── Inputs & Labels ────────────────────────────── */
+@layer components {
+  .label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-ink-darker);
+    margin-bottom: var(--space-2);
+  }
+
+  .label--sm {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-ink-dark);
+    margin-bottom: var(--space-1);
+  }
+
+  .input {
+    width: 100%;
+    padding: 0.5em 0.8em;
+    background: transparent;
+    border: 1px solid var(--color-ink-light);
+    border-radius: 0.5em;
+    color: var(--color-ink-darkest);
+    font-size: max(16px, 1em);
+    line-height: inherit;
+    transition: border-color .1s, box-shadow .1s;
+  }
+  .input::placeholder { color: var(--color-ink-medium); }
+  .input:focus {
+    outline: var(--focus-ring-size) solid var(--focus-ring-color);
+    outline-offset: -1px;
+    border-color: var(--focus-ring-color);
+  }
+
+  .input--sm {
+    padding: 0.35em 0.65em;
+    font-size: var(--text-sm);
+  }
+
+  .input--search {
+    width: 16rem;
+  }
+
+  .input--textarea {
+    min-height: 5rem;
+    resize: vertical;
+  }
+
+  .input--focus-red:focus   { --focus-ring-color: var(--color-fz-red-light); }
+  .input--focus-green:focus { --focus-ring-color: var(--color-fz-green-light); }
+  .input--focus-violet:focus { --focus-ring-color: var(--color-fz-violet-light); }
+  .input--focus-blue:focus  { --focus-ring-color: var(--color-fz-blue-light); }
+
+  /* Suggestions dropdown (autocomplete) */
+  .suggestions {
+    position: absolute;
+    z-index: var(--z-dropdown);
+    width: 100%;
+    margin-top: var(--space-1);
+    background: var(--color-surface);
+    border: 1px solid var(--color-ink-lighter);
+    border-radius: 0.5em;
+    box-shadow: var(--shadow-lg);
+    max-height: 12rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-lighter) transparent;
+  }
+
+  .suggestions__item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.4em 0.7em;
+    font-size: var(--text-sm);
+    color: var(--color-ink-darkest);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color .1s;
+  }
+  .suggestions__item:hover {
+    background: var(--color-surface-raised);
+  }
+
+  /* Form spacing */
+  .form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .form-stack--lg {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .form-row {
+    display: flex;
+    gap: var(--space-4);
+  }
+  .form-row > * { flex: 1; }
+
+  .form-hint {
+    font-size: var(--text-xs);
+    color: var(--color-ink-medium);
+    margin-top: var(--space-1);
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-4);
+  }
+  @media (min-width: 48rem) {
+    .form-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-4);
+  }
+  @media (min-width: 48rem) {
+    .form-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  }
+}

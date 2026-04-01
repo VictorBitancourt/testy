@@ -8,72 +8,87 @@
     <meta name="view-transition" content="same-origin">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "reset",          "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "variables",      "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "base",           "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "animations",     "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "layout",         "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "buttons",        "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "inputs",         "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "panels",         "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tables",         "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "badges",         "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tags",           "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "filters",        "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "flash",          "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "blank-slates",   "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "cards",          "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "dropdown",       "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "confirm-dialog", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "pagy",           "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "utilities",      "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application",    "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-canvas text-ink-darkest">
+  <body>
     <% if authenticated? %>
-      <div class="absolute top-0 left-0 right-0 z-50 flex justify-center pt-3 pointer-events-none">
-        <div data-controller="dropdown" class="relative pointer-events-auto">
-          <button data-action="click->dropdown#toggle" class="flex items-center gap-2 px-2 py-1 rounded-lg transition group cursor-pointer">
-            <%= image_tag "testy-logo.png", alt: "testy", style: "height:68px;width:68px;", class: "object-contain", data: { controller: "easter-egg", action: "click->easter-egg#click" } %>
-            <span class="bg-white/20 text-ink-dark text-xs font-bold px-1.5 py-0.5 rounded">T</span>
-<%= icon_tag("chevron-down", size: :sm, class: "text-ink-medium") %>
+      <div class="topbar">
+        <div data-controller="dropdown" class="dropdown">
+          <button data-action="click->dropdown#toggle" class="dropdown__trigger">
+            <%= image_tag "testy-logo.png", alt: "testy", style: "height:68px;width:68px;object-fit:contain;", data: { controller: "easter-egg", action: "click->easter-egg#click" } %>
+            <span class="kbd">T</span>
+            <%= icon_tag("chevron-down", size: :sm, class: "txt-ink-medium") %>
           </button>
 
-          <div data-dropdown-target="menu" class="hidden absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 p-3" style="background: var(--color-surface); border-radius: 18px; box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-ink-lighter) 45%, transparent), 0 0 24px color-mix(in oklch, var(--color-fz-blue-dark) 12%, transparent), 0 12px 40px rgba(0,0,0,0.5);">
-            <!-- User info -->
-            <div class="px-3 pt-2" style="padding-bottom: 14px;">
-              <p class="text-base font-semibold text-ink-darkest"><%= Current.user.username %></p>
+          <div data-dropdown-target="menu" class="hidden dropdown__menu">
+            <div class="dropdown__user">
+              <p class="dropdown__user-name"><%= Current.user.username %></p>
               <% if current_user_admin? %>
-                <span class="text-sm text-fz-violet-light font-medium">admin</span>
+                <span class="dropdown__user-role--admin">admin</span>
               <% else %>
-                <span class="text-sm text-fz-blue-light font-medium">user</span>
+                <span class="dropdown__user-role--user">user</span>
               <% end %>
             </div>
 
-            <hr class="mx-6 border-0" style="height: 1px; background: color-mix(in oklch, var(--color-ink-lighter) 45%, transparent);">
+            <hr class="dropdown__divider">
 
-            <!-- Menu items -->
-            <div class="py-2">
-              <%= link_to test_plans_path, class: "flex items-center gap-3 px-3 py-2.5 text-sm text-ink-dark hover:text-ink-darkest hover:bg-white/5 rounded-xl transition" do %>
-<%= icon_tag("test-plans", class: "text-ink-medium") %>
+            <div class="dropdown__items">
+              <%= link_to test_plans_path, class: "dropdown__item" do %>
+                <%= icon_tag("test-plans", class: "txt-ink-medium") %>
                 <%= t('layouts.nav.test_plans') %>
               <% end %>
 
-              <%= link_to bugs_path, class: "flex items-center gap-3 px-3 py-2.5 text-sm text-ink-dark hover:text-ink-darkest hover:bg-white/5 rounded-xl transition" do %>
-<%= icon_tag("bug", class: "text-ink-medium") %>
+              <%= link_to bugs_path, class: "dropdown__item" do %>
+                <%= icon_tag("bug", class: "txt-ink-medium") %>
                 <%= t('layouts.nav.bug_jar') %>
               <% end %>
 
               <% if current_user_admin? %>
-                <%= link_to users_path, class: "flex items-center gap-3 px-3 py-2.5 text-sm text-ink-dark hover:text-ink-darkest hover:bg-white/5 rounded-xl transition" do %>
-<%= icon_tag("users", class: "text-ink-medium") %>
+                <%= link_to users_path, class: "dropdown__item" do %>
+                  <%= icon_tag("users", class: "txt-ink-medium") %>
                   <%= t('layouts.nav.users') %>
                 <% end %>
               <% end %>
             </div>
 
-            <hr class="mx-6 border-0" style="height: 1px; background: color-mix(in oklch, var(--color-ink-lighter) 45%, transparent);">
+            <hr class="dropdown__divider">
 
-            <!-- Language switcher -->
-            <div class="flex items-center justify-center gap-1 py-2">
-              <%= button_to locale_path(locale: :en), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :en ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-white/5'}" do %>
+            <div class="lang-switcher">
+              <%= button_to locale_path(locale: :en), method: :patch, class: "lang-btn #{I18n.locale == :en ? 'lang-btn--active' : 'lang-btn--inactive'}" do %>
                 <%= t('language.en') %>
               <% end %>
-              <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :'pt-BR' ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-white/5'}" do %>
+              <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "lang-btn #{I18n.locale == :'pt-BR' ? 'lang-btn--active' : 'lang-btn--inactive'}" do %>
                 <%= t('language.pt_br') %>
               <% end %>
             </div>
 
-            <hr class="mx-6 border-0" style="height: 1px; background: color-mix(in oklch, var(--color-ink-lighter) 45%, transparent);">
+            <hr class="dropdown__divider">
 
-            <div class="pt-2">
-              <%= button_to session_path, method: :delete, class: "w-full flex items-center gap-3 px-3 py-2.5 text-sm text-fz-red-light hover:bg-white/5 rounded-xl transition text-left cursor-pointer" do %>
-<%= icon_tag("sign-out") %>
+            <div style="padding-top: var(--space-2);">
+              <%= button_to session_path, method: :delete, class: "dropdown__item dropdown__item--danger" do %>
+                <%= icon_tag("sign-out") %>
                 <%= t('layouts.nav.sign_out') %>
               <% end %>
             </div>

@@ -1,42 +1,42 @@
-<div class="bg-surface rounded-xl shadow-lg p-6 mb-8">
-  <h2 class="text-xl font-bold text-ink-darkest mb-4"><%= t('test_plans.show.add_new_scenario') %></h2>
+<div class="panel mb-8">
+  <h2 class="panel__title"><%= t('test_plans.show.add_new_scenario') %></h2>
 
-  <%= form_with model: [test_plan, new_scenario], class: "space-y-4" do |f| %>
+  <%= form_with model: [test_plan, new_scenario], class: "form-stack" do |f| %>
     <div>
-      <%= f.label :title, t('test_plans.show.scenario_title'), class: "block font-semibold text-ink-darker mb-2" %>
-      <%= f.text_field :title, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.scenario_title_placeholder') %>
+      <%= f.label :title, t('test_plans.show.scenario_title'), class: "label" %>
+      <%= f.text_field :title, class: "input", placeholder: t('test_plans.show.scenario_title_placeholder') %>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="form-grid-3">
       <div>
-        <%= f.label :given, t('test_plans.show.given'), class: "block font-semibold text-ink-darker mb-2" %>
-        <%= f.text_area :given, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.given_placeholder') %>
+        <%= f.label :given, t('test_plans.show.given'), class: "label" %>
+        <%= f.text_area :given, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.given_placeholder') %>
       </div>
 
       <div>
-        <%= f.label :when_step, t('test_plans.show.when'), class: "block font-semibold text-ink-darker mb-2" %>
-        <%= f.text_area :when_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.when_placeholder') %>
+        <%= f.label :when_step, t('test_plans.show.when'), class: "label" %>
+        <%= f.text_area :when_step, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.when_placeholder') %>
       </div>
 
       <div>
-        <%= f.label :then_step, t('test_plans.show.then'), class: "block font-semibold text-ink-darker mb-2" %>
-        <%= f.text_area :then_step, rows: 3, class: "w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light", placeholder: t('test_plans.show.then_placeholder') %>
+        <%= f.label :then_step, t('test_plans.show.then'), class: "label" %>
+        <%= f.text_area :then_step, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.then_placeholder') %>
       </div>
     </div>
 
     <div>
-      <%= f.label :evidence_files, t('test_plans.show.evidence_label'), class: "block font-semibold text-ink-darker mb-2" %>
-      <label class="cursor-pointer <%= btn_classes(:primary, size: :lg) %>">
-<%= icon_tag("paperclip", size: :sm) %>
+      <%= f.label :evidence_files, t('test_plans.show.evidence_label'), class: "label" %>
+      <label class="btn btn--primary btn--lg" style="cursor:pointer;">
+        <%= icon_tag("paperclip", size: :sm) %>
         <%= t('test_plans.show.upload_evidence') %>
         <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload" %>
       </label>
-      <p class="text-sm text-ink-medium mt-2" id="file-count"><%= t('test_plans.show.no_file_selected') %></p>
+      <p class="form-hint" id="file-count"><%= t('test_plans.show.no_file_selected') %></p>
     </div>
 
-    <button type="submit" class="<%= btn_classes(:primary) %> flex items-center gap-2" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="c">
+    <button type="submit" class="btn btn--primary" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="c">
       <%= t('test_plans.show.add_scenario') %>
-      <span class="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded">C</span>
+      <span class="kbd">C</span>
     </button>
   <% end %>
 </div>

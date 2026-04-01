@@ -1,34 +1,30 @@
-<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
-  <div class="max-w-4xl mx-auto">
-    <!-- Back -->
+<div class="page">
+  <div class="page__container--md">
     <div class="mb-4">
-      <%= link_to bugs_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+      <%= link_to bugs_path, class: "page__back", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
         &larr; <%= t('bugs.show.back') %>
-        <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+        <span class="kbd">B</span>
       <% end %>
     </div>
 
-    <!-- Header -->
-    <div class="bg-surface rounded-xl shadow-lg p-6 mb-6 relative">
+    <div class="panel mb-6 relative">
       <% if @bug.resolved? %>
-        <div class="absolute -top-6 -right-6">
-          <div class="bg-fz-green-dark text-white px-8 py-4 rounded-xl shadow-2xl transform rotate-12 border-4 border-fz-green-darker">
-            <div class="text-center">
-              <div class="text-3xl font-bold"><%= t('bugs.show.resolved_stamp') %></div>
-              <div class="text-sm"><%= l(Date.today, format: :short_date).upcase %></div>
-              <div class="text-xs">by <%= @bug.user&.username %></div>
-            </div>
+        <div class="stamp">
+          <div class="stamp__inner">
+            <div class="stamp__title"><%= t('bugs.show.resolved_stamp') %></div>
+            <div class="stamp__date"><%= l(Date.today, format: :short_date).upcase %></div>
+            <div class="stamp__by">by <%= @bug.user&.username %></div>
           </div>
         </div>
       <% end %>
 
       <div class="flex items-start justify-between">
         <div>
-          <h1 class="text-3xl font-black text-ink-darkest mb-2">
-            <span class="text-ink-medium font-mono">#<%= @bug.id %></span> - <%= @bug.title %>
+          <h1 class="text-3xl font-black mb-2">
+            <span class="txt-ink-medium font-mono">#<%= @bug.id %></span> - <%= @bug.title %>
           </h1>
-          <p class="text-ink-medium text-sm">
-            <%= t('bugs.show.reported_by') %> <span class="font-semibold text-ink-dark"><%= @bug.user&.username || "—" %></span>
+          <p class="txt-ink-medium text-sm">
+            <%= t('bugs.show.reported_by') %> <span class="font-semibold txt-ink-dark"><%= @bug.user&.username || "—" %></span>
             · <%= l(@bug.created_at.to_date, format: :short_date) %>
           </p>
         </div>
@@ -57,50 +53,47 @@
       <% end %>
     </div>
 
-    <!-- Description -->
-    <div class="bg-surface rounded-xl shadow-lg p-6 mb-6">
-      <h2 class="text-lg font-bold text-ink-darkest mb-3"><%= t('bugs.show.description') %></h2>
-      <div class="text-ink-dark whitespace-pre-wrap"><%= @bug.description %></div>
+    <div class="panel mb-6">
+      <h2 class="text-lg font-bold mb-3"><%= t('bugs.show.description') %></h2>
+      <div class="txt-ink-dark whitespace-pre-wrap"><%= @bug.description %></div>
     </div>
 
-    <!-- Optional Fields -->
     <% if @bug.steps_to_reproduce.present? || @bug.obtained_result.present? || @bug.expected_result.present? %>
-      <div class="bg-surface rounded-xl shadow-lg p-6 mb-6 space-y-6">
+      <div class="panel mb-6 stack--lg">
         <% if @bug.steps_to_reproduce.present? %>
           <div>
-            <h3 class="text-md font-bold text-ink-darkest mb-2"><%= t('bugs.show.steps_to_reproduce') %></h3>
-            <div class="text-ink-dark whitespace-pre-wrap"><%= @bug.steps_to_reproduce %></div>
+            <h3 class="font-bold mb-2"><%= t('bugs.show.steps_to_reproduce') %></h3>
+            <div class="txt-ink-dark whitespace-pre-wrap"><%= @bug.steps_to_reproduce %></div>
           </div>
         <% end %>
 
         <% if @bug.obtained_result.present? %>
           <div>
-            <h3 class="text-md font-bold text-fz-red-light mb-2"><%= t('bugs.show.obtained_result') %></h3>
-            <div class="text-ink-dark whitespace-pre-wrap"><%= @bug.obtained_result %></div>
+            <h3 class="font-bold txt-red-light mb-2"><%= t('bugs.show.obtained_result') %></h3>
+            <div class="txt-ink-dark whitespace-pre-wrap"><%= @bug.obtained_result %></div>
           </div>
         <% end %>
 
         <% if @bug.expected_result.present? %>
           <div>
-            <h3 class="text-md font-bold text-fz-green-light mb-2"><%= t('bugs.show.expected_result') %></h3>
-            <div class="text-ink-dark whitespace-pre-wrap"><%= @bug.expected_result %></div>
+            <h3 class="font-bold txt-green-light mb-2"><%= t('bugs.show.expected_result') %></h3>
+            <div class="txt-ink-dark whitespace-pre-wrap"><%= @bug.expected_result %></div>
           </div>
         <% end %>
       </div>
     <% end %>
 
-    <!-- Evidence -->
     <% if @bug.evidence_files.attached? %>
-      <div class="bg-surface rounded-xl shadow-lg p-6 mb-6">
-        <h2 class="text-lg font-bold text-ink-darkest mb-3"><%= t('bugs.show.evidence') %></h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="panel mb-6">
+        <h2 class="text-lg font-bold mb-3"><%= t('bugs.show.evidence') %></h2>
+        <div class="evidence-grid">
           <% @bug.evidence_files.each do |file| %>
-            <div class="relative group">
+            <div class="evidence-item">
               <% if file.image? %>
-                <%= image_tag file, class: "w-full h-32 object-cover rounded-lg shadow" %>
+                <%= image_tag file %>
               <% else %>
-                <div class="w-full h-32 bg-surface-raised rounded-lg flex items-center justify-center">
-                  <span class="text-4xl">&#128196;</span>
+                <div class="evidence-placeholder">
+                  <span>&#128196;</span>
                 </div>
               <% end %>
             </div>
@@ -109,17 +102,16 @@
       </div>
     <% end %>
 
-    <!-- Associated Scenarios -->
     <% if @bug.test_scenarios.any? %>
-      <div class="bg-surface rounded-xl shadow-lg p-6 mb-6">
-        <h2 class="text-lg font-bold text-ink-darkest mb-3"><%= t('bugs.show.associated_scenarios') %></h2>
-        <div class="space-y-2">
+      <div class="panel mb-6">
+        <h2 class="text-lg font-bold mb-3"><%= t('bugs.show.associated_scenarios') %></h2>
+        <div class="stack--sm">
           <% @bug.test_scenarios.includes(:test_plan).each do |scenario| %>
-            <div class="flex items-center justify-between bg-surface-raised rounded-lg px-4 py-3">
+            <div class="flex items-center justify-between" style="background:var(--color-surface-raised);border-radius:var(--radius-lg);padding:0.75rem 1rem;">
               <div>
-                <span class="font-semibold text-ink-darkest"><%= scenario.title %></span>
-                <span class="text-sm text-ink-medium ml-2">
-                  (<%= link_to scenario.test_plan.name, test_plan_path(scenario.test_plan), class: "text-fz-blue-light hover:text-fz-blue-medium" %>)
+                <span class="font-semibold"><%= scenario.title %></span>
+                <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);">
+                  (<%= link_to scenario.test_plan.name, test_plan_path(scenario.test_plan), class: "link link--blue" %>)
                 </span>
               </div>
               <% if scenario.status == "approved" %>
@@ -135,29 +127,28 @@
       </div>
     <% end %>
 
-    <!-- Actions -->
     <div class="flex flex-wrap items-center gap-4">
       <% if current_user_admin? || @bug.user == Current.user %>
         <% if @bug.open? %>
-          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "resolved" } }, class: btn_classes(:success, size: :lg) do %>
+          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "resolved" } }, class: "btn btn--success btn--lg" do %>
             &#10003; <%= t('bugs.show.resolve') %>
           <% end %>
         <% else %>
-          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "open" } }, class: btn_classes(:warning, size: :lg) do %>
+          <%= button_to bug_path(@bug), method: :patch, params: { bug: { status: "open" } }, class: "btn btn--warning btn--lg" do %>
             &#8634; <%= t('bugs.show.reopen') %>
           <% end %>
         <% end %>
 
-        <%= link_to edit_bug_path(@bug), class: btn_classes(:primary, size: :lg) do %>
+        <%= link_to edit_bug_path(@bug), class: "btn btn--primary btn--lg" do %>
           &#9998; <%= t('bugs.show.edit') %>
         <% end %>
 
-        <%= button_to bug_path(@bug), method: :delete, data: { turbo_confirm: t('bugs.show.confirm_delete') }, class: btn_classes(:danger, size: :lg) do %>
+        <%= button_to bug_path(@bug), method: :delete, data: { turbo_confirm: t('bugs.show.confirm_delete') }, class: "btn btn--danger btn--lg" do %>
           &#128465;&#65039; <%= t('bugs.show.delete') %>
         <% end %>
       <% end %>
 
-      <%= link_to bug_report_path(@bug, format: :pdf), target: "_blank", class: btn_classes(:secondary, size: :lg) do %>
+      <%= link_to bug_report_path(@bug, format: :pdf), target: "_blank", class: "btn btn--secondary btn--lg" do %>
         &#128196; <%= t('bugs.show.export_pdf') %>
       <% end %>
     </div>

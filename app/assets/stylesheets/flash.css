@@ -1,0 +1,48 @@
+/* ── Flash Messages ─────────────────────────────── */
+@layer components {
+  .flash {
+    z-index: var(--z-flash);
+    pointer-events: none;
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+  }
+
+  .flash__inner {
+    border-radius: 99rem;
+    pointer-events: auto;
+    animation: flash-appear .4s var(--ease-out-back) both;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.7em 1.4em;
+    font-weight: 600;
+    max-width: 90vw;
+    width: max-content;
+  }
+
+  .flash--notice .flash__inner {
+    background: var(--color-fz-green-dark);
+    color: #fff;
+  }
+  .flash--alert .flash__inner {
+    background: var(--color-fz-red-dark);
+    color: #fff;
+  }
+
+  .flash--leaving .flash__inner {
+    animation: flash-leave .3s var(--ease-out-expo) both;
+  }
+
+  @keyframes flash-appear {
+    0%  { opacity: 0; transform: translateY(-1rem) scale(.95); }
+    to  { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes flash-leave {
+    0%  { opacity: 1; transform: translateY(0) scale(1); }
+    to  { opacity: 0; transform: translateY(-1rem) scale(.95); }
+  }
+}

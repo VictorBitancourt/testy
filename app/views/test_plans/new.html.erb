@@ -1,14 +1,14 @@
-<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
-  <div class="max-w-2xl mx-auto">
+<div class="page">
+  <div class="page__container--sm">
     <div class="mb-4">
-      <%= link_to test_plans_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+      <%= link_to test_plans_path, class: "page__back", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
         &larr; <%= t('test_plans.new.back') %>
-        <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+        <span class="kbd">B</span>
       <% end %>
     </div>
 
-    <div class="bg-surface rounded-xl shadow-lg p-8">
-      <h1 class="text-3xl font-black text-ink-darkest mb-6"><%= t('test_plans.new.title') %></h1>
+    <div class="panel panel--padded">
+      <h1 class="panel__title panel__title--lg"><%= t('test_plans.new.title') %></h1>
 
       <%= render 'form', test_plan: @test_plan %>
     </div>

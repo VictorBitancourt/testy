@@ -1,0 +1,78 @@
+/* ── Panels ─────────────────────────────────────── */
+@layer components {
+  .panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-ink-lighter);
+    border-radius: 1em;
+    padding: var(--space-6);
+  }
+
+  .panel--padded {
+    padding: var(--space-8);
+  }
+
+  .panel--bordered {
+    border-color: var(--color-ink-light);
+  }
+
+  .panel--centered {
+    max-width: var(--main-max-width-xs);
+    width: 100%;
+  }
+
+  .panel--md {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .panel__title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-ink-darkest);
+    margin-bottom: var(--space-4);
+  }
+
+  .panel__title--lg {
+    font-size: var(--text-3xl);
+    font-weight: 900;
+    margin-bottom: var(--space-8);
+  }
+
+  .panel__title--center {
+    text-align: center;
+    margin-bottom: var(--space-6);
+  }
+
+  .panel__subtitle {
+    color: var(--color-ink-medium);
+    font-size: var(--text-sm);
+  }
+
+  .panel__separator {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-ink-lighter);
+  }
+
+  /* Error box */
+  .error-box {
+    background: color-mix(in oklch, var(--color-fz-red-dark) 12%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-fz-red-dark) 40%, transparent);
+    color: var(--color-fz-red-light);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5em;
+  }
+  .error-box p { font-weight: 700; }
+  .error-box ul { list-style: disc inside; }
+
+  .error-box--light {
+    background: color-mix(in oklch, var(--color-fz-red-light) 10%, transparent);
+    border: 1px solid var(--color-fz-red-light);
+    border-radius: 0.5em;
+    padding: var(--space-3);
+  }
+  .error-box--light ul {
+    font-size: var(--text-sm);
+    color: var(--color-fz-red-light);
+  }
+  .error-box--light ul > * + * { margin-top: var(--space-1); }
+}

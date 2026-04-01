@@ -1,8 +1,8 @@
-<%= form_with model: test_plan, class: "space-y-6" do |f| %>
+<%= form_with model: test_plan, class: "form-stack--lg" do |f| %>
   <% if test_plan.errors.any? %>
-    <div class="bg-fz-red-darkest border border-fz-red-darker text-fz-red-light px-4 py-3 rounded-lg">
-      <p class="font-bold"><%= t('test_plans.form.error_saving') %></p>
-      <ul class="list-disc list-inside">
+    <div class="error-box">
+      <p><%= t('test_plans.form.error_saving') %></p>
+      <ul>
         <% test_plan.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
@@ -11,24 +11,24 @@
   <% end %>
 
   <div>
-    <%= f.label :name, t('test_plans.form.plan_name'), class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_field :name, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: t('test_plans.form.plan_name_placeholder') %>
+    <%= f.label :name, t('test_plans.form.plan_name'), class: "label" %>
+    <%= f.text_field :name, class: "input input--focus-blue", placeholder: t('test_plans.form.plan_name_placeholder') %>
   </div>
 
   <div>
-    <%= f.label :qa_name, t('test_plans.form.responsible_qa'), class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_field :qa_name, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: t('test_plans.form.qa_placeholder') %>
+    <%= f.label :qa_name, t('test_plans.form.responsible_qa'), class: "label" %>
+    <%= f.text_field :qa_name, class: "input input--focus-blue", placeholder: t('test_plans.form.qa_placeholder') %>
   </div>
 
   <div data-controller="tag-input" class="relative">
-    <%= f.label :tag_list, t('test_plans.form.tags'), class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_field :tag_list, value: test_plan.tag_list, data: { tag_input_target: "input", action: "input->tag-input#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-violet-light focus:border-transparent", placeholder: t('test_plans.form.tags_placeholder'), autocomplete: "off" %>
-    <div data-tag-input-target="suggestions" class="hidden absolute z-10 w-full mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
-    <p class="text-xs text-ink-medium mt-1"><%= t('test_plans.form.tags_hint') %></p>
+    <%= f.label :tag_list, t('test_plans.form.tags'), class: "label" %>
+    <%= f.text_field :tag_list, value: test_plan.tag_list, data: { tag_input_target: "input", action: "input->tag-input#onInput" }, class: "input input--focus-violet", placeholder: t('test_plans.form.tags_placeholder'), autocomplete: "off" %>
+    <div data-tag-input-target="suggestions" class="hidden suggestions"></div>
+    <p class="form-hint"><%= t('test_plans.form.tags_hint') %></p>
   </div>
 
-  <div class="flex gap-4">
-    <%= f.submit (test_plan.new_record? ? t('test_plans.form.create_plan') : t('test_plans.form.update_plan')), class: "flex-1 #{btn_classes(:primary, size: :lg)}" %>
-    <%= link_to t('test_plans.form.cancel'), test_plans_path, class: "flex-1 #{btn_classes(:secondary, size: :lg)} text-center" %>
+  <div class="form-row">
+    <%= f.submit (test_plan.new_record? ? t('test_plans.form.create_plan') : t('test_plans.form.update_plan')), class: "flex-1 btn btn--primary btn--lg" %>
+    <%= link_to t('test_plans.form.cancel'), test_plans_path, class: "flex-1 btn btn--secondary btn--lg text-center" %>
   </div>
 <% end %>

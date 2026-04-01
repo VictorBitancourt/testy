@@ -1,6 +1,6 @@
-<div class="min-h-screen bg-canvas flex items-center justify-center px-4">
-  <div class="w-full max-w-sm">
-    <div class="flex justify-center mb-8">
+<div class="page--centered">
+  <div class="page__container--xs">
+    <div class="text-center mb-8">
       <svg width="120" height="120" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="reg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -14,14 +14,14 @@
       </svg>
     </div>
 
-    <div class="bg-surface rounded-xl shadow-lg p-8 border border-ink-lighter">
-      <h1 class="text-2xl font-bold text-ink-darkest text-center mb-2"><%= t('registrations.new.initial_setup') %></h1>
-      <p class="text-sm text-ink-dark text-center mb-6"><%= t('registrations.new.create_admin') %></p>
+    <div class="panel panel--padded panel--bordered">
+      <h1 class="text-2xl font-bold text-center mb-2"><%= t('registrations.new.initial_setup') %></h1>
+      <p class="text-sm txt-ink-dark text-center mb-6"><%= t('registrations.new.create_admin') %></p>
 
-      <%= form_with model: @user, url: registration_path, class: "space-y-4" do |f| %>
+      <%= form_with model: @user, url: registration_path, class: "form-stack" do |f| %>
         <% if @user.errors.any? %>
-          <div class="bg-fz-red-light/10 border border-fz-red-light rounded-lg p-3">
-            <ul class="text-sm text-fz-red-light space-y-1">
+          <div class="error-box--light">
+            <ul>
               <% @user.errors.full_messages.each do |msg| %>
                 <li><%= msg %></li>
               <% end %>
@@ -30,35 +30,30 @@
         <% end %>
 
         <div>
-          <label for="user_username" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.username') %></label>
-          <%= f.text_field :username, autocomplete: "username", autofocus: true, required: true,
-              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+          <label for="user_username" class="label--sm"><%= t('registrations.new.username') %></label>
+          <%= f.text_field :username, autocomplete: "username", autofocus: true, required: true, class: "input" %>
         </div>
 
         <div>
-          <label for="user_password" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.password') %></label>
-          <%= f.password_field :password, autocomplete: "new-password", required: true,
-              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+          <label for="user_password" class="label--sm"><%= t('registrations.new.password') %></label>
+          <%= f.password_field :password, autocomplete: "new-password", required: true, class: "input" %>
         </div>
 
         <div>
-          <label for="user_password_confirmation" class="block text-sm font-medium text-ink-dark mb-1"><%= t('registrations.new.confirm_password') %></label>
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true,
-              class: "w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" %>
+          <label for="user_password_confirmation" class="label--sm"><%= t('registrations.new.confirm_password') %></label>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, class: "input" %>
         </div>
 
-        <button type="submit"
-                class="w-full <%= btn_classes(:primary) %>">
+        <button type="submit" class="btn btn--primary full-width">
           <%= t('registrations.new.create_user') %>
         </button>
       <% end %>
 
-      <!-- Language switcher -->
-      <div class="flex items-center justify-center gap-1 mt-4">
-        <%= button_to locale_path(locale: :en), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :en ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+      <div class="lang-switcher mt-4">
+        <%= button_to locale_path(locale: :en), method: :patch, class: "lang-btn #{I18n.locale == :en ? 'lang-btn--active' : 'lang-btn--inactive'}" do %>
           <%= t('language.en') %>
         <% end %>
-        <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :'pt-BR' ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+        <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "lang-btn #{I18n.locale == :'pt-BR' ? 'lang-btn--active' : 'lang-btn--inactive'}" do %>
           <%= t('language.pt_br') %>
         <% end %>
       </div>

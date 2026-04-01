@@ -1,6 +1,6 @@
-<div class="min-h-screen bg-canvas flex items-center justify-center px-4">
-  <div class="w-full max-w-sm">
-    <div class="flex justify-center mb-8">
+<div class="page--centered">
+  <div class="page__container--xs">
+    <div class="text-center mb-8">
       <svg width="120" height="120" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="login-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -14,34 +14,30 @@
       </svg>
     </div>
 
-    <div class="bg-surface rounded-xl shadow-lg p-8 border border-ink-lighter">
-      <h1 class="text-2xl font-bold text-ink-darkest text-center mb-6"><%= t('sessions.new.sign_in') %></h1>
+    <div class="panel panel--padded panel--bordered">
+      <h1 class="panel__title--center text-2xl font-bold"><%= t('sessions.new.sign_in') %></h1>
 
-      <%= form_with url: session_path, method: :post, class: "space-y-4" do |f| %>
+      <%= form_with url: session_path, method: :post, class: "form-stack" do |f| %>
         <div>
-          <label for="username" class="block text-sm font-medium text-ink-dark mb-1"><%= t('sessions.new.username') %></label>
-          <input type="text" name="username" id="username" autocomplete="username" autofocus required
-                 class="w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" />
+          <label for="username" class="label--sm"><%= t('sessions.new.username') %></label>
+          <input type="text" name="username" id="username" autocomplete="username" autofocus required class="input" />
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-ink-dark mb-1"><%= t('sessions.new.password') %></label>
-          <input type="password" name="password" id="password" autocomplete="current-password" required
-                 class="w-full px-4 py-2.5 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest placeholder-ink-light focus:outline-none focus:ring-2 focus:ring-fz-blue-dark focus:border-transparent" />
+          <label for="password" class="label--sm"><%= t('sessions.new.password') %></label>
+          <input type="password" name="password" id="password" autocomplete="current-password" required class="input" />
         </div>
 
-        <button type="submit"
-                class="w-full <%= btn_classes(:primary) %>">
+        <button type="submit" class="btn btn--primary full-width">
           <%= t('sessions.new.sign_in') %>
         </button>
       <% end %>
 
-      <!-- Language switcher -->
-      <div class="flex items-center justify-center gap-1 mt-4">
-        <%= button_to locale_path(locale: :en), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :en ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+      <div class="lang-switcher mt-4">
+        <%= button_to locale_path(locale: :en), method: :patch, class: "lang-btn #{I18n.locale == :en ? 'lang-btn--active' : 'lang-btn--inactive'}" do %>
           <%= t('language.en') %>
         <% end %>
-        <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer #{I18n.locale == :'pt-BR' ? 'bg-fz-blue-dark text-white' : 'text-ink-dark hover:bg-ink-lightest'}" do %>
+        <%= button_to locale_path(locale: :'pt-BR'), method: :patch, class: "lang-btn #{I18n.locale == :'pt-BR' ? 'lang-btn--active' : 'lang-btn--inactive'}" do %>
           <%= t('language.pt_br') %>
         <% end %>
       </div>

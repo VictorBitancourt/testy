@@ -1,28 +1,24 @@
-<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;" data-controller="scenario" data-scenario-test-plan-id-value="<%= @test_plan.id %>">
-  <div class="max-w-6xl mx-auto">
-    <!-- Back -->
+<div class="page" data-controller="scenario" data-scenario-test-plan-id-value="<%= @test_plan.id %>">
+  <div class="page__container">
     <div class="mb-4">
-      <%= link_to root_path, class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+      <%= link_to root_path, class: "page__back", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
         &larr; <%= t('test_plans.show.back') %>
-        <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+        <span class="kbd">B</span>
       <% end %>
     </div>
 
-    <!-- Header -->
-    <div class="bg-surface rounded-xl shadow-lg p-6 mb-8 relative">
-      <div id="stamp-container" data-scenario-target="stamp" class="hidden absolute -top-6 -right-6">
-        <div class="bg-fz-green-dark text-white px-8 py-4 rounded-xl shadow-2xl transform rotate-12 border-4 border-fz-green-darker">
-          <div class="text-center">
-            <div class="text-3xl font-bold"><%= t('test_plans.show.done') %></div>
-            <div class="text-sm"><%= l(Date.today, format: :short_date).upcase %></div>
-            <div class="text-xs">by <%= @test_plan.qa_name %></div>
-          </div>
+    <div class="panel mb-8 relative">
+      <div id="stamp-container" data-scenario-target="stamp" class="hidden stamp">
+        <div class="stamp__inner">
+          <div class="stamp__title"><%= t('test_plans.show.done') %></div>
+          <div class="stamp__date"><%= l(Date.today, format: :short_date).upcase %></div>
+          <div class="stamp__by">by <%= @test_plan.qa_name %></div>
         </div>
       </div>
 
-      <h1 class="text-3xl font-black text-ink-darkest mb-2"><%= @test_plan.name %></h1>
-      <p class="text-ink-dark"><%= t('test_plans.show.responsible_qa') %> <span class="font-semibold"><%= @test_plan.qa_name %></span></p>
-      <p class="text-ink-medium text-sm mt-2">
+      <h1 class="text-3xl font-black mb-2"><%= @test_plan.name %></h1>
+      <p class="txt-ink-dark"><%= t('test_plans.show.responsible_qa') %> <span class="font-semibold"><%= @test_plan.qa_name %></span></p>
+      <p class="txt-ink-medium text-sm mt-2">
         <%= t('test_plans.show.scenarios_approved', approved: @test_plan.approved_scenarios, total: @test_plan.total_scenarios) %>
       </p>
       <% if @test_plan.tags.any? %>
@@ -39,8 +35,7 @@
       <%= render "test_plans/new_scenario_form", test_plan: @test_plan, new_scenario: @new_scenario %>
     <% end %>
 
-    <!-- Scenario List -->
-    <div class="space-y-6" id="scenarios-container" data-scenario-target="container" data-controller="sortable" data-sortable-url-value="<%= test_plan_scenario_order_path(@test_plan) %>">
+    <div class="stack--lg" id="scenarios-container" data-scenario-target="container" data-controller="sortable" data-sortable-url-value="<%= test_plan_scenario_order_path(@test_plan) %>">
       <% @test_scenarios.each do |scenario| %>
         <%= render "test_plans/scenario_card", scenario: scenario, test_plan: @test_plan %>
       <% end %>

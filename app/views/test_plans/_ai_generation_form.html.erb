@@ -1,27 +1,27 @@
-<div class="bg-surface rounded-xl shadow-lg p-6 mb-8" data-controller="ai-generate" data-ai-generate-plan-id-value="<%= test_plan.id %>">
-  <h2 class="text-xl font-bold text-ink-darkest mb-4 flex items-center gap-2">
-<%= icon_tag("sparkle", size: :lg, class: "text-fz-violet-light") %>
+<div class="panel mb-8" data-controller="ai-generate" data-ai-generate-plan-id-value="<%= test_plan.id %>">
+  <h2 class="panel__title flex items-center gap-2">
+    <%= icon_tag("sparkle", size: :lg, class: "txt-violet-light") %>
     <%= t('test_plans.show.generate_with_ai') %>
   </h2>
 
-  <div class="space-y-4">
+  <div class="form-stack">
     <div>
-      <label class="block font-semibold text-ink-darker mb-2"><%= t('test_plans.show.feature_description') %></label>
-      <textarea data-ai-generate-target="prompt" rows="3" class="w-full px-4 py-2 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-violet-light" placeholder="<%= t('test_plans.show.ai_placeholder') %>"></textarea>
+      <label class="label"><%= t('test_plans.show.feature_description') %></label>
+      <textarea data-ai-generate-target="prompt" rows="3" class="input input--focus-violet" placeholder="<%= t('test_plans.show.ai_placeholder') %>"></textarea>
     </div>
 
     <div class="flex items-center gap-4">
-      <button data-ai-generate-target="button" data-action="click->ai-generate#generate" class="<%= btn_classes(:ai) %> flex items-center gap-2">
-<%= icon_tag("sparkle") %>
+      <button data-ai-generate-target="button" data-action="click->ai-generate#generate" class="btn btn--ai">
+        <%= icon_tag("sparkle") %>
         <%= t('test_plans.show.generate_with_ai') %>
       </button>
 
-      <div data-ai-generate-target="spinner" class="hidden flex items-center gap-2 text-ink-medium">
-<%= icon_tag("spinner", class: "animate-spin") %>
+      <div data-ai-generate-target="spinner" class="hidden flex items-center gap-2 txt-ink-medium">
+        <%= icon_tag("spinner", class: "animate-spin") %>
         <%= t('test_plans.show.generating') %>
       </div>
 
-      <p data-ai-generate-target="result" class="hidden text-fz-green-dark font-semibold"></p>
+      <p data-ai-generate-target="result" class="hidden txt-green-medium font-semibold"></p>
     </div>
   </div>
 </div>

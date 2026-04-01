@@ -52,8 +52,8 @@ export default class extends Controller {
         badge.dataset.action = 'click->scenario#resetStatus'
         badge.dataset.scenarioId = scenarioId
         badge.className = status === 'approved'
-          ? 'bg-fz-green-dark hover:bg-fz-green-darker text-white px-6 py-2 rounded-lg font-semibold transition cursor-pointer'
-          : 'bg-fz-red-dark hover:bg-fz-red-darker text-white px-6 py-2 rounded-lg font-semibold transition cursor-pointer'
+          ? 'scenario-btn scenario-btn--approved'
+          : 'scenario-btn scenario-btn--failed'
         badge.textContent = status === 'approved' ? `\u2713 ${t('scenario.approved')}` : `\u2717 ${t('scenario.failed')}`
 
         // Insert badge before the edit/delete buttons
@@ -66,7 +66,7 @@ export default class extends Controller {
         if (status === 'failed') {
           const container = card.querySelector('.bug-association-container')
           if (container && !container.querySelector('a')) {
-            container.innerHTML = `<button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="${scenarioId}" class="text-sm text-fz-red-light hover:text-fz-red-medium font-semibold cursor-pointer">${BUG_ICON} ${t('scenario.associate_bug')}</button>`
+            container.innerHTML = `<button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="${scenarioId}" class="bug-associate-btn">${BUG_ICON} ${t('scenario.associate_bug')}</button>`
           }
         }
 
@@ -100,14 +100,14 @@ export default class extends Controller {
     approveBtn.dataset.action = 'click->scenario#updateStatus'
     approveBtn.dataset.status = 'approved'
     approveBtn.dataset.scenarioId = scenarioId
-    approveBtn.className = 'bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer'
+    approveBtn.className = 'scenario-btn scenario-btn--approved'
     approveBtn.textContent = `\u2713 ${t('scenario.approve')}`
 
     const failBtn = document.createElement('button')
     failBtn.dataset.action = 'click->scenario#updateStatus'
     failBtn.dataset.status = 'failed'
     failBtn.dataset.scenarioId = scenarioId
-    failBtn.className = 'bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer'
+    failBtn.className = 'scenario-btn scenario-btn--failed'
     failBtn.textContent = `\u2717 ${t('scenario.fail')}`
 
     buttonsDiv.insertBefore(failBtn, buttonsDiv.firstChild)
@@ -151,7 +151,7 @@ export default class extends Controller {
       const originalText = textEl.textContent
 
       const textarea = document.createElement('textarea')
-      textarea.className = 'w-full px-2 py-1 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light resize-y'
+      textarea.className = 'input input--textarea'
       textarea.rows = 3
       textarea.name = key
       textarea.value = originalText
@@ -163,21 +163,21 @@ export default class extends Controller {
     let actionsDiv = card.querySelector('.inline-edit-actions')
     if (!actionsDiv) {
       actionsDiv = document.createElement('div')
-      actionsDiv.className = 'inline-edit-actions mt-3 space-y-3'
+      actionsDiv.className = 'inline-edit-actions mt-3 stack--sm'
 
       const fileId = `edit-evidence-${scenarioId}`
       actionsDiv.innerHTML = `
         <div>
-          <label class="cursor-pointer inline-flex items-center gap-1.5 bg-fz-blue-dark hover:bg-fz-blue-darker text-white font-semibold px-4 py-2 rounded-lg transition text-sm">
+          <label class="btn btn--primary btn--sm" style="cursor:pointer;">
 <span class="icon icon--paperclip icon--sm" aria-hidden="true"></span>
             ${t('scenario.upload_evidence')}
             <input type="file" id="${fileId}" multiple accept="image/*,.pdf" class="hidden" />
           </label>
-          <span class="text-sm text-ink-medium ml-2" data-file-count>${t('scenario.no_file_selected')}</span>
+          <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" data-file-count>${t('scenario.no_file_selected')}</span>
         </div>
         <div class="flex gap-2">
-          <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer">${t('scenario.save')}</button>
-          <button type="button" data-action="click->scenario#cancelEdit" data-scenario-id="${scenarioId}" class="bg-surface-raised hover:bg-ink-lightest text-ink-dark px-4 py-2 rounded-lg font-semibold transition cursor-pointer">${t('scenario.cancel')}</button>
+          <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="scenario-btn scenario-btn--approved">${t('scenario.save')}</button>
+          <button type="button" data-action="click->scenario#cancelEdit" data-scenario-id="${scenarioId}" class="scenario-btn scenario-btn--edit">${t('scenario.cancel')}</button>
         </div>
       `
 
@@ -190,7 +190,7 @@ export default class extends Controller {
                                 t('scenario.files_selected', { count })
       })
 
-      const gridDiv = card.querySelector('.grid')
+      const gridDiv = card.querySelector('.scenario-card__steps')
       gridDiv.after(actionsDiv)
     }
   }
@@ -273,7 +273,7 @@ export default class extends Controller {
       const box = card.querySelector(selector)
       const textarea = box.querySelector('textarea')
       const p = document.createElement('p')
-      p.className = 'text-ink-darker break-words step-text'
+      p.className = 'step-box__text step-text'
       p.textContent = value
       textarea.replaceWith(p)
     })
@@ -281,7 +281,7 @@ export default class extends Controller {
 
   _restoreStatusButtons(card) {
     const scenarioId = card.dataset.scenarioId
-    const buttonsDiv = card.querySelector('.flex.gap-2')
+    const buttonsDiv = card.querySelector('.scenario-card__actions')
     if (!buttonsDiv) return
 
     // Remove existing badge (approved/failed)
@@ -294,14 +294,14 @@ export default class extends Controller {
       approveBtn.dataset.action = 'click->scenario#updateStatus'
       approveBtn.dataset.status = 'approved'
       approveBtn.dataset.scenarioId = scenarioId
-      approveBtn.className = 'bg-fz-green-dark hover:bg-fz-green-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer'
+      approveBtn.className = 'scenario-btn scenario-btn--approved'
       approveBtn.textContent = `\u2713 ${t('scenario.approve')}`
 
       const failBtn = document.createElement('button')
       failBtn.dataset.action = 'click->scenario#updateStatus'
       failBtn.dataset.status = 'failed'
       failBtn.dataset.scenarioId = scenarioId
-      failBtn.className = 'bg-fz-red-dark hover:bg-fz-red-darker text-white px-4 py-2 rounded-lg font-semibold transition cursor-pointer'
+      failBtn.className = 'scenario-btn scenario-btn--failed'
       failBtn.textContent = `\u2717 ${t('scenario.fail')}`
 
       buttonsDiv.insertBefore(failBtn, buttonsDiv.firstChild)
@@ -315,7 +315,7 @@ export default class extends Controller {
       const textarea = box.querySelector('textarea')
       if (!textarea) return
       const p = document.createElement('p')
-      p.className = 'text-ink-darker break-words step-text'
+      p.className = 'step-box__text step-text'
       p.textContent = textarea.dataset.originalText || textarea.value
       textarea.replaceWith(p)
     })
@@ -326,11 +326,11 @@ export default class extends Controller {
     const container = event.currentTarget.closest('.bug-association-container')
 
     container.innerHTML = `
-      <div class="flex items-center gap-2 relative">
+      <div class="bug-link relative">
         <span>${BUG_ICON}</span>
-        <input type="text" placeholder="${t('scenario.search_bug')}" class="bg-surface-raised border border-ink-lighter rounded-lg px-3 py-1.5 text-sm text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:outline-none w-64" data-bug-search-input data-scenario-id="${scenarioId}" />
-        <div class="hidden absolute top-full left-6 z-10 w-64 mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto dark-scrollbar" data-bug-search-results></div>
-        <button type="button" class="text-ink-medium hover:text-fz-red-light text-xs cursor-pointer" data-action="click->scenario#cancelBugSearch" data-scenario-id="${scenarioId}">&#10005;</button>
+        <input type="text" placeholder="${t('scenario.search_bug')}" class="input input--sm input--search" data-bug-search-input data-scenario-id="${scenarioId}" />
+        <div class="hidden suggestions" style="left:var(--space-6);" data-bug-search-results></div>
+        <button type="button" class="bug-link__remove" data-action="click->scenario#cancelBugSearch" data-scenario-id="${scenarioId}">&#10005;</button>
       </div>
     `
 
@@ -364,7 +364,7 @@ export default class extends Controller {
       bugs.forEach(bug => {
         const btn = document.createElement('button')
         btn.type = 'button'
-        btn.className = 'block w-full text-left px-3 py-2 text-sm text-ink-darkest hover:bg-surface-raised transition'
+        btn.className = 'suggestions__item'
         btn.textContent = bug.display_name
         btn.addEventListener('click', () => this._associateBug(scenarioId, bug, container))
         results.appendChild(btn)
@@ -392,10 +392,10 @@ export default class extends Controller {
       const data = await response.json()
       if (data.success) {
         container.innerHTML = `
-          <div class="flex items-center gap-2 text-sm">
+          <div class="bug-link">
             <span>${BUG_ICON}</span>
-            <a href="/bugs/${bug.id}" class="text-fz-red-light hover:text-fz-red-medium font-semibold">${bug.display_name}</a>
-            <button type="button" data-action="click->scenario#removeBug" data-scenario-id="${scenarioId}" class="text-ink-medium hover:text-fz-red-light text-xs ml-1 cursor-pointer">&#10005;</button>
+            <a href="/bugs/${bug.id}" class="bug-link__name">${bug.display_name}</a>
+            <button type="button" data-action="click->scenario#removeBug" data-scenario-id="${scenarioId}" class="bug-link__remove">&#10005;</button>
           </div>
         `
       }
@@ -425,7 +425,7 @@ export default class extends Controller {
       if (data.success) {
         const card = document.querySelector(`[data-scenario-id="${scenarioId}"]`)
         if (card && card.dataset.scenarioStatus === 'failed') {
-          container.innerHTML = `<button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="${scenarioId}" class="text-sm text-fz-red-light hover:text-fz-red-medium font-semibold cursor-pointer">${BUG_ICON} ${t('scenario.associate_bug')}</button>`
+          container.innerHTML = `<button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="${scenarioId}" class="bug-associate-btn">${BUG_ICON} ${t('scenario.associate_bug')}</button>`
         } else {
           container.innerHTML = ''
         }
@@ -438,7 +438,7 @@ export default class extends Controller {
   cancelBugSearch(event) {
     const scenarioId = event.currentTarget.dataset.scenarioId
     const container = event.currentTarget.closest('.bug-association-container')
-    container.innerHTML = `<button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="${scenarioId}" class="text-sm text-fz-red-light hover:text-fz-red-medium font-semibold cursor-pointer">${BUG_ICON} ${t('scenario.associate_bug')}</button>`
+    container.innerHTML = `<button type="button" data-action="click->scenario#showBugSearch" data-scenario-id="${scenarioId}" class="bug-associate-btn">${BUG_ICON} ${t('scenario.associate_bug')}</button>`
   }
 
   _showAlert(message) {

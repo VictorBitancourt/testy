@@ -1,8 +1,8 @@
-<%= form_with model: bug, class: "space-y-6", data: { controller: "bug-form" } do |f| %>
+<%= form_with model: bug, class: "form-stack--lg", data: { controller: "bug-form" } do |f| %>
   <% if bug.errors.any? %>
-    <div class="bg-fz-red-darkest border border-fz-red-darker text-fz-red-light px-4 py-3 rounded-lg">
-      <p class="font-bold"><%= t('bugs.form.error_saving') %></p>
-      <ul class="list-disc list-inside">
+    <div class="error-box">
+      <p><%= t('bugs.form.error_saving') %></p>
+      <ul>
         <% bug.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
@@ -11,67 +11,65 @@
   <% end %>
 
   <div>
-    <%= f.label :title, t('bugs.form.bug_title'), class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_field :title, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent", placeholder: t('bugs.form.title_placeholder') %>
+    <%= f.label :title, t('bugs.form.bug_title'), class: "label" %>
+    <%= f.text_field :title, class: "input input--focus-red", placeholder: t('bugs.form.title_placeholder') %>
   </div>
 
   <div>
-    <%= f.label :description, t('bugs.form.description'), class: "block font-semibold text-ink-darker mb-2" %>
-    <%= f.text_area :description, rows: 4, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent resize-y", placeholder: t('bugs.form.description_placeholder') %>
+    <%= f.label :description, t('bugs.form.description'), class: "label" %>
+    <%= f.text_area :description, rows: 4, class: "input input--focus-red input--textarea", placeholder: t('bugs.form.description_placeholder') %>
   </div>
 
   <div>
-    <label class="block font-semibold text-ink-darker mb-2"><%= t('bugs.form.evidence_label') %></label>
-    <label class="cursor-pointer <%= btn_classes(:primary, size: :sm) %>">
-<%= icon_tag("paperclip", size: :sm) %>
+    <label class="label"><%= t('bugs.form.evidence_label') %></label>
+    <label class="btn btn--primary btn--sm" style="cursor:pointer;">
+      <%= icon_tag("paperclip", size: :sm) %>
       <%= t('bugs.form.upload_evidence') %>
       <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "bug-file-upload" %>
     </label>
-    <span class="text-sm text-ink-medium ml-2" id="bug-file-count"><%= t('bugs.form.no_file_selected') %></span>
+    <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" id="bug-file-count"><%= t('bugs.form.no_file_selected') %></span>
   </div>
 
-  <!-- Toggle optional fields -->
   <div>
-    <button type="button" data-action="click->bug-form#toggle" class="text-fz-blue-light hover:text-fz-blue-medium font-semibold text-sm transition">
+    <button type="button" data-action="click->bug-form#toggle" class="link link--blue text-sm">
       <span data-bug-form-target="toggleText"><%= t('bugs.form.detail_bug') %></span>
     </button>
   </div>
 
-  <div data-bug-form-target="optionalFields" class="<%= 'hidden' unless bug.steps_to_reproduce.present? || bug.obtained_result.present? || bug.expected_result.present? %> space-y-6">
+  <div data-bug-form-target="optionalFields" class="<%= 'hidden' unless bug.steps_to_reproduce.present? || bug.obtained_result.present? || bug.expected_result.present? %> form-stack--lg">
     <div>
-      <%= f.label :steps_to_reproduce, t('bugs.form.steps_to_reproduce'), class: "block font-semibold text-ink-darker mb-2" %>
-      <%= f.text_area :steps_to_reproduce, rows: 3, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent resize-y", placeholder: t('bugs.form.steps_placeholder') %>
+      <%= f.label :steps_to_reproduce, t('bugs.form.steps_to_reproduce'), class: "label" %>
+      <%= f.text_area :steps_to_reproduce, rows: 3, class: "input input--focus-blue input--textarea", placeholder: t('bugs.form.steps_placeholder') %>
     </div>
 
     <div>
-      <%= f.label :obtained_result, t('bugs.form.obtained_result'), class: "block font-semibold text-ink-darker mb-2" %>
-      <%= f.text_area :obtained_result, rows: 3, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent resize-y", placeholder: t('bugs.form.obtained_placeholder') %>
+      <%= f.label :obtained_result, t('bugs.form.obtained_result'), class: "label" %>
+      <%= f.text_area :obtained_result, rows: 3, class: "input input--focus-red input--textarea", placeholder: t('bugs.form.obtained_placeholder') %>
     </div>
 
     <div>
-      <%= f.label :expected_result, t('bugs.form.expected_result'), class: "block font-semibold text-ink-darker mb-2" %>
-      <%= f.text_area :expected_result, rows: 3, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-green-light focus:border-transparent resize-y", placeholder: t('bugs.form.expected_placeholder') %>
+      <%= f.label :expected_result, t('bugs.form.expected_result'), class: "label" %>
+      <%= f.text_area :expected_result, rows: 3, class: "input input--focus-green input--textarea", placeholder: t('bugs.form.expected_placeholder') %>
     </div>
   </div>
 
-  <!-- Tags -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="form-grid-2">
     <div data-controller="bug-tag" data-bug-tag-field-value="feature_tag" class="relative">
-      <%= f.label :feature_tag, t('bugs.form.feature_tag'), class: "block font-semibold text-ink-darker mb-2" %>
-      <%= f.text_field :feature_tag, data: { bug_tag_target: "input", action: "input->bug-tag#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-blue-light focus:border-transparent", placeholder: t('bugs.form.feature_placeholder'), autocomplete: "off" %>
-      <div data-bug-tag-target="suggestions" class="hidden absolute z-10 w-full mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
+      <%= f.label :feature_tag, t('bugs.form.feature_tag'), class: "label" %>
+      <%= f.text_field :feature_tag, data: { bug_tag_target: "input", action: "input->bug-tag#onInput" }, class: "input input--focus-blue", placeholder: t('bugs.form.feature_placeholder'), autocomplete: "off" %>
+      <div data-bug-tag-target="suggestions" class="hidden suggestions"></div>
     </div>
 
     <div data-controller="bug-tag" data-bug-tag-field-value="cause_tag" class="relative">
-      <%= f.label :cause_tag, t('bugs.form.cause_tag'), class: "block font-semibold text-ink-darker mb-2" %>
-      <%= f.text_field :cause_tag, data: { bug_tag_target: "input", action: "input->bug-tag#onInput" }, class: "w-full px-4 py-3 bg-surface-raised border border-ink-lighter rounded-lg text-ink-darkest focus:ring-2 focus:ring-fz-red-light focus:border-transparent", placeholder: t('bugs.form.cause_placeholder'), autocomplete: "off" %>
-      <div data-bug-tag-target="suggestions" class="hidden absolute z-10 w-full mt-1 bg-surface border border-ink-lighter rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
+      <%= f.label :cause_tag, t('bugs.form.cause_tag'), class: "label" %>
+      <%= f.text_field :cause_tag, data: { bug_tag_target: "input", action: "input->bug-tag#onInput" }, class: "input input--focus-red", placeholder: t('bugs.form.cause_placeholder'), autocomplete: "off" %>
+      <div data-bug-tag-target="suggestions" class="hidden suggestions"></div>
     </div>
   </div>
 
-  <div class="flex gap-4">
-    <%= f.submit (bug.new_record? ? t('bugs.form.create_bug') : t('bugs.form.update_bug')), class: "flex-1 #{btn_classes(:danger, size: :lg)}" %>
-    <%= link_to t('bugs.form.cancel'), bugs_path, class: "flex-1 #{btn_classes(:secondary, size: :lg)} text-center" %>
+  <div class="form-row">
+    <%= f.submit (bug.new_record? ? t('bugs.form.create_bug') : t('bugs.form.update_bug')), class: "flex-1 btn btn--danger btn--lg" %>
+    <%= link_to t('bugs.form.cancel'), bugs_path, class: "flex-1 btn btn--secondary btn--lg text-center" %>
   </div>
 <% end %>
 

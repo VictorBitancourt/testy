@@ -1,19 +1,19 @@
-<div class="min-h-screen bg-canvas pb-12 px-4" style="padding-top: 90px;">
-  <div class="max-w-2xl mx-auto">
+<div class="page">
+  <div class="page__container--sm">
     <div class="mb-4">
-      <%= link_to test_plan_path(@test_plan), class: "text-fz-blue-light hover:text-fz-blue-dark font-semibold inline-flex items-center gap-2", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+      <%= link_to test_plan_path(@test_plan), class: "page__back", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
         &larr; <%= t('test_plans.edit.back') %>
-        <span class="bg-white/20 text-fz-blue-light text-xs font-bold px-1.5 py-0.5 rounded">B</span>
+        <span class="kbd">B</span>
       <% end %>
     </div>
 
-    <div class="bg-surface rounded-xl shadow-lg p-8">
-      <h1 class="text-3xl font-black text-ink-darkest mb-6"><%= t('test_plans.edit.title') %></h1>
+    <div class="panel panel--padded">
+      <h1 class="panel__title panel__title--lg"><%= t('test_plans.edit.title') %></h1>
 
       <%= render 'form', test_plan: @test_plan %>
 
-      <div class="mt-6 pt-6 border-t border-ink-lighter">
-        <%= button_to @test_plan, method: :delete, data: { turbo_confirm: t('test_plans.edit.confirm_delete') }, class: "text-fz-red-dark hover:text-fz-red-light font-semibold bg-transparent border-0 cursor-pointer" do %>
+      <div class="panel__separator">
+        <%= button_to @test_plan, method: :delete, data: { turbo_confirm: t('test_plans.edit.confirm_delete') }, class: "btn--link-danger" do %>
           &#128465;&#65039; <%= t('test_plans.edit.delete_plan') %>
         <% end %>
       </div>

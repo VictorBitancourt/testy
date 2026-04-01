@@ -41,7 +41,7 @@ export default class extends Controller {
       btn.type = "button"
       btn.dataset.action = "click->bug-tag#select"
       btn.dataset.tag = tag
-      btn.className = "block w-full text-left px-3 py-2 text-sm text-ink-darkest hover:bg-fz-violet-darkest hover:text-fz-violet-light transition"
+      btn.className = "suggestions__item"
       btn.textContent = tag
       this.suggestionsTarget.appendChild(btn)
     })

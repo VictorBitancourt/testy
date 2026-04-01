@@ -1,0 +1,59 @@
+/* ── Layout ─────────────────────────────────────── */
+@layer components {
+  .page {
+    min-height: 100vh;
+    padding: 90px var(--space-4) var(--space-12);
+  }
+
+  .page--centered {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+  }
+
+  .page__container {
+    max-width: var(--main-max-width);
+    margin-inline: auto;
+  }
+
+  .page__container--sm {
+    max-width: var(--main-max-width-sm);
+    margin-inline: auto;
+  }
+
+  .page__container--md {
+    max-width: var(--main-max-width-md);
+    margin-inline: auto;
+  }
+
+  .page__container--xs {
+    max-width: var(--main-max-width-xs);
+  }
+
+  .page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .page__back {
+    color: var(--color-fz-blue-light);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    transition: color .15s;
+  }
+  .page__back:hover {
+    color: var(--color-fz-blue-dark);
+  }
+
+  .page__stats {
+    font-size: var(--text-sm);
+    color: var(--color-ink-medium);
+  }
+}

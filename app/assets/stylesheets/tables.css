@@ -1,0 +1,61 @@
+/* ── Tables ─────────────────────────────────────── */
+@layer components {
+  .table-container {
+    background: var(--color-surface);
+    border: 1px solid var(--color-ink-lighter);
+    border-radius: 1em;
+    overflow-x: auto;
+  }
+
+  .table {
+    width: 100%;
+    text-align: left;
+  }
+
+  .table th {
+    padding: 0.75rem 1rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-ink-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--color-ink-lighter);
+  }
+
+  .table td {
+    padding: 0.75rem 1rem;
+    font-size: var(--text-sm);
+    color: var(--color-ink-dark);
+  }
+
+  .table tbody tr {
+    border-bottom: 1px solid color-mix(in oklch, var(--color-ink-lighter) 30%, transparent);
+    transition: background-color .1s;
+  }
+  .table tbody tr:last-child { border-bottom: none; }
+  .table tbody tr:hover {
+    background: color-mix(in oklch, var(--color-surface-raised) 50%, transparent);
+  }
+
+  .table__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  /* Text alignment helpers for th/td */
+  .table th.text-center,
+  .table td.text-center { text-align: center; }
+  .table th.text-right,
+  .table td.text-right  { text-align: right; }
+
+  /* Header row variant with raised bg */
+  .table thead.table__head--raised tr {
+    background: var(--color-surface-raised);
+  }
+  .table thead.table__head--raised th {
+    border-bottom: none;
+    color: var(--color-ink-dark);
+  }
+}

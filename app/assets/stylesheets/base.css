@@ -1,0 +1,54 @@
+/* ── Base ───────────────────────────────────────── */
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background: var(--color-canvas);
+    color: var(--color-ink-darkest);
+    font-family: var(--font-sans);
+    line-height: 1.375;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  h1, .h1 {
+    letter-spacing: -0.02em;
+    font-weight: 900;
+  }
+
+  /* Focus rings — consistent system */
+  :is(a, button, input, select, textarea):where(:focus-visible) {
+    outline: var(--focus-ring-size) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Disabled defaults */
+  :is(a, button, input, select, textarea):where([disabled]) {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Selection */
+  ::selection {
+    background: color-mix(in oklch, var(--color-fz-blue-dark) 35%, transparent);
+  }
+
+  /* Scrollbar (dark) */
+  @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    * {
+      scrollbar-color: var(--color-ink-lighter) transparent;
+      scrollbar-width: thin;
+    }
+  }
+
+  /* View transitions */
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: .15s ease-out both vt-fade-out; }
+  ::view-transition-new(root) { animation: .2s ease-in both vt-fade-in; }
+  @keyframes vt-fade-out { to { opacity: 0; } }
+  @keyframes vt-fade-in  { 0% { opacity: 0; } }
+}
