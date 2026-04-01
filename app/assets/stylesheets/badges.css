@@ -34,13 +34,13 @@
   }
   .badge--open {
     color: #fff;
-    border-color: var(--color-fz-yellow-medium);
-    background: var(--color-fz-yellow-medium);
+    border-color: oklch(72% .12 70);
+    background: oklch(72% .12 70);
   }
   .badge--resolved {
     color: #fff;
-    border-color: var(--color-fz-green-dark);
-    background: var(--color-fz-green-dark);
+    border-color: oklch(55% .11 147);
+    background: oklch(55% .11 147);
   }
   .badge--admin {
     color: #fff;
