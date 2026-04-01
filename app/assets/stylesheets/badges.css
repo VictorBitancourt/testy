@@ -13,43 +13,43 @@
   }
 
   .badge--approved {
-    color: var(--color-fz-green-light);
-    border-color: color-mix(in oklch, var(--color-fz-green-dark) 60%, transparent);
-    background: color-mix(in oklch, var(--color-fz-green-dark) 18%, transparent);
+    color: #fff;
+    border-color: oklch(55% .11 147);
+    background: oklch(55% .11 147);
   }
   .badge--failed {
-    color: var(--color-fz-red-light);
-    border-color: color-mix(in oklch, var(--color-fz-red-dark) 60%, transparent);
-    background: color-mix(in oklch, var(--color-fz-red-dark) 18%, transparent);
+    color: #fff;
+    border-color: oklch(59% .13 38);
+    background: oklch(59% .13 38);
   }
-  .badge--in-progress {
-    color: var(--color-fz-yellow-light);
-    border-color: color-mix(in oklch, var(--color-fz-yellow-medium) 50%, transparent);
-    background: color-mix(in oklch, var(--color-fz-yellow-medium) 15%, transparent);
+  .badge--in_progress {
+    color: #fff;
+    border-color: oklch(72% .12 70);
+    background: oklch(72% .12 70);
   }
-  .badge--not-started {
-    color: var(--color-fz-blue-light);
-    border-color: color-mix(in oklch, var(--color-fz-blue-dark) 60%, transparent);
-    background: color-mix(in oklch, var(--color-fz-blue-dark) 18%, transparent);
+  .badge--not_started {
+    color: #fff;
+    border-color: oklch(57% .12 260);
+    background: oklch(57% .12 260);
   }
   .badge--open {
-    color: var(--color-fz-yellow-light);
-    border-color: color-mix(in oklch, var(--color-fz-yellow-medium) 50%, transparent);
-    background: color-mix(in oklch, var(--color-fz-yellow-medium) 15%, transparent);
+    color: #fff;
+    border-color: var(--color-fz-yellow-medium);
+    background: var(--color-fz-yellow-medium);
   }
   .badge--resolved {
-    color: var(--color-fz-green-light);
-    border-color: color-mix(in oklch, var(--color-fz-green-dark) 60%, transparent);
-    background: color-mix(in oklch, var(--color-fz-green-dark) 18%, transparent);
+    color: #fff;
+    border-color: var(--color-fz-green-dark);
+    background: var(--color-fz-green-dark);
   }
   .badge--admin {
-    color: var(--color-fz-violet-light);
-    border-color: color-mix(in oklch, var(--color-fz-violet-dark) 60%, transparent);
-    background: color-mix(in oklch, var(--color-fz-violet-dark) 18%, transparent);
+    color: #fff;
+    border-color: var(--color-fz-violet-dark);
+    background: var(--color-fz-violet-dark);
   }
   .badge--user {
-    color: var(--color-fz-blue-light);
-    border-color: color-mix(in oklch, var(--color-fz-blue-dark) 60%, transparent);
-    background: color-mix(in oklch, var(--color-fz-blue-dark) 18%, transparent);
+    color: #fff;
+    border-color: var(--color-fz-blue-dark);
+    background: var(--color-fz-blue-dark);
   }
 }
