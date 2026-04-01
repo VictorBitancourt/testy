@@ -41,7 +41,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 | Framework | Rails 8.1 |
 | Ruby | 3.4+ |
 | Database | SQLite |
-| Frontend | Tailwind CSS v4, Hotwire (Turbo + Stimulus) |
+| Frontend | Vanilla CSS, Hotwire (Turbo + Stimulus) |
 | File Storage | Active Storage (local disk) |
 | PDF | ferrum_pdf (Chrome headless) |
 | AI | Gemini API (Google) |
@@ -51,7 +51,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 
 ## Getting Started
 
-**Prerequisites:** Ruby 3.4+, Node.js (for Tailwind CSS build)
+**Prerequisites:** Ruby 3.4+
 
 ```bash
 # Clone the repository
@@ -257,7 +257,7 @@ One Given, one When, one Then. If you can't describe the scenario in three conci
 
 **Simple authentication.** Testy uses Rails' built-in `has_secure_password` with username/password login. On first access, you'll be redirected to create the admin user — no seeds or setup scripts needed.
 
-**No JavaScript build step.** Uses import maps for JS and the `tailwindcss-rails` gem for CSS. `bin/dev` runs both the server and the Tailwind watcher.
+**No JavaScript build step.** Uses import maps for JS and vanilla CSS with CSS layers for styling.
 
 **Server-side filters.** Filtering happens via query params and SQL scopes — no client-side state, no JavaScript complexity, and every filtered view is a shareable URL.
 

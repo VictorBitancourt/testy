@@ -40,7 +40,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 | Framework | Rails 8.1 |
 | Ruby | 3.4+ |
 | Base de Dados | SQLite |
-| Frontend | Tailwind CSS v4, Hotwire (Turbo + Stimulus) |
+| Frontend | Vanilla CSS, Hotwire (Turbo + Stimulus) |
 | Armazenamento | Active Storage (disco local) |
 | PDF | ferrum_pdf (Chrome headless) |
 | IA | Gemini API (Google) |
@@ -50,7 +50,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 
 ## Começar
 
-**Pré-requisitos:** Ruby 3.4+, Node.js (para o build do Tailwind CSS)
+**Pré-requisitos:** Ruby 3.4+
 
 ```bash
 # Clonar o repositório
@@ -256,7 +256,7 @@ Um Dado que, um Quando, um Então. Se o QA não conseguir descrever o cenário e
 
 **Autenticação simples.** O Testy usa o `has_secure_password` nativo do Rails com login por username/password. No primeiro acesso, o usuário será redirecionado para criar o utilizador admin — sem seeds nem scripts de setup.
 
-**Sem build step de JavaScript.** Usa import maps para JS e a gem `tailwindcss-rails` para CSS. `bin/dev` executa tanto o servidor como o watcher do Tailwind.
+**Sem build step de JavaScript.** Usa import maps para JS e vanilla CSS com CSS layers para estilização.
 
 **Filtros server-side.** A filtragem acontece via query params e scopes SQL — sem estado client-side, sem complexidade JavaScript, e cada vista filtrada é um URL partilhável.
 
