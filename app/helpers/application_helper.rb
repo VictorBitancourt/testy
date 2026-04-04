@@ -4,12 +4,6 @@ module ApplicationHelper
     tag.span class: css, aria: { hidden: true }, **options
   end
 
-  def btn_classes(variant = :primary, size: :md)
-    classes = [ "btn", "btn--#{variant}" ]
-    classes << "btn--#{size}" unless size == :md
-    classes.join(" ")
-  end
-
   def badge_classes(variant)
     "badge badge--#{variant}"
   end

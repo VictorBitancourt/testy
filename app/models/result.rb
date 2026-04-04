@@ -14,29 +14,17 @@ module Result
     def failure?
       is_a?(Failure)
     end
-
-    def match
-      raise NotImplementedError, "Subclasses must implement #match"
-    end
   end
 
   class Success < Base
     def initialize(data = nil)
       super(data, nil)
     end
-
-    def match
-      yield data if block_given?
-    end
   end
 
   class Failure < Base
     def initialize(error)
       super(nil, error)
-    end
-
-    def match
-      yield error if block_given?
     end
   end
 

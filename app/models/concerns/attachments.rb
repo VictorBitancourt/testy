@@ -10,24 +10,6 @@ module Attachments
     validate :acceptable_evidence_files, if: -> { evidence_files.any? }
   end
 
-  class_methods do
-    def allowed_content_types
-      ALLOWED_CONTENT_TYPES
-    end
-
-    def max_file_size
-      MAX_FILE_SIZE
-    end
-  end
-
-  def has_evidence?
-    evidence_files.attached?
-  end
-
-  def evidence_count
-    evidence_files.count
-  end
-
   private
     def acceptable_evidence_files
       evidence_files.each do |file|
