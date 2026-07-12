@@ -67,8 +67,8 @@ class BugsController < ApplicationController
     query = params[:q].to_s.strip
     tags = Bug.where.not(field => [ nil, "" ])
               .where(Bug.arel_table[field].matches("%#{Bug.sanitize_sql_like(query)}%"))
+              .limit(10)
               .distinct.pluck(field)
-              .first(10)
 
     render json: tags
   end
