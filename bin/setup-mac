@@ -49,8 +49,12 @@ step "Ruby"
 cd "$APP_ROOT"
 RUBY_VERSION_WANTED="$(sed 's/^ruby-//' .ruby-version | tr -d '[:space:]')"
 if ! rbenv install --skip-existing "$RUBY_VERSION_WANTED"; then
-  brew upgrade ruby-build
-  rbenv install --skip-existing "$RUBY_VERSION_WANTED"
+  # Building needs cache.ruby-lang.org, which some networks block; Homebrew's
+  # prebuilt Ruby comes from the same place as the other brew packages.
+  echo "Could not build Ruby $RUBY_VERSION_WANTED; using Homebrew's prebuilt ruby@3.4 instead."
+  brew install ruby@3.4
+  mkdir -p "$(rbenv root)/versions"
+  ln -sfn "$(brew --prefix ruby@3.4)" "$(rbenv root)/versions/$RUBY_VERSION_WANTED"
 fi
 rbenv rehash
 echo "ok: $(ruby -v)"
