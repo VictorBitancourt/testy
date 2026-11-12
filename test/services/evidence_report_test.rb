@@ -33,6 +33,12 @@ class EvidenceReportTest < ActiveSupport::TestCase
     LatexDocument.stubs(:on_path?).with("pdflatex").returns(false)
     File.stubs(:executable?).with("/Library/TeX/texbin/pdflatex").returns(true)
     with_env("PDFLATEX" => nil) { assert_equal "/Library/TeX/texbin/pdflatex", LatexDocument.pdflatex }
+
+    texlive = "/usr/local/texlive/2026/bin/universal-darwin/pdflatex"
+    File.stubs(:executable?).with("/Library/TeX/texbin/pdflatex").returns(false)
+    File.stubs(:executable?).with(texlive).returns(true)
+    Dir.stubs(:glob).with("/usr/local/texlive/*/bin/*/pdflatex").returns([ texlive ])
+    with_env("PDFLATEX" => nil) { assert_equal texlive, LatexDocument.pdflatex }
   end
 
   private

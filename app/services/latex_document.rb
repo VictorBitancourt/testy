@@ -16,8 +16,8 @@ class LatexDocument
     "application/pdf" => "pdf"
   }.freeze
   PDFLATEX_RUNS = 2 # the second run resolves \pageref{LastPage}
-  # MacTeX installs here; a server started from a Terminal opened before the
-  # install (or from a GUI) does not have it on PATH.
+  # MacTeX links pdflatex here (and keeps it in /usr/local/texlive/<year>);
+  # a server started from a Terminal opened before the install misses it on PATH.
   PDFLATEX_FALLBACKS = %w[/Library/TeX/texbin/pdflatex].freeze
   JOB_NAME = "documento".freeze
 
@@ -35,7 +35,8 @@ class LatexDocument
     return ENV["PDFLATEX"] if ENV["PDFLATEX"].present?
     return "pdflatex" if on_path?("pdflatex")
 
-    PDFLATEX_FALLBACKS.find { |path| File.executable?(path) } || "pdflatex"
+    candidates = PDFLATEX_FALLBACKS + Dir.glob("/usr/local/texlive/*/bin/*/pdflatex").sort.reverse
+    candidates.find { |path| File.executable?(path) } || "pdflatex"
   end
 
   def self.on_path?(command)
