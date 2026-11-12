@@ -1,0 +1,87 @@
+#!/bin/bash
+# Prepares a Mac to run Testy: Homebrew, rbenv + the Ruby in .ruby-version,
+# bundler, gems, LaTeX (optional) and an empty database.
+# Safe to run again; it skips what is already installed.
+#
+#   bash bin/setup-mac
+
+set -eo pipefail
+
+APP_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ZSHRC="$HOME/.zshrc"
+ZPROFILE="$HOME/.zprofile"
+
+step() { printf '\n\033[1;34m== %s ==\033[0m\n' "$1"; }
+fail() { printf '\n\033[1;31m%s\033[0m\n' "$1" >&2; exit 1; }
+
+# Replaces every line matching the pattern with one clean line, so broken
+# copy-pasted lines (invisible characters, duplicates) disappear.
+set_shell_line() {
+  local file="$1" pattern="$2" line="$3"
+  touch "$file"
+  cp "$file" "$file.bak-testy"
+  grep -v "$pattern" "$file.bak-testy" > "$file" || true
+  printf '%s\n' "$line" >> "$file"
+}
+
+[ "$(uname -s)" = "Darwin" ] || fail "This script is for macOS."
+
+step "Homebrew"
+if [ -x /opt/homebrew/bin/brew ]; then
+  BREW=/opt/homebrew/bin/brew
+elif [ -x /usr/local/bin/brew ]; then
+  BREW=/usr/local/bin/brew
+else
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  if [ -x /opt/homebrew/bin/brew ]; then BREW=/opt/homebrew/bin/brew; else BREW=/usr/local/bin/brew; fi
+fi
+eval "$("$BREW" shellenv)"
+set_shell_line "$ZPROFILE" "brew shellenv" "eval \"\$($BREW shellenv)\""
+echo "ok: $(brew --version | head -1)"
+
+step "rbenv"
+brew install rbenv ruby-build libyaml
+set_shell_line "$ZSHRC" "rbenv init" 'eval "$(rbenv init - zsh)"'
+eval "$(rbenv init - bash)"
+echo "ok: $(rbenv --version)"
+
+step "Ruby"
+cd "$APP_ROOT"
+RUBY_VERSION_WANTED="$(sed 's/^ruby-//' .ruby-version | tr -d '[:space:]')"
+if ! rbenv install --skip-existing "$RUBY_VERSION_WANTED"; then
+  brew upgrade ruby-build
+  rbenv install --skip-existing "$RUBY_VERSION_WANTED"
+fi
+rbenv rehash
+echo "ok: $(ruby -v)"
+
+step "Gems"
+BUNDLER_VERSION_WANTED="$(awk '/^BUNDLED WITH/ { getline; print $1 }' Gemfile.lock)"
+gem install bundler -v "$BUNDLER_VERSION_WANTED" --conservative
+bundle install
+
+step "LaTeX (PDF reports)"
+export PATH="/Library/TeX/texbin:$PATH"
+if command -v pdflatex > /dev/null; then
+  echo "ok: $(pdflatex --version | head -1)"
+else
+  printf 'pdflatex not found. Install MacTeX now (about 5 GB download)? [y/N] '
+  read -r answer
+  if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+    brew install --cask mactex-no-gui
+  else
+    echo "skipped: PDF reports will not work until you run: brew install --cask mactex-no-gui"
+  fi
+fi
+
+step "Database"
+if [ -f storage/development.sqlite3 ]; then
+  bin/rails db:migrate
+else
+  bin/rails db:create db:schema:load
+fi
+
+step "Done"
+echo "Open a new Terminal window (or run: exec zsh), then:"
+echo "  cd \"$APP_ROOT\" && bin/dev"
+echo "and go to http://localhost:3000"

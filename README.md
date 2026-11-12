@@ -19,7 +19,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Scenarios (Given/When/Then)** — structured Gherkin format without the overhead of a full framework
 - **AI Scenario Generation** — describe a feature in plain text and let an AI (Gemini, ChatGPT, Claude via API, or the Claude Code already signed in on the machine) generate 5-15 test scenarios automatically, covering happy paths, edge cases, boundary values, and equivalence partitioning
 - **Drag & Drop Reorder** — reorder scenarios by dragging them, with smooth FLIP animations and a visual drop zone; order is persisted and reflected in reports
-- **Evidence Attachments** — upload screenshots and files directly on each scenario or bug
+- **Evidence Attachments** — upload screenshots and files directly on each scenario or bug, each with an optional caption that shows up in the PDF
 - **One-Click Approve/Reject** — mark scenarios as approved or failed inline
 - **Derived Status** — plan status is computed automatically from its scenarios (no manual updates)
 - **Projects (workspaces)** — one workspace per application under test; after signing in you pick a project and its test plans, bugs, root causes and AI analyses stay separate from the others (the API takes `project_id`)
@@ -29,7 +29,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Root Causes Dashboard** — aggregated view of bugs grouped by cause tag and feature tag, with bar charts for quick analysis
 - **Search & Filters** — search plans by name, QA, or tag; search bugs by ID, title, or description; filter by status, tags, and date range
 - **Pagination** — paginated plan and bug listings for large datasets
-- **PDF Reports** — export formatted reports for both test plans and individual bugs, with table of contents (clickable anchors), summary, scenarios, and evidence
+- **PDF Reports (LaTeX)** — export test plans, individual bugs and AI bug analyses as LaTeX PDFs (Latin Modern), with a global logo and in the language the app is in
 - **Keyboard Shortcuts** — navigate quickly with single-key shortcuts (N for new, B for back, R for root causes, P for plans)
 - **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans and bugs, users manage their own
 - **Bilingual (EN / PT-BR)** — full interface in English and Brazilian Portuguese; switch languages with one click, preference saved in cookie
@@ -53,7 +53,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 
 ## Getting Started
 
-**Prerequisites:** Ruby 3.4+
+**Prerequisites:** Ruby 3.4+ and `pdflatex` for the PDF reports (Debian/Ubuntu: `texlive-latex-extra lmodern`; macOS: MacTeX)
 
 ```bash
 # Clone the repository
@@ -75,15 +75,18 @@ export GEMINI_API_KEY=your_key_here   # or OPENAI_API_KEY / ANTHROPIC_API_KEY
 bin/dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). On first access, you'll be prompted to create the admin user.
+**macOS:** `bash bin/setup-mac` installs Homebrew, rbenv, the Ruby from `.ruby-version`, the gems and (optionally) MacTeX, then creates the database. Safe to run again.
+
+Open [http://localhost:3000](http://localhost:3000). On first access, you'll be prompted to create the admin user. After signing in you land on **Projects**: create one per application and click it to open its test plans.
 
 ## Running Tests
 
 ```bash
-bin/rails test
+bin/rails test          # unit, controller and integration tests (PDF tests need pdflatex)
+bin/rails test:system   # browser smoke tests (needs Chrome/Chromium)
 ```
 
-Covers models, controllers, authentication, authorization, and filter behavior.
+Covers models, controllers, authentication, authorization, filters, projects, AI providers and the LaTeX reports.
 
 ## Testy CLI
 
@@ -139,6 +142,8 @@ bin/testy doctor
 
 All commands support `--json`, `--md`, and `--quiet` output flags.
 
+> **Projects:** the CLI does not choose a project yet. While the server has a single project it is used automatically; with two or more, `plans create` and `bugs create` are rejected by the API (`project_id` is required) and `plans list` / `bugs list` show every project.
+
 ### Usage — AI Mode (testy qa)
 
 For AI-powered test execution with Playwright, you need Claude Code and Node.js:
@@ -186,6 +191,8 @@ bin/testy version    # Show CLI version
 User (username, password_digest, role)
   |
   +-- Session (user_agent, ip_address)
+
+Project (name, description) — one workspace per application
   |
   +-- TestPlan (name, qa_name)
   |     |
@@ -198,12 +205,16 @@ User (username, password_digest, role)
   |     +-- Tags (many-to-many via TestPlanTag)
   |
   +-- Bug (title, description, steps_to_reproduce, obtained_result, expected_result, status)
-        |
-        +-- Evidence Files (Active Storage)
-        |
-        +-- feature_tag, cause_tag (free-form tags with autocomplete)
-        |
-        +-- TestScenarios (linked failed scenarios)
+  |     |
+  |     +-- Evidence Files (Active Storage)
+  |     |
+  |     +-- feature_tag, cause_tag (free-form tags with autocomplete)
+  |     |
+  |     +-- TestScenarios (linked failed scenarios)
+  |
+  +-- BugAnalysis (AI summary, common errors, recommendations)
+
+Setting (report logo, AI provider/model, encrypted API keys) — global
 ```
 
 ### Derived Status
@@ -223,14 +234,16 @@ A scenario cannot be approved while it has a bug linked to it — the bug must b
 
 Each plan has an "Export PDF Report" button that builds the "Evidência de Execução de Testes" document in LaTeX (Latin Modern font) and compiles it with `pdflatex`:
 - Cover with the global logo, responsible QA, scenario count, story (plan name) and status: approved only when every scenario is approved, failed as soon as one fails, pending otherwise
-- Every scenario with Given/When/Then and its status in an outlined box (green approved, red failed, yellow pending)
+- Every scenario with Given/When/Then and its status in bold (red when failed), plus the linked bug when there is one
 - Each evidence image on its own page, with the caption typed under it in the app (or the file name). PNG, JPG and PDF are embedded; GIF and WebP show as "unsupported format"
 
-Templates live in `lib/templates/` (`evidence_report.tex`, `bug_report.tex`); Testy only replaces their `% testy:...` lines. The cover logo is set by an admin under **Settings** (JPG or PNG) and applies to every PDF. `/test_plans/:id/report.tex` and `/bugs/:id/report.tex` download the generated `.tex`.
+Templates live in `lib/templates/` (`evidence_report.tex`, `bug_report.tex`, `bug_analysis_report.tex`); Testy only replaces their `% testy:...` lines. Labels come from `config/locales/*/reports.yml`, so reports follow the language the app is in. The cover logo is set by an admin under **Settings** (JPG or PNG) and applies to every PDF. `/test_plans/:id/report.tex` and `/bugs/:id/report.tex` download the generated `.tex`.
 
 Requires `pdflatex` with `lmodern`, `tcolorbox`, `xurl`, `lastpage` and `fancyhdr` (Debian/Ubuntu: `texlive-latex-extra lmodern`; macOS: MacTeX). Set `PDFLATEX` to use another binary.
 
 Bugs have their own PDF in the same style: cover (reporter, date, feature, root cause, open/resolved), description, steps to reproduce, obtained and expected results, associated scenarios and captioned evidence.
+
+Each AI bug analysis (The Root Of All Evil → "Analyze bugs") also exports to PDF: summary, top causes and features as bar charts, common errors with the bugs behind them, and recommendations.
 
 ## Design Decisions
 

@@ -19,7 +19,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 - **Cenários (Given/When/Then)** — formato Gherkin estruturado
 - **Geração de Cenários com IA** — descreve uma funcionalidade em texto livre e deixa a IA (Gemini, ChatGPT, Claude pela API ou o Claude Code já logado no computador) gerar cenários de teste automaticamente, cobrindo caminhos felizes, casos extremos, valores limite e particionamento de equivalência
 - **Drag & Drop para Reordenar** — reordena cenários arrastando-os, com animações FLIP suaves e zona de drop visual; a ordem é persistida e refletida nos relatórios
-- **Anexos de Evidências** — faz upload de screenshots diretamente em cada cenário ou bug
+- **Anexos de Evidências** — faz upload de screenshots diretamente em cada cenário ou bug, cada um com uma legenda opcional que aparece no PDF
 - **Aprovar/Reprovar com Um Clique** — marca cenários como aprovados ou falhados inline
 - **Status Derivado** — o status do plano é derivado automaticamente a partir dos seus cenários (sem atualizações manuais)
 - **Projetos (workspaces)** — um workspace por aplicação testada; depois do login você escolhe o projeto e os planos de teste, bugs, causas raiz e análises de IA dele ficam separados dos outros (a API recebe `project_id`)
@@ -29,7 +29,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 - **Dashboard de Causas-Raiz** — vista de bugs agrupados por tag de causa e tag de funcionalidade, com gráficos de barras para análise rápida de quais são as causas que mais estão originando bugs
 - **Pesquisa e Filtros** — pesquisa planos por nome, QA ou tag; pesquisa bugs por ID, título ou descrição; filtra por status, tags e intervalo de datas
 - **Paginação** — listagens de planos e bugs paginadas para grandes volumes de dados
-- **Relatórios PDF** — exporta relatórios formatados para planos de teste e bugs individuais, com índice (âncoras clicáveis), resumo, cenários e evidências
+- **Relatórios PDF (LaTeX)** — exporta planos de teste, bugs individuais e análises de bugs por IA como PDF em LaTeX (Latin Modern), com logo global e no idioma em que o app está
 - **Autenticação e Perfis** — login com username/password com perfis de administrador e utilizador comum
 - **Bilingue (EN / PT-BR)** — interface completa em inglês e português brasileiro; alterna idiomas com um clique!
 - **API REST** — API JSON completa com autenticação por token para planos de teste, cenários, bugs, tags e anexos de screenshots
@@ -52,7 +52,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 
 ## Começar
 
-**Pré-requisitos:** Ruby 3.4+
+**Pré-requisitos:** Ruby 3.4+ e `pdflatex` para os relatórios PDF (Debian/Ubuntu: `texlive-latex-extra lmodern`; macOS: MacTeX)
 
 ```bash
 # Clonar o repositório
@@ -74,15 +74,18 @@ export GEMINI_API_KEY=your_key_here   # ou OPENAI_API_KEY / ANTHROPIC_API_KEY
 bin/dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000). No primeiro acesso, será solicitada a criação do utilizador administrador.
+**macOS:** `bash bin/setup-mac` instala Homebrew, rbenv, o Ruby do `.ruby-version`, as gems e (opcionalmente) o MacTeX, e cria o banco. Pode rodar de novo sem problema.
+
+Abre [http://localhost:3000](http://localhost:3000). No primeiro acesso, será solicitada a criação do utilizador administrador. Depois do login você cai em **Projetos**: crie um por aplicação e clique nele para abrir os planos de teste.
 
 ## Executar Testes
 
 ```bash
-bin/rails test
+bin/rails test          # testes unitários, de controller e integração (os de PDF precisam do pdflatex)
+bin/rails test:system   # smoke tests no browser (precisa de Chrome/Chromium)
 ```
 
-Cobre modelos, controllers, autenticação, autorização e comportamento de filtros.
+Cobre modelos, controllers, autenticação, autorização, filtros, projetos, provedores de IA e os relatórios LaTeX.
 
 ## Testy CLI
 
@@ -138,6 +141,8 @@ bin/testy doctor
 
 Todos os comandos suportam as flags `--json`, `--md` e `--quiet` para formatos de saída.
 
+> **Projetos:** o CLI ainda não escolhe projeto. Enquanto o servidor tiver um só projeto, ele é usado automaticamente; com dois ou mais, `plans create` e `bugs create` são recusados pela API (`project_id` é obrigatório) e `plans list` / `bugs list` mostram todos os projetos.
+
 ### Uso — Modo IA (testy qa)
 
 Para execução de testes com IA via Playwright, é necessário o Claude Code e Node.js:
@@ -185,6 +190,8 @@ bin/testy version    # Mostra a versão do CLI
 User (username, password_digest, role)
   |
   +-- Session (user_agent, ip_address)
+
+Project (name, description) — um workspace por aplicação
   |
   +-- TestPlan (name, qa_name)
   |     |
@@ -197,12 +204,16 @@ User (username, password_digest, role)
   |     +-- Tags (muitos-para-muitos via TestPlanTag)
   |
   +-- Bug (title, description, steps_to_reproduce, obtained_result, expected_result, status)
-        |
-        +-- Ficheiros de Evidência (Active Storage)
-        |
-        +-- feature_tag, cause_tag (tags livres com autocomplete)
-        |
-        +-- TestScenarios (cenários falhados vinculados)
+  |     |
+  |     +-- Ficheiros de Evidência (Active Storage)
+  |     |
+  |     +-- feature_tag, cause_tag (tags livres com autocomplete)
+  |     |
+  |     +-- TestScenarios (cenários falhados vinculados)
+  |
+  +-- BugAnalysis (resumo da IA, erros comuns, recomendações)
+
+Setting (logo dos relatórios, provedor/modelo de IA, chaves criptografadas) — global
 ```
 
 ### Status Derivado
@@ -222,14 +233,16 @@ Um cenário não pode ser aprovado enquanto tiver um bug vinculado — o bug dev
 
 Cada plano tem um botão "Exportar Relatório PDF" que gera o documento "Evidência de Execução de Testes" em LaTeX (fonte Latin Modern), compilado com `pdflatex`:
 - Capa com o logo global, QA responsável, número de cenários, história (nome do plano) e status: aprovado só quando todos os cenários estão aprovados, reprovado se algum foi reprovado, pendente nos outros casos
-- Todos os cenários, com Dado que, Quando, Então e a situação num retângulo com borda colorida (verde aprovado, vermelho reprovado, amarelo pendente)
+- Todos os cenários, com Dado que, Quando, Então e a situação em negrito (vermelho quando reprovado), além do bug vinculado quando houver
 - Cada evidência em uma página própria, com a legenda digitada no app embaixo da imagem (ou o nome do arquivo). PNG, JPG e PDF são embutidos; GIF e WebP aparecem como "formato não suportado"
 
-Os templates ficam em `lib/templates/` (`evidence_report.tex` e `bug_report.tex`). O Testy só substitui as linhas `% testy:...`. O logo da capa é definido por um admin em **Configurações** (JPG ou PNG) e vale para todos os PDFs. `/test_plans/:id/report.tex` e `/bugs/:id/report.tex` baixam o `.tex` gerado.
+Os templates ficam em `lib/templates/` (`evidence_report.tex`, `bug_report.tex` e `bug_analysis_report.tex`). O Testy só substitui as linhas `% testy:...`. Os rótulos vêm de `config/locales/*/reports.yml`, então os relatórios saem no idioma em que o app está. O logo da capa é definido por um admin em **Configurações** (JPG ou PNG) e vale para todos os PDFs. `/test_plans/:id/report.tex` e `/bugs/:id/report.tex` baixam o `.tex` gerado.
 
 Requer `pdflatex` com os pacotes `lmodern`, `tcolorbox`, `xurl`, `lastpage` e `fancyhdr` (Debian/Ubuntu: `texlive-latex-extra lmodern`; macOS: MacTeX). Use `PDFLATEX` para apontar outro binário.
 
 Bugs têm o próprio PDF no mesmo estilo: capa (quem reportou, data, funcionalidade, causa raiz, aberto/resolvido), descrição, passos para reproduzir, resultados obtido e esperado, cenários associados e evidências com legenda.
+
+Cada análise de bugs por IA (The Root Of All Evil → "Analisar bugs") também exporta para PDF: resumo, principais causas e funcionalidades em gráficos de barras, erros comuns com os bugs por trás deles e recomendações.
 
 ## Decisões de Design
 
