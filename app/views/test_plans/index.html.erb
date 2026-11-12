@@ -8,13 +8,14 @@
         <% end %>
       </div>
       <p class="page__stats">
-        <%= t('test_plans.index.plans_count', count: TestPlan.count) %> ·
-        <%= t('test_plans.index.approved_count', count: TestPlan.approved_plans.count) %> ·
-        <%= t('test_plans.index.in_progress_count', count: TestPlan.in_progress.count) %> ·
-        <%= t('test_plans.index.failed_count', count: TestPlan.failed_plans.count) %>
+        <% plans = current_project.test_plans %>
+        <%= t('test_plans.index.plans_count', count: plans.count) %> ·
+        <%= t('test_plans.index.approved_count', count: plans.approved_plans.count) %> ·
+        <%= t('test_plans.index.in_progress_count', count: plans.in_progress.count) %> ·
+        <%= t('test_plans.index.failed_count', count: plans.failed_plans.count) %>
       </p>
       <div class="flex items-center gap-3">
-        <%= link_to bugs_path, class: "btn btn--primary", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
+        <%= link_to bugs_path, class: "btn btn--danger", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "b" } do %>
           <%= icon_tag("bug") %>
           Bug Jar
           <span class="kbd">B</span>

@@ -102,7 +102,7 @@ class Api::V1::TestPlansControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update as admin on other user's plan succeeds" do
-    user_plan = TestPlan.create!(name: "User Plan", qa_name: "QA", user: users(:regular_user))
+    user_plan = TestPlan.create!(project: projects(:main), name: "User Plan", qa_name: "QA", user: users(:regular_user))
 
     api_patch "/api/v1/test_plans/#{user_plan.id}", params: { test_plan: { name: "Admin Updated" } }, token: ADMIN_TOKEN
 
@@ -128,5 +128,19 @@ class Api::V1::TestPlansControllerTest < ActionDispatch::IntegrationTest
     api_delete "/api/v1/test_plans/#{@plan.id}", token: USER_TOKEN
 
     assert_response :forbidden
+  end
+
+  test "create needs project_id when there are several projects" do
+    other = Project.create!(name: "Mobile App")
+
+    api_post "/api/v1/test_plans", params: { test_plan: { name: "No project", qa_name: "QA" } }
+    assert_response :bad_request
+
+    api_post "/api/v1/test_plans", params: { project_id: other.id, test_plan: { name: "Mobile plan", qa_name: "QA" } }
+    assert_response :created
+    assert_equal other.id, json_response["test_plan"]["project_id"]
+
+    api_get "/api/v1/test_plans", params: { project_id: other.id }
+    assert_equal [ "Mobile plan" ], json_response["test_plans"].map { |p| p["name"] }
   end
 end

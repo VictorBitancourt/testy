@@ -30,7 +30,7 @@ class ActiveStorageAuthorizationTest < ActionDispatch::IntegrationTest
 
   test "admin can view any blob" do
     # Create a plan owned by regular_user
-    plan = TestPlan.create!(name: "Other Plan", qa_name: "QA", user: users(:regular_user))
+    plan = TestPlan.create!(project: projects(:main), name: "Other Plan", qa_name: "QA", user: users(:regular_user))
     scenario = plan.test_scenarios.create!(title: "Test", given: "G", when_step: "W", then_step: "T")
     blob = attach_evidence(scenario)
 

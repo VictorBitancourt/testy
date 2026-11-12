@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_many :api_tokens, dependent: :destroy
   has_many :test_plans, dependent: :nullify
   has_many :bugs, dependent: :destroy
+  has_many :bug_analyses, dependent: :nullify
+  has_many :projects, dependent: :nullify
 
   normalizes :username, with: ->(u) { u.strip.downcase }
 

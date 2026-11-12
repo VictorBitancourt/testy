@@ -1,0 +1,37 @@
+<%# Paste free-text notes; the AI fills the bug form below for review. %>
+<% provider = AiProviders.configured %>
+<div class="panel mb-6" data-controller="bug-ai" data-bug-ai-url-value="<%= bug_ai_draft_path %>">
+  <h2 class="panel__title flex items-center gap-2">
+    <%= icon_tag("sparkle", size: :lg, class: "txt-violet-light") %>
+    <%= t('bugs.ai_draft.title') %>
+  </h2>
+  <p class="text-sm txt-ink-medium mb-4">
+    <%= t('bugs.ai_draft.subtitle') %>
+    <% if provider.configuration_error.nil? %>
+      · <%= t('test_plans.show.ai_using', provider: provider.label, model: provider.model) %>
+    <% else %>
+      · <%= t('test_plans.show.ai_not_configured', provider: provider.label) %>
+    <% end %>
+    <% if current_user_admin? %>
+      · <%= link_to t('test_plans.show.ai_change'), edit_settings_path %>
+    <% end %>
+  </p>
+
+  <div class="form-stack">
+    <textarea data-bug-ai-target="text" rows="4" class="input input--focus-violet" placeholder="<%= t('bugs.ai_draft.placeholder') %>"></textarea>
+
+    <div class="flex items-center gap-4">
+      <button type="button" data-bug-ai-target="button" data-action="click->bug-ai#draft" class="btn btn--ai">
+        <%= icon_tag("sparkle") %>
+        <%= t('bugs.ai_draft.button') %>
+      </button>
+
+      <div data-bug-ai-target="spinner" class="hidden flex items-center gap-2 txt-ink-medium">
+        <%= icon_tag("spinner", class: "animate-spin") %>
+        <%= t('bugs.ai_draft.working') %>
+      </div>
+
+      <p data-bug-ai-target="result" class="hidden txt-green-medium font-semibold"></p>
+    </div>
+  </div>
+</div>

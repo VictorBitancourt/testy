@@ -1,8 +1,11 @@
 en:
   layouts:
     nav:
+      projects: "Projects"
+      switch_project: "Switch project"
       test_plans: "Test Plans"
       users: "Users"
+      settings: "Settings"
       bug_jar: "Bug Jar"
       sign_out: "Sign Out"
   language:
@@ -86,6 +89,9 @@ en:
       confirm_delete_scenario: "Are you sure you want to delete this scenario?"
       evidence: "Evidence:"
       export_pdf: "Export PDF Report"
+      ai_using: "Using %{provider} · %{model}"
+      ai_not_configured: "%{provider} is not configured yet."
+      ai_change: "Configure AI"
       associate_bug: "Associate Bug"
       click_to_change: "Click to change status"
     new:
@@ -258,6 +264,12 @@ en:
       expected_result: "Expected Result"
       evidence: "Evidence"
       footer_tagline: "Test Management Made Simple"
+    ai_draft:
+      title: "Fill with AI"
+      subtitle: "Paste the bug report (message, ticket, notes) and the AI fills in the form for you to review."
+      placeholder: "E.g.: clicking Pay with an expired card leaves the page loading forever…"
+      button: "Fill with AI"
+      working: "Filling…"
     root_causes:
       back: "Back"
       title: "The Root Of All Evil"
@@ -265,6 +277,17 @@ en:
       by_cause: "By Root Cause"
       by_feature: "By Feature"
       no_data: "No bugs with tags yet. Start tagging bugs to see analytics here."
+      ai_title: "AI analysis"
+      ai_subtitle: "Reads the bugs from the most frequent causes and features and points out the recurring errors and what to improve."
+      ai_button: "Analyze bugs"
+      ai_working: "Analyzing…"
+      ai_based_on: "Based on %{count} bugs from the most frequent causes and features."
+      ai_patterns: "Most common errors"
+      ai_what_to_do: "What to do:"
+      ai_bugs: "Bugs:"
+      ai_recommendations: "To avoid repeating them"
+      ai_generated_at: "Generated on %{date} by %{user}"
+      ai_export_pdf: "Export PDF"
   users:
     index:
       back: "Back"
@@ -292,4 +315,58 @@ en:
       new_password: "New Password"
       confirm_new_password: "Confirm New Password"
       reset_password: "Reset Password"
+      back: "Back"
+  settings:
+    edit:
+      title: "Settings"
+      subtitle: "These apply to every plan and user."
+      report_logo: "Evidence report logo"
+      no_report_logo: "No logo set: the PDF cover has no logo."
+      remove_report_logo: "Remove current logo"
+      report_logo_hint: "JPG or PNG. Shown on the cover of every generated PDF, up to 6 cm wide and 2.2 cm tall. Crop the white margins for a bigger logo."
+      ai_title: "AI scenario generation"
+      ai_subtitle: "Which AI the \"Generate with AI\" button uses on test plans."
+      ai_provider: "Provider"
+      ai_model: "Model"
+      ai_model_placeholder: "Empty = the provider's default model"
+      ai_model_hint: "Defaults:"
+      api_key: "API key — %{provider}"
+      api_key_placeholder: "Paste the key here"
+      api_key_stored: "•••••••• (saved; leave empty to keep it)"
+      remove_api_key: "Remove key"
+      get_api_key: "Get a key"
+      api_key_env: "or the %{env} variable"
+      claude_cli_hint: "Claude (local CLI) needs no key: it runs this computer's claude command with the login it already has (for example, a company account). Models: sonnet, opus, haiku or a full model name."
+      save: "Save"
+      back: "Back"
+  evidence:
+    caption_label: "Evidence caption"
+    caption_placeholder: "Caption (shown in the PDF)"
+  projects:
+    index:
+      title: "Projects"
+      subtitle: "One workspace per application: test plans, bugs and analyses stay separate."
+      new_project: "+ New Project"
+      plans:
+        one: "1 test plan"
+        other: "%{count} test plans"
+      open_bugs:
+        one: "1 open bug"
+        other: "%{count} open bugs"
+      edit: "Edit"
+      delete: "Delete"
+      confirm_delete: "Delete project %{name}? All its test plans, bugs and analyses will be deleted."
+      empty: "No projects yet. Create one for each application you test."
+      create_first: "Create first project"
+    new:
+      title: "New Project"
+    edit:
+      title: "Edit Project"
+    form:
+      name: "Name"
+      name_placeholder: "E.g.: Mobile App, Customer Portal"
+      description: "Description (optional)"
+      description_placeholder: "Which application, team or context"
+      create: "Create Project"
+      save: "Save"
       back: "Back"

@@ -88,15 +88,7 @@
         <h2 class="text-lg font-bold mb-3"><%= t('bugs.show.evidence') %></h2>
         <div class="evidence-grid">
           <% @bug.evidence_files.each do |file| %>
-            <div class="evidence-item">
-              <% if file.image? %>
-                <%= image_tag file %>
-              <% else %>
-                <div class="evidence-placeholder">
-                  <span>&#128196;</span>
-                </div>
-              <% end %>
-            </div>
+            <%= render "shared/evidence_item", file: file, editable: current_user_admin? || @bug.user == Current.user %>
           <% end %>
         </div>
       </div>

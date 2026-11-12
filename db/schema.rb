@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_26_142021) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_11_200000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
+    t.text "caption"
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.bigint "record_id", null: false
@@ -50,6 +51,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_142021) do
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
   end
 
+  create_table "bug_analyses", force: :cascade do |t|
+    t.string "ai_model"
+    t.string "ai_provider"
+    t.integer "bug_count", null: false
+    t.json "cause_counts", null: false
+    t.datetime "created_at", null: false
+    t.json "feature_counts", null: false
+    t.json "patterns", null: false
+    t.integer "project_id", null: false
+    t.json "recommendations", null: false
+    t.text "summary", null: false
+    t.integer "total_bugs", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["project_id"], name: "index_bug_analyses_on_project_id"
+    t.index ["user_id"], name: "index_bug_analyses_on_user_id"
+  end
+
   create_table "bugs", force: :cascade do |t|
     t.string "cause_tag"
     t.datetime "created_at", null: false
@@ -57,12 +76,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_142021) do
     t.text "expected_result"
     t.string "feature_tag"
     t.text "obtained_result"
+    t.integer "project_id", null: false
     t.string "status", default: "open", null: false
     t.text "steps_to_reproduce"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["project_id"], name: "index_bugs_on_project_id"
     t.index ["user_id"], name: "index_bugs_on_user_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["name"], name: "index_projects_on_name", unique: true
+    t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -72,6 +103,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_142021) do
     t.string "user_agent"
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string "ai_model"
+    t.string "ai_provider"
+    t.text "anthropic_api_key"
+    t.datetime "created_at", null: false
+    t.text "gemini_api_key"
+    t.text "openai_api_key"
+    t.datetime "updated_at", null: false
   end
 
   create_table "tags", force: :cascade do |t|
@@ -94,9 +135,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_142021) do
   create_table "test_plans", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
+    t.integer "project_id", null: false
     t.string "qa_name", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["project_id"], name: "index_test_plans_on_project_id"
     t.index ["user_id"], name: "index_test_plans_on_user_id"
   end
 
@@ -128,10 +171,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_142021) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "bug_analyses", "projects"
+  add_foreign_key "bug_analyses", "users"
+  add_foreign_key "bugs", "projects"
   add_foreign_key "bugs", "users"
+  add_foreign_key "projects", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "test_plan_tags", "tags"
   add_foreign_key "test_plan_tags", "test_plans"
+  add_foreign_key "test_plans", "projects"
   add_foreign_key "test_plans", "users"
   add_foreign_key "test_scenarios", "bugs"
   add_foreign_key "test_scenarios", "test_plans"

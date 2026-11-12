@@ -2,18 +2,18 @@ require "test_helper"
 
 class TestPlanTest < ActiveSupport::TestCase
   test "create" do
-    plan = TestPlan.new(name: "Checkout Flow", qa_name: "Ana Costa", user: users(:admin))
+    plan = TestPlan.new(project: projects(:main), name: "Checkout Flow", qa_name: "Ana Costa", user: users(:admin))
     assert plan.valid?
   end
 
   test "validates name presence" do
-    plan = TestPlan.new(qa_name: "Ana Costa", user: users(:admin))
+    plan = TestPlan.new(project: projects(:main), qa_name: "Ana Costa", user: users(:admin))
     assert_not plan.valid?
     assert_includes plan.errors[:name], "can't be blank"
   end
 
   test "validates qa_name presence" do
-    plan = TestPlan.new(name: "Checkout Flow", user: users(:admin))
+    plan = TestPlan.new(project: projects(:main), name: "Checkout Flow", user: users(:admin))
     assert_not plan.valid?
     assert_includes plan.errors[:qa_name], "can't be blank"
   end
@@ -227,17 +227,9 @@ class TestPlanTest < ActiveSupport::TestCase
     original_key = ENV["GEMINI_API_KEY"]
     ENV["GEMINI_API_KEY"] = "test-key"
 
-    gemini_response = {
-      "candidates" => [ {
-        "content" => {
-          "parts" => [ {
-            "text" => '[{"title":"Test","given":"G","when_step":"W","then_step":"T"},{"title":"","given":"G","when_step":"W","then_step":"T"}]'
-          } ]
-        }
-      } ]
-    }.to_json
+    reply = '[{"title":"Test","given":"G","when_step":"W","then_step":"T"},{"title":"","given":"G","when_step":"W","then_step":"T"}]'
 
-    AiScenarioGenerator.any_instance.stubs(:call_api).returns(gemini_response)
+    AiScenarioGenerator.any_instance.stubs(:call_api).returns(reply)
     initial_count = plan.test_scenarios.count
     result = plan.generate_scenarios_with_ai("Login feature")
 

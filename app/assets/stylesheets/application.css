@@ -32,8 +32,10 @@
 
 .icon--chevron-down { --svg: url("icons/chevron-down.svg"); }
 .icon--test-plans   { --svg: url("icons/test-plans.svg"); }
+.icon--projects     { --svg: url("icons/projects.svg"); }
 .icon--bug          { --svg: url("icons/bug.svg"); }
 .icon--users        { --svg: url("icons/users.svg"); }
+.icon--cog          { --svg: url("icons/cog.svg"); }
 .icon--sign-out     { --svg: url("icons/sign-out.svg"); }
 .icon--eye          { --svg: url("icons/eye.svg"); }
 .icon--pencil       { --svg: url("icons/pencil.svg"); }

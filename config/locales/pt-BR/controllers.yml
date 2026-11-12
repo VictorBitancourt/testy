@@ -1,5 +1,10 @@
 pt-BR:
   controllers:
+    projects:
+      created: "Projeto criado!"
+      updated: "Projeto atualizado!"
+      removed: "Projeto removido!"
+      choose_first: "Escolha um projeto primeiro."
     sessions:
       rate_limited: "Tente novamente mais tarde."
       invalid_credentials: "Usuário ou senha inválidos."
@@ -20,6 +25,10 @@ pt-BR:
       password_reset: "Senha redefinida com sucesso!"
       cannot_delete_self: "Você não pode excluir a si mesmo."
       removed: "Usuário removido com sucesso!"
+    settings:
+      updated: "Configurações salvas!"
+    evidence_captions:
+      updated: "Legenda salva!"
     bugs:
       created: "Bug reportado com sucesso!"
       updated: "Bug atualizado!"

@@ -18,6 +18,14 @@ module Api
 
       private
 
+      # The project named by project_id; without it, the only project there is.
+      def api_project
+        return Project.find(params[:project_id]) if params[:project_id].present?
+        return Project.first if Project.count == 1
+
+        raise ActionController::ParameterMissing, :project_id
+      end
+
       def render_errors(record)
         render json: { errors: record.errors.full_messages }, status: :unprocessable_entity
       end

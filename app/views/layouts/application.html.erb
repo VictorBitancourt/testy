@@ -55,6 +55,11 @@
             <hr class="dropdown__divider">
 
             <div class="dropdown__items">
+              <%= link_to projects_path, class: "dropdown__item" do %>
+                <%= icon_tag("projects", class: "txt-ink-medium") %>
+                <%= t('layouts.nav.projects') %>
+              <% end %>
+
               <%= link_to test_plans_path, class: "dropdown__item" do %>
                 <%= icon_tag("test-plans", class: "txt-ink-medium") %>
                 <%= t('layouts.nav.test_plans') %>
@@ -69,6 +74,11 @@
                 <%= link_to users_path, class: "dropdown__item" do %>
                   <%= icon_tag("users", class: "txt-ink-medium") %>
                   <%= t('layouts.nav.users') %>
+                <% end %>
+
+                <%= link_to edit_settings_path, class: "dropdown__item" do %>
+                  <%= icon_tag("cog", class: "txt-ink-medium") %>
+                  <%= t('layouts.nav.settings') %>
                 <% end %>
               <% end %>
             </div>
@@ -94,6 +104,13 @@
             </div>
           </div>
         </div>
+
+        <% if current_project %>
+          <%= link_to projects_path, class: "topbar__project", title: t('layouts.nav.switch_project') do %>
+            <%= icon_tag("projects", size: :sm) %>
+            <span><%= current_project.name %></span>
+          <% end %>
+        <% end %>
       </div>
     <% end %>
 

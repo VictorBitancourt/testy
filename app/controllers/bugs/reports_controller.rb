@@ -5,25 +5,27 @@ class Bugs::ReportsController < ApplicationController
     respond_to do |format|
       format.html { render template: "bugs/report", layout: false }
       format.pdf do
-        render ferrum_pdf: {
-          paper_width: 8.27,
-          paper_height: 11.69,
-          margin_top: 0,
-          margin_bottom: 0,
-          margin_left: 0,
-          margin_right: 0
-        },
-        template: "bugs/report_pdf",
-        formats: [ :html ],
-        layout: false,
-        disposition: :inline,
-        filename: "bug_#{@bug.id}.pdf"
+        send_data bug_report.to_pdf, type: :pdf, disposition: :inline, filename: "#{report_filename}.pdf"
+      rescue LatexDocument::Error => e
+        Rails.logger.error(e.message)
+        redirect_to @bug, alert: e.message.lines.first.strip
+      end
+      format.tex do
+        send_data bug_report.to_tex, type: :tex, disposition: :attachment, filename: "#{report_filename}.tex"
       end
     end
   end
 
   private
     def set_bug
-      @bug = Bug.find(params[:bug_id])
+      @bug = Bug.includes(:user, evidence_files_attachments: :blob).find(params[:bug_id])
+    end
+
+    def bug_report
+      BugReport.new(@bug, logo: Setting.current.report_logo.presence)
+    end
+
+    def report_filename
+      "bug-#{@bug.id}"
     end
 end

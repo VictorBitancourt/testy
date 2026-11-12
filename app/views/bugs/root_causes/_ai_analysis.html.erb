@@ -1,0 +1,51 @@
+<%# AI report on the most frequent bugs (a saved BugAnalysis), or the error of the last attempt. %>
+<% if error %>
+  <div class="error-box--light"><%= error %></div>
+<% elsif analysis %>
+  <div class="stack">
+    <div class="flex items-center gap-4" style="justify-content: space-between; flex-wrap: wrap;">
+      <p class="text-sm txt-ink-medium">
+        <%= t('bugs.root_causes.ai_generated_at', date: l(analysis.created_at, format: :short_datetime), user: analysis.user&.username || "—") %>
+        · <%= analysis.ai_provider %> <%= analysis.ai_model %>
+        · <%= t('bugs.root_causes.ai_based_on', count: analysis.bug_count) %>
+      </p>
+      <%= link_to bug_ai_analysis_report_path(analysis, format: :pdf), target: "_blank", class: "btn btn--secondary btn--sm" do %>
+        &#128196; <%= t('bugs.root_causes.ai_export_pdf') %>
+      <% end %>
+    </div>
+    <p class="txt-ink-darker"><%= analysis.summary %></p>
+
+    <% patterns = analysis.pattern_list %>
+    <% if patterns.any? %>
+      <h3 class="text-lg font-bold mt-4"><%= t('bugs.root_causes.ai_patterns') %></h3>
+      <% patterns.each_with_index do |pattern, index| %>
+        <div class="panel panel--bordered">
+          <h4 class="font-bold mb-2"><%= index + 1 %>. <%= pattern.title %></h4>
+          <% if pattern.cause_tag || pattern.feature_tag %>
+            <div class="flex flex-wrap gap-2 mb-2">
+              <% if pattern.cause_tag %><%= link_to pattern.cause_tag, bugs_path(cause_tag: pattern.cause_tag), class: tag_classes(:red) %><% end %>
+              <% if pattern.feature_tag %><%= link_to pattern.feature_tag, bugs_path(feature_tag: pattern.feature_tag), class: tag_classes(:blue) %><% end %>
+            </div>
+          <% end %>
+          <p class="txt-ink-dark mb-2"><%= pattern.description %></p>
+          <p class="txt-ink-dark"><strong><%= t('bugs.root_causes.ai_what_to_do') %></strong> <%= pattern.recommendation %></p>
+          <% if pattern.bugs.any? %>
+            <p class="text-sm txt-ink-medium mt-2">
+              <%= t('bugs.root_causes.ai_bugs') %>
+              <%= safe_join(pattern.bugs.map { |bug| link_to("##{bug.id}", bug_path(bug), title: bug.title) }, ", ") %>
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% if analysis.recommendations.any? %>
+      <h3 class="text-lg font-bold mt-4"><%= t('bugs.root_causes.ai_recommendations') %></h3>
+      <ol class="txt-ink-dark" style="padding-left: 1.25em; list-style: decimal;">
+        <% analysis.recommendations.each do |recommendation| %>
+          <li class="mb-1"><%= recommendation %></li>
+        <% end %>
+      </ol>
+    <% end %>
+  </div>
+<% end %>

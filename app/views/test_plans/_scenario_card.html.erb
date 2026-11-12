@@ -71,15 +71,7 @@
       <p class="font-semibold txt-ink-darker mb-2"><%= t('test_plans.show.evidence') %></p>
       <div class="evidence-grid">
         <% scenario.evidence_files.each do |file| %>
-          <div class="evidence-item">
-            <% if file.image? %>
-              <%= image_tag file %>
-            <% else %>
-              <div class="evidence-placeholder">
-                <span>&#128196;</span>
-              </div>
-            <% end %>
-          </div>
+          <%= render "shared/evidence_item", file: file, editable: current_user_admin? || test_plan.user == Current.user %>
         <% end %>
       </div>
     </div>

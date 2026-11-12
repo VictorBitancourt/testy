@@ -1,0 +1,4 @@
+main:
+  name: Main App
+  description: The application all fixtures belong to
+  user: admin

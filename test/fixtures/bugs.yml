@@ -1,4 +1,5 @@
 open_bug:
+  project: main
   title: Button not working on checkout page
   description: The checkout button does not respond to clicks
   status: open
@@ -10,6 +11,7 @@ open_bug:
   user: admin
 
 resolved_bug:
+  project: main
   title: Login page crashes on empty password
   description: Submitting the login form without a password causes a 500 error
   status: resolved
@@ -18,6 +20,7 @@ resolved_bug:
   user: admin
 
 user_bug:
+  project: main
   title: Profile image not loading
   description: The profile image returns a 404
   status: open

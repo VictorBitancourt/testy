@@ -1,0 +1,18 @@
+<%# Evidence thumbnail with its caption (printed under the image in the PDF reports). %>
+<div class="evidence-item">
+  <% if file.image? %>
+    <%= image_tag file %>
+  <% else %>
+    <div class="evidence-placeholder">
+      <span>&#128196;</span>
+    </div>
+  <% end %>
+
+  <% if editable %>
+    <%= form_with url: evidence_caption_path(file), method: :patch, class: "evidence-caption", data: { controller: "evidence-caption", action: "submit->evidence-caption#save focusin->evidence-caption#lockDrag focusout->evidence-caption#unlockDrag" } do %>
+      <%= text_field_tag :caption, file.caption, id: "evidence_caption_#{file.id}", placeholder: t("evidence.caption_placeholder"), "aria-label": t("evidence.caption_label"), class: "input input--sm", data: { evidence_caption_target: "input", action: "change->evidence-caption#save" } %>
+    <% end %>
+  <% elsif file.caption.present? %>
+    <p class="evidence-caption__text"><%= file.caption %></p>
+  <% end %>
+</div>

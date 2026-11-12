@@ -1,0 +1,25 @@
+<%= form_with model: project, class: "form-stack" do |f| %>
+  <% if project.errors.any? %>
+    <div class="error-box--light">
+      <ul>
+        <% project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, t('projects.form.name'), class: "label--sm" %>
+    <%= f.text_field :name, class: "input", required: true, autofocus: true, placeholder: t('projects.form.name_placeholder') %>
+  </div>
+
+  <div>
+    <%= f.label :description, t('projects.form.description'), class: "label--sm" %>
+    <%= f.text_area :description, rows: 3, class: "input input--textarea", placeholder: t('projects.form.description_placeholder') %>
+  </div>
+
+  <button type="submit" class="btn btn--primary full-width">
+    <%= project.new_record? ? t('projects.form.create') : t('projects.form.save') %>
+  </button>
+<% end %>

@@ -1,11 +1,12 @@
 class BugsController < ApplicationController
   include Pagy::Method
 
+  before_action :require_project, only: [ :index, :new, :create, :tag_suggestions ]
   before_action :set_bug, only: [ :show, :edit, :update, :destroy ]
   before_action :authorize_owner_or_admin, only: [ :edit, :update, :destroy ]
 
   def index
-    @bugs = Bug.includes(:user).order(created_at: :desc)
+    @bugs = current_project.bugs.includes(:user).order(created_at: :desc)
 
     @bugs = @bugs.where(status: params[:status]) if params[:status].present?
     @bugs = @bugs.by_feature(params[:feature_tag])
@@ -34,7 +35,7 @@ class BugsController < ApplicationController
   end
 
   def create
-    @bug = Bug.new(bug_params)
+    @bug = current_project.bugs.new(bug_params)
     @bug.user = Current.user
 
     if @bug.save
@@ -61,11 +62,11 @@ class BugsController < ApplicationController
   end
 
   def tag_suggestions
-    field = params[:field]&.to_sym
-    return head(:bad_request) unless field.in?([ :feature_tag, :cause_tag ])
+    field = %i[feature_tag cause_tag].find { |name| name.to_s == params[:field] }
+    return head(:bad_request) unless field
 
     query = params[:q].to_s.strip
-    tags = Bug.where.not(field => [ nil, "" ])
+    tags = current_project.bugs.where.not(field => [ nil, "" ])
               .where(Bug.arel_table[field].matches("%#{Bug.sanitize_sql_like(query)}%"))
               .limit(10)
               .distinct.pluck(field)
@@ -76,6 +77,7 @@ class BugsController < ApplicationController
   private
     def set_bug
       @bug = Bug.find(params[:id])
+      use_project(@bug.project)
     end
 
     def authorize_owner_or_admin

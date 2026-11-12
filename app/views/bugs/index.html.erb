@@ -8,9 +8,10 @@
         <% end %>
       </div>
       <p class="page__stats">
-        <%= t('bugs.index.bugs_count', count: Bug.count) %> ·
-        <%= t('bugs.index.open_count', count: Bug.open_bugs.count) %> ·
-        <%= t('bugs.index.resolved_count', count: Bug.resolved.count) %>
+        <% bugs = current_project.bugs %>
+        <%= t('bugs.index.bugs_count', count: bugs.count) %> ·
+        <%= t('bugs.index.open_count', count: bugs.open_bugs.count) %> ·
+        <%= t('bugs.index.resolved_count', count: bugs.resolved.count) %>
       </p>
       <div class="flex items-center gap-3">
         <%= link_to bug_root_causes_path, class: "btn btn--ai", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "r", name:"The Root Of All Evil" } do %>

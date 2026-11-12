@@ -3,6 +3,17 @@
     <%= icon_tag("sparkle", size: :lg, class: "txt-violet-light") %>
     <%= t('test_plans.show.generate_with_ai') %>
   </h2>
+  <% provider = AiProviders.configured %>
+  <p class="text-sm txt-ink-medium mb-4">
+    <% if provider.configuration_error.nil? %>
+      <%= t('test_plans.show.ai_using', provider: provider.label, model: provider.model) %>
+    <% else %>
+      <%= t('test_plans.show.ai_not_configured', provider: provider.label) %>
+    <% end %>
+    <% if current_user_admin? %>
+      · <%= link_to t('test_plans.show.ai_change'), edit_settings_path %>
+    <% end %>
+  </p>
 
   <div class="form-stack">
     <div>

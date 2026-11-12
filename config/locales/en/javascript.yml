@@ -25,6 +25,10 @@ en:
       error_generating: "Error generating scenarios."
       scenarios_created: "%{count} scenarios created successfully!"
       error_communication: "Error communicating with AI. Please try again."
+    bug_ai:
+      enter_text: "Paste the bug report first."
+      error: "Error filling the bug with AI."
+      filled: "Form filled. Review it before saving."
     bug_form:
       detail_bug: "Detail Bug +"
       hide_details: "Hide Details -"

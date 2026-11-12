@@ -19,12 +19,18 @@ Rails.application.routes.draw do
   resource :session, only: [ :new, :create, :destroy ]
   resource :registration, only: [ :new, :create ]
   resources :users, except: [ :show ]
+  resource :settings, only: [ :edit, :update ]
+  resources :evidence_captions, only: :update
 
   get "tags/autocomplete", to: "tags#autocomplete"
 
-  root "test_plans#index"
+  root "projects#index"
+  resources :projects
 
   get "bugs/root_causes", to: "bugs/root_causes#index", as: :bug_root_causes
+  post "bugs/root_causes/ai_analysis", to: "bugs/ai_analyses#create", as: :bug_ai_analysis
+  get "bugs/root_causes/ai_analyses/:id", to: "bugs/ai_analyses#show", as: :bug_ai_analysis_report
+  post "bugs/ai_draft", to: "bugs/ai_drafts#create", as: :bug_ai_draft
   get "bugs/tag_suggestions", to: "bugs#tag_suggestions", as: :bug_tag_suggestions
   resources :bugs do
     resource :report, only: :show, controller: "bugs/reports"

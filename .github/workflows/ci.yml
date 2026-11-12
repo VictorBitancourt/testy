@@ -98,6 +98,9 @@ jobs:
         with:
           bundler-cache: true
 
+      - name: Install LaTeX for PDF reports
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y texlive-latex-extra lmodern
+
       - name: Run tests
         env:
           RAILS_ENV: test

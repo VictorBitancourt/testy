@@ -1,0 +1,46 @@
+<div class="page">
+  <div class="page__container">
+    <div class="page__header">
+      <div>
+        <h1 class="text-3xl font-black"><%= t('projects.index.title') %></h1>
+        <p class="txt-ink-medium"><%= t('projects.index.subtitle') %></p>
+      </div>
+      <%= link_to new_project_path, class: "btn btn--primary", data: { controller: "keyboard-shortcut", keyboard_shortcut_key_value: "n" } do %>
+        <%= t('projects.index.new_project') %>
+        <span class="kbd">N</span>
+      <% end %>
+    </div>
+
+    <% if @projects.any? %>
+      <div class="project-grid">
+        <% @projects.each do |project| %>
+          <div class="project-card <%= 'project-card--current' if project == current_project %>">
+            <%= link_to project_path(project), class: "project-card__open" do %>
+              <h2 class="project-card__name"><%= project.name %></h2>
+              <% if project.description.present? %>
+                <p class="project-card__description"><%= project.description %></p>
+              <% end %>
+              <p class="project-card__stats">
+                <%= t('projects.index.plans', count: @plan_counts.fetch(project.id, 0)) %> ·
+                <%= t('projects.index.open_bugs', count: @open_bug_counts.fetch(project.id, 0)) %>
+              </p>
+            <% end %>
+            <% if current_user_admin? || project.user == Current.user %>
+              <div class="project-card__actions">
+                <%= link_to t('projects.index.edit'), edit_project_path(project), class: "link link--blue text-sm" %>
+                <%= button_to t('projects.index.delete'), project_path(project), method: :delete, class: "link link--red text-sm",
+                      form: { data: { turbo_confirm: t('projects.index.confirm_delete', name: project.name) } } %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="blank-slate">
+        <%= icon_tag("projects", class: "blank-slate__icon") %>
+        <p class="blank-slate__text"><%= t('projects.index.empty') %></p>
+        <%= link_to t('projects.index.create_first'), new_project_path, class: "btn btn--primary btn--lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>

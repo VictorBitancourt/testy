@@ -5,11 +5,24 @@ class SmokeTest < ApplicationSystemTestCase
     @user = users(:admin)
   end
 
-  test "user can log in and view test plans" do
+  test "user can log in, pick a project and view its test plans" do
     visit new_session_path
     fill_in "Username", with: @user.username
     fill_in "Password", with: "password123"
     click_button "Sign In"
+
+    assert_text "+ New Project"
+    within(".project-grid") { click_on projects(:main).name }
+
+    assert_text "+ New Plan"
+  end
+
+  test "user can create a new project" do
+    login_as(@user)
+
+    visit new_project_path
+    fill_in "Name", with: "Smoke project"
+    click_button "Create Project"
 
     assert_text "+ New Plan"
   end
@@ -107,7 +120,7 @@ class SmokeTest < ApplicationSystemTestCase
     fill_in "Username", with: user.username
     fill_in "Password", with: "password123"
     click_button "Sign In"
-    assert_text "+ New Plan"
+    assert_text "+ New Project"
   end
 
   def open_nav_dropdown

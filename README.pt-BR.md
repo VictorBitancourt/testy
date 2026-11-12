@@ -17,12 +17,14 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 - **Planos de Teste** — agrupa cenários relacionados num plano nomeado, atribuído a um QA
 - **Tags** — categoriza planos com tags (ex: "login", "sprint-23", "regressão") e pesquisa por elas
 - **Cenários (Given/When/Then)** — formato Gherkin estruturado
-- **Geração de Cenários com IA** — descreve uma funcionalidade em texto livre e deixa o Gemini gerar cenários de teste automaticamente, cobrindo caminhos felizes, casos extremos, valores limite e particionamento de equivalência
+- **Geração de Cenários com IA** — descreve uma funcionalidade em texto livre e deixa a IA (Gemini, ChatGPT, Claude pela API ou o Claude Code já logado no computador) gerar cenários de teste automaticamente, cobrindo caminhos felizes, casos extremos, valores limite e particionamento de equivalência
 - **Drag & Drop para Reordenar** — reordena cenários arrastando-os, com animações FLIP suaves e zona de drop visual; a ordem é persistida e refletida nos relatórios
 - **Anexos de Evidências** — faz upload de screenshots diretamente em cada cenário ou bug
 - **Aprovar/Reprovar com Um Clique** — marca cenários como aprovados ou falhados inline
 - **Status Derivado** — o status do plano é derivado automaticamente a partir dos seus cenários (sem atualizações manuais)
+- **Projetos (workspaces)** — um workspace por aplicação testada; depois do login você escolhe o projeto e os planos de teste, bugs, causas raiz e análises de IA dele ficam separados dos outros (a API recebe `project_id`)
 - **Registo de Bugs** — reporta bugs com título, descrição, passos para reproduzir, resultado obtido vs esperado e anexos de evidência; classifica por funcionalidade e causa-raiz; marca como aberto ou resolvido
+- **IA para bugs** — cola o relato de um bug em texto livre e a IA preenche o formulário (passos, resultados, tags reaproveitando as existentes) para revisão; no The Root Of All Evil, "Analisar bugs" lê os bugs mais frequentes e aponta os erros que se repetem e o que melhorar; cada análise fica salva e exporta para PDF em LaTeX
 - **Bug ↔ Cenário** — associa cenários reprovados a bugs
 - **Dashboard de Causas-Raiz** — vista de bugs agrupados por tag de causa e tag de funcionalidade, com gráficos de barras para análise rápida de quais são as causas que mais estão originando bugs
 - **Pesquisa e Filtros** — pesquisa planos por nome, QA ou tag; pesquisa bugs por ID, título ou descrição; filtra por status, tags e intervalo de datas
@@ -42,8 +44,8 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 | Base de Dados | SQLite |
 | Frontend | Vanilla CSS, Hotwire (Turbo + Stimulus) |
 | Armazenamento | Active Storage (disco local) |
-| PDF | ferrum_pdf (Chrome headless) |
-| IA | Gemini API (Google) |
+| PDF | LaTeX (pdflatex) |
+| IA | Gemini, OpenAI (ChatGPT), Anthropic (Claude) ou Claude Code CLI local |
 | CLI | Go (Cobra) + Claude Code (modo IA) |
 | Automação de Browser | Playwright MCP |
 | Deploy | Kamal-ready (Docker + Thruster) |
@@ -60,11 +62,13 @@ cd testy
 # Instalar dependências
 bundle install
 
-# Configurar base de dados
-bin/rails db:setup
+# Configurar base de dados (vazia; db:setup/db:prepare também carregam os dados de exemplo do seed)
+bin/rails db:create db:schema:load
 
-# (Opcional) Definir chave da API Gemini para geração de cenários com IA
-export GEMINI_API_KEY=your_key_here
+# (Opcional) IA para gerar cenários: escolha o provedor e cole a chave em Configurações,
+# ou use variáveis de ambiente (AI_PROVIDER=gemini|openai|anthropic|claude_cli).
+# claude_cli não usa chave: roda `claude -p` com o login que o Claude Code já tem.
+export GEMINI_API_KEY=your_key_here   # ou OPENAI_API_KEY / ANTHROPIC_API_KEY
 
 # Iniciar o servidor
 bin/dev
@@ -216,13 +220,16 @@ Um cenário não pode ser aprovado enquanto tiver um bug vinculado — o bug dev
 
 ### Exportação PDF
 
-Cada plano tem um botão "Exportar Relatório PDF" que gera um documento formatado com:
-- Índice com âncoras clicáveis para cada cenário
-- Resumo do plano (total de cenários, contagem de aprovados, QA responsável, tags)
-- Cada cenário com passos Dado que, Quando e Então e status
-- Imagens de evidência anexadas
+Cada plano tem um botão "Exportar Relatório PDF" que gera o documento "Evidência de Execução de Testes" em LaTeX (fonte Latin Modern), compilado com `pdflatex`:
+- Capa com o logo global, QA responsável, número de cenários, história (nome do plano) e status: aprovado só quando todos os cenários estão aprovados, reprovado se algum foi reprovado, pendente nos outros casos
+- Todos os cenários, com Dado que, Quando, Então e a situação num retângulo com borda colorida (verde aprovado, vermelho reprovado, amarelo pendente)
+- Cada evidência em uma página própria, com a legenda digitada no app embaixo da imagem (ou o nome do arquivo). PNG, JPG e PDF são embutidos; GIF e WebP aparecem como "formato não suportado"
 
-Bugs também têm relatórios PDF individuais com descrição, passos para reproduzir, resultado obtido vs esperado e evidências.
+Os templates ficam em `lib/templates/` (`evidence_report.tex` e `bug_report.tex`). O Testy só substitui as linhas `% testy:...`. O logo da capa é definido por um admin em **Configurações** (JPG ou PNG) e vale para todos os PDFs. `/test_plans/:id/report.tex` e `/bugs/:id/report.tex` baixam o `.tex` gerado.
+
+Requer `pdflatex` com os pacotes `lmodern`, `tcolorbox`, `xurl`, `lastpage` e `fancyhdr` (Debian/Ubuntu: `texlive-latex-extra lmodern`; macOS: MacTeX). Use `PDFLATEX` para apontar outro binário.
+
+Bugs têm o próprio PDF no mesmo estilo: capa (quem reportou, data, funcionalidade, causa raiz, aberto/resolvido), descrição, passos para reproduzir, resultados obtido e esperado, cenários associados e evidências com legenda.
 
 ## Decisões de Design
 
@@ -274,10 +281,10 @@ Abre [http://localhost:3000](http://localhost:3000). No primeiro acesso, será s
 
 Os dados são persistidos num volume Docker (`testy_storage`). Um `SECRET_KEY_BASE` é gerado automaticamente no primeiro uso.
 
-Para ativar a geração de cenários com IA, passe a chave da API Gemini:
+Para ativar a geração de cenários com IA, configure o provedor e a chave em **Configurações**, ou passe as variáveis:
 
 ```bash
-GEMINI_API_KEY=your_key_here docker compose up -d
+AI_PROVIDER=anthropic ANTHROPIC_API_KEY=your_key_here docker compose up -d
 ```
 
 ### Docker Run

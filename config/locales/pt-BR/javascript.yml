@@ -25,6 +25,10 @@ pt-BR:
       error_generating: "Erro ao gerar cenários."
       scenarios_created: "%{count} cenários criados com sucesso!"
       error_communication: "Erro na comunicação com a IA. Tente novamente."
+    bug_ai:
+      enter_text: "Cole o relato do bug primeiro."
+      error: "Erro ao preencher o bug com IA."
+      filled: "Formulário preenchido. Revise antes de salvar."
     bug_form:
       detail_bug: "Detalhar Bug +"
       hide_details: "Ocultar Detalhes -"

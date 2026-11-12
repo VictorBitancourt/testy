@@ -6,6 +6,7 @@ module Api
 
       def index
         bugs = Bug.includes(:user).order(created_at: :desc)
+        bugs = bugs.where(project_id: params[:project_id]) if params[:project_id].present?
 
         bugs = bugs.where(status: params[:status]) if params[:status].present?
         bugs = bugs.by_feature(params[:feature_tag])
@@ -28,6 +29,7 @@ module Api
 
       def create
         bug = Bug.new(bug_params)
+        bug.project = api_project
         bug.user = current_api_user
 
         if bug.save
@@ -63,6 +65,7 @@ module Api
       def serialize_bug(bug)
         {
           id: bug.id,
+          project_id: bug.project_id,
           title: bug.title,
           description: bug.description,
           status: bug.status,

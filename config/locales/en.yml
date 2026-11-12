@@ -1,11 +1,15 @@
 en:
   activerecord:
     models:
+      project: "Project"
       user: "User"
       test_plan: "Test Plan"
       test_scenario: "Test Scenario"
       tag: "Tag"
     attributes:
+      project:
+        name: "Name"
+        description: "Description"
       user:
         username: "Username"
         password: "Password"
@@ -22,12 +26,19 @@ en:
         then_step: "Then"
         status: "Status"
         evidence_files: "Evidence"
+      setting:
+        report_logo: "Report logo"
     errors:
       models:
         test_scenario:
           attributes:
             status:
               cannot_approve_with_bug: "cannot be approved while a bug is associated"
+        setting:
+          attributes:
+            report_logo:
+              invalid_content_type: "must be a JPG or PNG image"
+              too_large: "must be less than %{max} MB"
   date:
     formats:
       short_date: "%m/%d/%Y"

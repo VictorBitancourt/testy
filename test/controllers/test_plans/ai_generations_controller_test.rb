@@ -59,7 +59,7 @@ class TestPlans::AiGenerationsControllerTest < ActionDispatch::IntegrationTest
 
   test "regular user can generate on own plan" do
     logout_and_sign_in_as users(:regular_user)
-    own_plan = TestPlan.create!(name: "My Plan", qa_name: "QA", user: users(:regular_user))
+    own_plan = TestPlan.create!(project: projects(:main), name: "My Plan", qa_name: "QA", user: users(:regular_user))
     fake_result = Result.success([ { "title" => "Test" } ])
 
     stub_generate_scenarios(fake_result) do

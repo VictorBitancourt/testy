@@ -12,6 +12,37 @@
       <p class="txt-ink-medium"><%= t('bugs.root_causes.subtitle', count: @total_bugs) %></p>
     </div>
 
+    <% if @total_bugs > 0 %>
+      <% provider = AiProviders.configured %>
+      <div class="panel mb-6">
+        <div class="flex items-center gap-4" style="justify-content: space-between; flex-wrap: wrap;">
+          <div>
+            <h2 class="panel__title flex items-center gap-2" style="margin-bottom: 0;">
+              <%= icon_tag("sparkle", size: :lg, class: "txt-violet-light") %>
+              <%= t('bugs.root_causes.ai_title') %>
+            </h2>
+            <p class="text-sm txt-ink-medium">
+              <%= t('bugs.root_causes.ai_subtitle') %>
+              <% if provider.configuration_error.nil? %>
+                · <%= t('test_plans.show.ai_using', provider: provider.label, model: provider.model) %>
+              <% else %>
+                · <%= t('test_plans.show.ai_not_configured', provider: provider.label) %>
+              <% end %>
+            </p>
+          </div>
+          <%= button_to bug_ai_analysis_path, class: "btn btn--ai", form: { data: { turbo_stream: true } },
+                data: { turbo_submits_with: t('bugs.root_causes.ai_working') } do %>
+            <%= icon_tag("sparkle") %> <%= t('bugs.root_causes.ai_button') %>
+          <% end %>
+        </div>
+        <div id="ai-analysis" class="mt-4">
+          <% if @analysis %>
+            <%= render "bugs/root_causes/ai_analysis", analysis: @analysis, error: nil %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
     <% if @cause_counts.any? || @feature_counts.any? %>
       <% if @cause_counts.any? %>
         <div class="panel mb-6">

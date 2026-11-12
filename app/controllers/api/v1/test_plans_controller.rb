@@ -6,6 +6,7 @@ module Api
 
       def index
         plans = TestPlan.includes(:test_scenarios, :user, :tags).order(created_at: :desc)
+        plans = plans.where(project_id: params[:project_id]) if params[:project_id].present?
 
         if params[:status].present?
           plans = case params[:status]
@@ -35,6 +36,7 @@ module Api
 
       def create
         plan = TestPlan.new(test_plan_params)
+        plan.project = api_project
         plan.user = current_api_user
 
         if plan.save
@@ -70,6 +72,7 @@ module Api
       def serialize_plan(plan)
         {
           id: plan.id,
+          project_id: plan.project_id,
           name: plan.name,
           qa_name: plan.qa_name,
           status: plan.derived_status,

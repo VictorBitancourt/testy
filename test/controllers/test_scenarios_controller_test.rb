@@ -212,7 +212,7 @@ class TestScenariosControllerTest < ActionDispatch::IntegrationTest
 
   test "regular user can create scenario on own plan" do
     logout_and_sign_in_as users(:regular_user)
-    own_plan = TestPlan.create!(name: "My Plan", qa_name: "QA", user: users(:regular_user))
+    own_plan = TestPlan.create!(project: projects(:main), name: "My Plan", qa_name: "QA", user: users(:regular_user))
 
     assert_difference -> { own_plan.test_scenarios.count }, +1 do
       post test_plan_test_scenarios_path(own_plan), params: {

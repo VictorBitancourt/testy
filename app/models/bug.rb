@@ -1,6 +1,7 @@
 class Bug < ApplicationRecord
   include Attachments
 
+  belongs_to :project
   belongs_to :user
   has_many :test_scenarios, dependent: :nullify
 

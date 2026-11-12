@@ -1,11 +1,12 @@
 class TestPlansController < ApplicationController
   include Pagy::Method
 
+  before_action :require_project, only: [ :index, :new, :create ]
   before_action :set_test_plan, only: [ :show, :edit, :update, :destroy ]
   before_action :authorize_owner_or_admin, only: [ :edit, :update, :destroy ]
 
   def index
-    @test_plans = TestPlan.includes(:test_scenarios, :user, :tags).order(created_at: :desc)
+    @test_plans = current_project.test_plans.includes(:test_scenarios, :user, :tags).order(created_at: :desc)
 
     if params[:status].present?
       @test_plans = case params[:status]
@@ -38,7 +39,7 @@ class TestPlansController < ApplicationController
   end
 
   def create
-    @test_plan = TestPlan.new(test_plan_params)
+    @test_plan = current_project.test_plans.new(test_plan_params)
     @test_plan.user = Current.user
 
     if @test_plan.save
@@ -67,6 +68,7 @@ class TestPlansController < ApplicationController
   private
     def set_test_plan
       @test_plan = TestPlan.find(params[:id])
+      use_project(@test_plan.project)
     end
 
     def authorize_owner_or_admin

@@ -5,25 +5,27 @@ class TestPlans::ReportsController < ApplicationController
     respond_to do |format|
       format.html { render template: "test_plans/report", layout: false }
       format.pdf do
-        render ferrum_pdf: {
-          paper_width: 8.27,
-          paper_height: 11.69,
-          margin_top: 0,
-          margin_bottom: 0,
-          margin_left: 0,
-          margin_right: 0
-        },
-        template: "test_plans/report_pdf",
-        formats: [ :html ],
-        layout: false,
-        disposition: :inline,
-        filename: "test_plan_#{@test_plan.id}.pdf"
+        send_data evidence_report.to_pdf, type: :pdf, disposition: :inline, filename: "#{report_filename}.pdf"
+      rescue LatexDocument::Error => e
+        Rails.logger.error(e.message)
+        redirect_to @test_plan, alert: e.message.lines.first.strip
+      end
+      format.tex do
+        send_data evidence_report.to_tex, type: :tex, disposition: :attachment, filename: "#{report_filename}.tex"
       end
     end
   end
 
   private
     def set_test_plan
-      @test_plan = TestPlan.find(params[:test_plan_id])
+      @test_plan = TestPlan.includes(test_scenarios: [ :bug, { evidence_files_attachments: :blob } ]).find(params[:test_plan_id])
+    end
+
+    def evidence_report
+      EvidenceReport.new(@test_plan, logo: Setting.current.report_logo.presence)
+    end
+
+    def report_filename
+      "evidencia-#{@test_plan.name.parameterize.presence || @test_plan.id}"
     end
 end

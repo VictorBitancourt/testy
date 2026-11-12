@@ -1,0 +1,87 @@
+<div class="page--centered">
+  <div class="page__container--xs">
+    <div class="panel panel--padded panel--bordered">
+      <h1 class="text-2xl font-bold text-center mb-2"><%= t('settings.edit.title') %></h1>
+      <p class="text-sm txt-ink-dark text-center mb-6"><%= t('settings.edit.subtitle') %></p>
+
+      <%= form_with model: @setting, url: settings_path, method: :patch, class: "form-stack" do |f| %>
+        <% if @setting.errors.any? %>
+          <div class="error-box--light">
+            <ul>
+              <% @setting.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div>
+          <label for="setting_report_logo" class="label--sm"><%= t('settings.edit.report_logo') %></label>
+          <% if @setting.report_logo.attached? && @setting.report_logo.persisted? %>
+            <div class="mb-4 text-center">
+              <%= image_tag url_for(@setting.report_logo), alt: t('settings.edit.report_logo'), style: "max-width: 2.5cm; max-height: 2.5cm;" %>
+            </div>
+            <label class="text-sm txt-ink-dark">
+              <%= check_box_tag :remove_report_logo, "1", false %>
+              <%= t('settings.edit.remove_report_logo') %>
+            </label>
+          <% else %>
+            <p class="text-sm txt-ink-medium mb-2"><%= t('settings.edit.no_report_logo') %></p>
+          <% end %>
+          <%= f.file_field :report_logo, accept: Setting::REPORT_LOGO_CONTENT_TYPES.join(","), class: "input" %>
+          <p class="text-sm txt-ink-medium mt-2"><%= t('settings.edit.report_logo_hint') %></p>
+        </div>
+
+        <hr class="dropdown__divider">
+
+        <div>
+          <h2 class="text-lg font-bold mb-2"><%= t('settings.edit.ai_title') %></h2>
+          <p class="text-sm txt-ink-medium mb-4"><%= t('settings.edit.ai_subtitle') %></p>
+
+          <label for="setting_ai_provider" class="label--sm"><%= t('settings.edit.ai_provider') %></label>
+          <%= f.select :ai_provider, AiProviders::ALL.keys.map { |name| [ AiProviders.provider_class(name).label, name ] }, { selected: @setting.ai_provider.presence || AiProviders.configured(@setting).class.key }, class: "input" %>
+        </div>
+
+        <div>
+          <label for="setting_ai_model" class="label--sm"><%= t('settings.edit.ai_model') %></label>
+          <%= f.text_field :ai_model, class: "input", placeholder: t('settings.edit.ai_model_placeholder') %>
+          <p class="text-sm txt-ink-medium mt-2">
+            <%= t('settings.edit.ai_model_hint') %>
+            <%= safe_join(AiProviders::ALL.keys.map { |name| klass = AiProviders.provider_class(name); tag.span("#{klass.label}: ") + tag.code(klass.default_model) }, " · ") %>
+          </p>
+        </div>
+
+        <p class="text-sm txt-ink-medium"><%= t('settings.edit.claude_cli_hint') %></p>
+
+        <% AiProviders.with_api_key.each do |name| %>
+          <% klass = AiProviders.provider_class(name) %>
+          <% stored = @setting.api_key_for(name).present? %>
+          <div>
+            <label for="setting_<%= name %>_api_key" class="label--sm"><%= t('settings.edit.api_key', provider: klass.label) %></label>
+            <%= f.password_field :"#{name}_api_key", value: nil, autocomplete: "off", class: "input",
+                  placeholder: stored ? t('settings.edit.api_key_stored') : t('settings.edit.api_key_placeholder') %>
+            <p class="text-sm txt-ink-medium mt-2">
+              <% if stored %>
+                <label>
+                  <%= check_box_tag "remove_#{name}_api_key", "1", false %>
+                  <%= t('settings.edit.remove_api_key') %>
+                </label>
+                ·
+              <% end %>
+              <%= link_to t('settings.edit.get_api_key'), klass.console_url, target: "_blank", rel: "noopener" %>
+              · <%= t('settings.edit.api_key_env', env: "#{klass.env_prefix}_API_KEY") %>
+            </p>
+          </div>
+        <% end %>
+
+        <button type="submit" class="btn btn--primary full-width">
+          <%= t('settings.edit.save') %>
+        </button>
+      <% end %>
+
+      <div class="mt-4 text-center">
+        <%= link_to "&larr; #{t('settings.edit.back')}".html_safe, root_path, class: "page__back text-sm" %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -17,12 +17,14 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Test Plans** — group related scenarios under a named plan assigned to a QA
 - **Tags** — categorize plans with tags (e.g. "login", "sprint-23", "regressão") and search by them
 - **Scenarios (Given/When/Then)** — structured Gherkin format without the overhead of a full framework
-- **AI Scenario Generation** — describe a feature in plain text and let Gemini generate 5-15 test scenarios automatically, covering happy paths, edge cases, boundary values, and equivalence partitioning
+- **AI Scenario Generation** — describe a feature in plain text and let an AI (Gemini, ChatGPT, Claude via API, or the Claude Code already signed in on the machine) generate 5-15 test scenarios automatically, covering happy paths, edge cases, boundary values, and equivalence partitioning
 - **Drag & Drop Reorder** — reorder scenarios by dragging them, with smooth FLIP animations and a visual drop zone; order is persisted and reflected in reports
 - **Evidence Attachments** — upload screenshots and files directly on each scenario or bug
 - **One-Click Approve/Reject** — mark scenarios as approved or failed inline
 - **Derived Status** — plan status is computed automatically from its scenarios (no manual updates)
+- **Projects (workspaces)** — one workspace per application under test; after signing in you pick a project and its test plans, bugs, root causes and AI analyses stay separate from the others (the API takes `project_id`)
 - **Bug Tracking** — report bugs with title, description, steps to reproduce, obtained vs expected results, and evidence attachments; tag by feature and root cause; mark as open or resolved
+- **AI for bugs** — paste a bug report in free text and the AI fills in the bug form (steps, results, tags reusing the existing ones) for review; on The Root Of All Evil, "Analyze bugs" reads the most frequent bugs and reports the recurring errors and what to improve; each analysis is saved and exports to a LaTeX PDF
 - **Bug ↔ Scenario Link** — associate failed scenarios with bugs; a scenario cannot be approved while a bug is linked to it
 - **Root Causes Dashboard** — aggregated view of bugs grouped by cause tag and feature tag, with bar charts for quick analysis
 - **Search & Filters** — search plans by name, QA, or tag; search bugs by ID, title, or description; filter by status, tags, and date range
@@ -43,8 +45,8 @@ Most test management tools drown you in fields, workflows, and integrations befo
 | Database | SQLite |
 | Frontend | Vanilla CSS, Hotwire (Turbo + Stimulus) |
 | File Storage | Active Storage (local disk) |
-| PDF | ferrum_pdf (Chrome headless) |
-| AI | Gemini API (Google) |
+| PDF | LaTeX (pdflatex) |
+| AI | Gemini, OpenAI (ChatGPT), Anthropic (Claude) or local Claude Code CLI |
 | CLI | Go (Cobra) + Claude Code (AI mode) |
 | Browser Automation | Playwright MCP |
 | Deploy | Kamal-ready (Docker + Thruster) |
@@ -61,11 +63,13 @@ cd testy
 # Install dependencies
 bundle install
 
-# Setup database
-bin/rails db:setup
+# Setup an empty database (db:setup/db:prepare also load the seed's sample data)
+bin/rails db:create db:schema:load
 
-# (Optional) Set Gemini API key for AI scenario generation
-export GEMINI_API_KEY=your_key_here
+# (Optional) AI scenario generation: pick the provider and paste its key in Settings,
+# or use environment variables (AI_PROVIDER=gemini|openai|anthropic|claude_cli).
+# claude_cli needs no key: it runs `claude -p` with Claude Code's existing login.
+export GEMINI_API_KEY=your_key_here   # or OPENAI_API_KEY / ANTHROPIC_API_KEY
 
 # Start the server
 bin/dev
@@ -217,13 +221,16 @@ A scenario cannot be approved while it has a bug linked to it — the bug must b
 
 ### PDF Export
 
-Each plan has an "Export PDF Report" button that generates a formatted document with:
-- Table of contents with clickable anchors to each scenario
-- Plan summary (total scenarios, approved count, QA name, tags)
-- Each scenario with Given/When/Then steps and status
-- Attached evidence images
+Each plan has an "Export PDF Report" button that builds the "Evidência de Execução de Testes" document in LaTeX (Latin Modern font) and compiles it with `pdflatex`:
+- Cover with the global logo, responsible QA, scenario count, story (plan name) and status: approved only when every scenario is approved, failed as soon as one fails, pending otherwise
+- Every scenario with Given/When/Then and its status in an outlined box (green approved, red failed, yellow pending)
+- Each evidence image on its own page, with the caption typed under it in the app (or the file name). PNG, JPG and PDF are embedded; GIF and WebP show as "unsupported format"
 
-Bugs also have individual PDF reports with description, steps to reproduce, obtained vs expected results, and evidence.
+Templates live in `lib/templates/` (`evidence_report.tex`, `bug_report.tex`); Testy only replaces their `% testy:...` lines. The cover logo is set by an admin under **Settings** (JPG or PNG) and applies to every PDF. `/test_plans/:id/report.tex` and `/bugs/:id/report.tex` download the generated `.tex`.
+
+Requires `pdflatex` with `lmodern`, `tcolorbox`, `xurl`, `lastpage` and `fancyhdr` (Debian/Ubuntu: `texlive-latex-extra lmodern`; macOS: MacTeX). Set `PDFLATEX` to use another binary.
+
+Bugs have their own PDF in the same style: cover (reporter, date, feature, root cause, open/resolved), description, steps to reproduce, obtained and expected results, associated scenarios and captioned evidence.
 
 ## Design Decisions
 
@@ -275,10 +282,10 @@ Open [http://localhost:3000](http://localhost:3000). On first access, you'll be 
 
 Data is persisted in a Docker volume (`testy_storage`). A `SECRET_KEY_BASE` is generated automatically on first boot.
 
-To enable AI scenario generation, pass your Gemini API key:
+To enable AI scenario generation, set the provider and key in **Settings**, or pass the variables:
 
 ```bash
-GEMINI_API_KEY=your_key_here docker compose up -d
+AI_PROVIDER=anthropic ANTHROPIC_API_KEY=your_key_here docker compose up -d
 ```
 
 ### Docker Run

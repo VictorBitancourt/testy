@@ -53,7 +53,7 @@ class TestPlansControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index paginates results" do
-    20.times { |i| TestPlan.create!(name: "Plan #{i}", qa_name: "QA #{i}", user: users(:admin)) }
+    20.times { |i| TestPlan.create!(project: projects(:main), name: "Plan #{i}", qa_name: "QA #{i}", user: users(:admin)) }
 
     get test_plans_path
     assert_response :success
@@ -201,7 +201,7 @@ class TestPlansControllerTest < ActionDispatch::IntegrationTest
 
   test "regular user can edit own plan" do
     logout_and_sign_in_as users(:regular_user)
-    own_plan = TestPlan.create!(name: "My Plan", qa_name: "QA", user: users(:regular_user))
+    own_plan = TestPlan.create!(project: projects(:main), name: "My Plan", qa_name: "QA", user: users(:regular_user))
 
     get edit_test_plan_path(own_plan)
     assert_response :success
@@ -209,7 +209,7 @@ class TestPlansControllerTest < ActionDispatch::IntegrationTest
 
   test "regular user can destroy own plan" do
     logout_and_sign_in_as users(:regular_user)
-    own_plan = TestPlan.create!(name: "My Plan", qa_name: "QA", user: users(:regular_user))
+    own_plan = TestPlan.create!(project: projects(:main), name: "My Plan", qa_name: "QA", user: users(:regular_user))
 
     assert_difference -> { TestPlan.count }, -1 do
       delete test_plan_path(own_plan)

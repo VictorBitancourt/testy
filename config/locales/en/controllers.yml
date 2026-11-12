@@ -1,5 +1,10 @@
 en:
   controllers:
+    projects:
+      created: "Project created!"
+      updated: "Project updated!"
+      removed: "Project removed!"
+      choose_first: "Choose a project first."
     sessions:
       rate_limited: "Try again later."
       invalid_credentials: "Invalid username or password."
@@ -20,6 +25,10 @@ en:
       password_reset: "Password reset successfully!"
       cannot_delete_self: "You cannot delete yourself."
       removed: "User removed successfully!"
+    settings:
+      updated: "Settings saved!"
+    evidence_captions:
+      updated: "Caption saved!"
     bugs:
       created: "Bug reported successfully!"
       updated: "Bug updated!"

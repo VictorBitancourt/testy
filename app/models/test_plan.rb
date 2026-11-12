@@ -2,6 +2,7 @@ class TestPlan < ApplicationRecord
   include Taggable
   include Searchable
 
+  belongs_to :project
   belongs_to :user, optional: true
   has_many :test_scenarios, -> { order(position: :asc) }, dependent: :destroy
 

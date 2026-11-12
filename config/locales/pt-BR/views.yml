@@ -1,8 +1,11 @@
 pt-BR:
   layouts:
     nav:
+      projects: "Projetos"
+      switch_project: "Trocar de projeto"
       test_plans: "Planos de Teste"
       users: "Usuários"
+      settings: "Configurações"
       bug_jar: "Bug Jar"
       sign_out: "Sair"
   language:
@@ -86,6 +89,9 @@ pt-BR:
       confirm_delete_scenario: "Tem certeza que deseja excluir este cenário?"
       evidence: "Evidências:"
       export_pdf: "Exportar Relatório PDF"
+      ai_using: "Usando %{provider} · %{model}"
+      ai_not_configured: "%{provider} ainda não está configurado."
+      ai_change: "Configurar IA"
       associate_bug: "Associar Bug"
       click_to_change: "Clique para alterar o status"
     new:
@@ -258,6 +264,12 @@ pt-BR:
       expected_result: "Resultado Esperado"
       evidence: "Evidências"
       footer_tagline: "Gestão de Testes Simplificada"
+    ai_draft:
+      title: "Preencher com IA"
+      subtitle: "Cole o relato do bug (mensagem, ticket, anotações) e a IA preenche o formulário para você revisar."
+      placeholder: "Ex.: ao clicar em Pagar com cartão vencido, a tela fica carregando para sempre…"
+      button: "Preencher com IA"
+      working: "Preenchendo…"
     root_causes:
       back: "Voltar"
       title: "The Root Of All Evil"
@@ -265,6 +277,17 @@ pt-BR:
       by_cause: "Por Causa Raiz"
       by_feature: "Por Funcionalidade"
       no_data: "Nenhum bug com tags ainda. Comece a categorizar bugs para ver as análises aqui."
+      ai_title: "Análise com IA"
+      ai_subtitle: "Lê os bugs das causas e funcionalidades mais frequentes e aponta os erros que se repetem e o que melhorar."
+      ai_button: "Analisar bugs"
+      ai_working: "Analisando…"
+      ai_based_on: "Baseado em %{count} bugs das causas e funcionalidades mais frequentes."
+      ai_patterns: "Erros mais comuns"
+      ai_what_to_do: "O que fazer:"
+      ai_bugs: "Bugs:"
+      ai_recommendations: "Para não repetir"
+      ai_generated_at: "Gerada em %{date} por %{user}"
+      ai_export_pdf: "Exportar PDF"
   users:
     index:
       back: "Voltar"
@@ -292,4 +315,58 @@ pt-BR:
       new_password: "Nova Senha"
       confirm_new_password: "Confirmar Nova Senha"
       reset_password: "Redefinir Senha"
+      back: "Voltar"
+  settings:
+    edit:
+      title: "Configurações"
+      subtitle: "Valem para todos os planos e usuários."
+      report_logo: "Logo do relatório de evidências"
+      no_report_logo: "Nenhum logo definido: o PDF sai sem logo na capa."
+      remove_report_logo: "Remover logo atual"
+      report_logo_hint: "JPG ou PNG. Aparece na capa de todos os PDFs gerados, com até 6 cm de largura e 2,2 cm de altura. Recorte as margens brancas para o logo ficar maior."
+      ai_title: "Geração de cenários com IA"
+      ai_subtitle: "Qual IA o botão \"Gerar com IA\" usa nos planos de teste."
+      ai_provider: "Provedor"
+      ai_model: "Modelo"
+      ai_model_placeholder: "Vazio = modelo padrão do provedor"
+      ai_model_hint: "Padrões:"
+      api_key: "Chave de API — %{provider}"
+      api_key_placeholder: "Cole a chave aqui"
+      api_key_stored: "•••••••• (salva; deixe vazio para manter)"
+      remove_api_key: "Remover chave"
+      get_api_key: "Gerar uma chave"
+      api_key_env: "ou a variável %{env}"
+      claude_cli_hint: "Claude (CLI local) não usa chave: roda o comando claude deste computador, com o login que ele já tem (por exemplo, a conta da empresa). Modelos: sonnet, opus, haiku ou o nome completo."
+      save: "Salvar"
+      back: "Voltar"
+  evidence:
+    caption_label: "Legenda da evidência"
+    caption_placeholder: "Legenda (sai no PDF)"
+  projects:
+    index:
+      title: "Projetos"
+      subtitle: "Um workspace para cada aplicação: planos de teste, bugs e análises ficam separados."
+      new_project: "+ Novo Projeto"
+      plans:
+        one: "1 plano de teste"
+        other: "%{count} planos de teste"
+      open_bugs:
+        one: "1 bug aberto"
+        other: "%{count} bugs abertos"
+      edit: "Editar"
+      delete: "Excluir"
+      confirm_delete: "Excluir o projeto %{name}? Todos os planos de teste, bugs e análises dele serão apagados."
+      empty: "Nenhum projeto ainda. Crie um para cada aplicação que você testa."
+      create_first: "Criar primeiro projeto"
+    new:
+      title: "Novo Projeto"
+    edit:
+      title: "Editar Projeto"
+    form:
+      name: "Nome"
+      name_placeholder: "Ex.: App Mobile, Portal do Cliente"
+      description: "Descrição (opcional)"
+      description_placeholder: "Qual aplicação, time ou contexto"
+      create: "Criar Projeto"
+      save: "Salvar"
       back: "Voltar"

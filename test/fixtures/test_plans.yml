@@ -1,19 +1,23 @@
 login_plan:
+  project: main
   name: System Login
   qa_name: Maria Silva
   user: admin
 
 empty_plan:
+  project: main
   name: User Registration
   qa_name: Joao Souza
   user: admin
 
 approved_plan:
+  project: main
   name: E-commerce Checkout
   qa_name: Ana Costa
   user: admin
 
 failed_plan:
+  project: main
   name: Online Payment
   qa_name: Carlos Lima
   user: admin

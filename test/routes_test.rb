@@ -2,7 +2,7 @@ require "test_helper"
 
 class RouteTest < ActionDispatch::IntegrationTest
   test "root" do
-    assert_recognizes({ controller: "test_plans", action: "index" }, "/")
+    assert_recognizes({ controller: "projects", action: "index" }, "/")
   end
 
   test "test_plans resources" do

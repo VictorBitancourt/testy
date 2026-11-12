@@ -2,24 +2,24 @@ require "test_helper"
 
 class BugTest < ActiveSupport::TestCase
   test "create" do
-    bug = Bug.new(title: "New Bug", description: "Something broke", user: users(:admin))
+    bug = Bug.new(project: projects(:main), title: "New Bug", description: "Something broke", user: users(:admin))
     assert bug.valid?
   end
 
   test "validates title presence" do
-    bug = Bug.new(description: "Something broke", user: users(:admin))
+    bug = Bug.new(project: projects(:main), description: "Something broke", user: users(:admin))
     assert_not bug.valid?
     assert_includes bug.errors[:title], "can't be blank"
   end
 
   test "validates description presence" do
-    bug = Bug.new(title: "New Bug", user: users(:admin))
+    bug = Bug.new(project: projects(:main), title: "New Bug", user: users(:admin))
     assert_not bug.valid?
     assert_includes bug.errors[:description], "can't be blank"
   end
 
   test "validates status inclusion" do
-    bug = Bug.new(title: "Bug", description: "Desc", user: users(:admin), status: "invalid")
+    bug = Bug.new(project: projects(:main), title: "Bug", description: "Desc", user: users(:admin), status: "invalid")
     assert_not bug.valid?
     assert_includes bug.errors[:status], "is not included in the list"
   end

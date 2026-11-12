@@ -8,6 +8,10 @@ require "mocha/minitest"
 
 WebMock.allow_net_connect!
 
+# Tests never reach a real Claude Code CLI installed on the machine; the
+# ClaudeCli tests point CLAUDE_CLI_PATH at a fake script instead.
+ENV["CLAUDE_CLI_PATH"] = "/nonexistent/claude"
+
 VCR.configure do |config|
   config.allow_http_connections_when_no_cassette = true
   config.cassette_library_dir = "test/vcr_cassettes"

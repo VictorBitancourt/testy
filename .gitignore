@@ -54,3 +54,6 @@
 /*.png
 /login_page_snapshot.md
 
+
+# Gems installed locally with `bundle config set --local path vendor/bundle`
+/vendor/bundle

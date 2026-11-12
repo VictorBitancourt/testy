@@ -159,6 +159,19 @@
     border: 1px solid var(--color-ink-lighter);
   }
 
+  .evidence-caption {
+    margin-top: var(--space-2);
+  }
+  .evidence-caption .input { border-color: var(--color-ink-lighter); }
+  .evidence-caption--saved .input { border-color: var(--color-fz-green-medium); }
+  .evidence-caption--error .input { border-color: var(--color-fz-red-medium); }
+
+  .evidence-caption__text {
+    margin-top: var(--space-2);
+    font-size: 0.85em;
+    color: var(--color-ink-dark);
+  }
+
   .evidence-placeholder {
     width: 100%;
     height: 8rem;
@@ -216,4 +229,67 @@
     transition: color .1s;
   }
   .bug-associate-btn:hover { color: var(--color-fz-red-medium); }
+}
+
+/* Projects (workspaces) */
+@layer components {
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-4);
+  }
+
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-ink-lighter);
+    border-radius: 0.75em;
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+  .project-card:hover { border-color: var(--color-fz-blue-medium); transform: translateY(-2px); }
+  .project-card--current { border-color: var(--color-fz-blue-medium); }
+
+  .project-card__open {
+    flex: 1;
+    display: block;
+    padding: var(--space-4);
+    color: inherit;
+    text-decoration: none;
+  }
+  .project-card__name { font-size: 1.25em; font-weight: 800; margin-bottom: var(--space-2); }
+  .project-card__description { color: var(--color-ink-dark); font-size: 0.9em; margin-bottom: var(--space-2); }
+  .project-card__stats { color: var(--color-ink-medium); font-size: 0.85em; }
+
+  .project-card__actions {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4) var(--space-3);
+    border-top: 1px solid var(--color-ink-lighter);
+  }
+  .project-card__actions form { display: inline; }
+}
+
+/* Current project, next to the logo */
+@layer components {
+  .topbar__project {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    align-self: center;
+    margin-left: var(--space-3);
+    padding: 0.3em 0.9em;
+    border: 1px solid var(--color-ink-lighter);
+    border-radius: 999px;
+    color: var(--color-ink-dark);
+    font-size: 0.85em;
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--color-surface);
+  }
+  .topbar__project .icon { color: var(--color-fz-blue-medium); }
+  .topbar__project:hover { border-color: var(--color-fz-blue-medium); color: var(--color-ink-darker); }
+
+  .blank-slate__icon { --icon-size: 3em; color: var(--color-ink-light); margin-bottom: var(--space-2); }
 }
