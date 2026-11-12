@@ -16,6 +16,9 @@ class LatexDocument
     "application/pdf" => "pdf"
   }.freeze
   PDFLATEX_RUNS = 2 # the second run resolves \pageref{LastPage}
+  # MacTeX installs here; a server started from a Terminal opened before the
+  # install (or from a GUI) does not have it on PATH.
+  PDFLATEX_FALLBACKS = %w[/Library/TeX/texbin/pdflatex].freeze
   JOB_NAME = "documento".freeze
 
   LATEX_SPECIALS = {
@@ -27,6 +30,17 @@ class LatexDocument
     "“" => "``", "”" => "''", "‘" => "`", "’" => "'",
     "–" => "--", "—" => "---", "…" => "\\ldots{}", "•" => "\\textbullet{}"
   }.freeze
+
+  def self.pdflatex
+    return ENV["PDFLATEX"] if ENV["PDFLATEX"].present?
+    return "pdflatex" if on_path?("pdflatex")
+
+    PDFLATEX_FALLBACKS.find { |path| File.executable?(path) } || "pdflatex"
+  end
+
+  def self.on_path?(command)
+    ENV["PATH"].to_s.split(File::PATH_SEPARATOR).any? { |dir| File.executable?(File.join(dir, command)) }
+  end
 
   def self.template_path(name)
     Rails.root.join("lib/templates/#{name}.tex")
@@ -128,7 +142,7 @@ class LatexDocument
     end
 
     def run_pdflatex(dir)
-      command = [ ENV.fetch("PDFLATEX", "pdflatex"), "-interaction=nonstopmode", "-halt-on-error", "-no-shell-escape", "#{JOB_NAME}.tex" ]
+      command = [ self.class.pdflatex, "-interaction=nonstopmode", "-halt-on-error", "-no-shell-escape", "#{JOB_NAME}.tex" ]
       output, status = Open3.capture2e(*command, chdir: dir)
       unless status.success?
         reason = output.scrub.lines.find { |l| l.start_with?("!") }&.delete_prefix("!")&.strip

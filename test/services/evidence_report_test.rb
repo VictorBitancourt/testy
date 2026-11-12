@@ -23,4 +23,24 @@ class EvidenceReportTest < ActiveSupport::TestCase
 
     assert_includes tex, "\\defeito{\\##{bugs(:open_bug).id} - Button not working on checkout page}"
   end
+
+  test "pdflatex comes from PDFLATEX, then PATH, then the MacTeX folder" do
+    with_env("PDFLATEX" => "/opt/tex/pdflatex") { assert_equal "/opt/tex/pdflatex", LatexDocument.pdflatex }
+
+    LatexDocument.stubs(:on_path?).with("pdflatex").returns(true)
+    with_env("PDFLATEX" => nil) { assert_equal "pdflatex", LatexDocument.pdflatex }
+
+    LatexDocument.stubs(:on_path?).with("pdflatex").returns(false)
+    File.stubs(:executable?).with("/Library/TeX/texbin/pdflatex").returns(true)
+    with_env("PDFLATEX" => nil) { assert_equal "/Library/TeX/texbin/pdflatex", LatexDocument.pdflatex }
+  end
+
+  private
+    def with_env(vars)
+      saved = vars.keys.index_with { |key| ENV[key] }
+      vars.each { |key, value| ENV[key] = value }
+      yield
+    ensure
+      saved.each { |key, value| ENV[key] = value }
+    end
 end

@@ -59,4 +59,4 @@ pt-BR:
     errors:
       pdflatex_failed: "pdflatex falhou: %{reason}"
       see_log: "veja o log"
-      pdflatex_missing: "pdflatex não encontrado. Instale o TeX Live (ou MacTeX) ou defina PDFLATEX."
+      pdflatex_missing: "pdflatex não encontrado. Instale o TeX Live ou, no Mac, rode: brew install --cask mactex-no-gui (depois reinicie o bin/dev). Ou defina PDFLATEX."
