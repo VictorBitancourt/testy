@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-Pagy.options[:limit] = 15
+Pagy::OPTIONS[:limit] = 15
