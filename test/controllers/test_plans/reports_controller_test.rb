@@ -65,6 +65,22 @@ class TestPlans::ReportsControllerTest < ActionDispatch::IntegrationTest
     assert response.body.start_with?("%PDF")
   end
 
+  test "pdf opens in the browser, or downloads with download=1" do
+    EvidenceReport.any_instance.stubs(:to_pdf).returns("%PDF-1.5 fake")
+
+    get test_plan_report_path(@plan, format: :pdf)
+    assert_match(/\Ainline; filename="evidencia-system-login\.pdf"/, response.headers["Content-Disposition"])
+
+    get test_plan_report_path(@plan, format: :pdf, download: 1)
+    assert_match(/\Aattachment; filename="evidencia-system-login\.pdf"/, response.headers["Content-Disposition"])
+  end
+
+  test "plan page has a download button for the PDF" do
+    get test_plan_path(@plan)
+
+    assert_select "a[href=?]", test_plan_report_path(@plan, format: :pdf, download: 1)
+  end
+
   test "pdf failure redirects back to the plan" do
     EvidenceReport.any_instance.stubs(:to_pdf).raises(LatexDocument::Error, "pdflatex não encontrado.")
 

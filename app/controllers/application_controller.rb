@@ -11,6 +11,11 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # PDFs open in the browser; ?download=1 saves them instead.
+  def pdf_disposition
+    params[:download].present? ? :attachment : :inline
+  end
+
   # Per request, so the locale never leaks into the next request on the same thread.
   def switch_locale(&action)
     locale = params[:locale] || cookies[:locale] || I18n.default_locale

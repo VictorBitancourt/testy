@@ -25,7 +25,7 @@ class Bugs::AiAnalysesController < ApplicationController
 
     respond_to do |format|
       format.pdf do
-        send_data report.to_pdf, type: :pdf, disposition: :inline, filename: "#{filename}.pdf"
+        send_data report.to_pdf, type: :pdf, disposition: pdf_disposition, filename: "#{filename}.pdf"
       rescue LatexDocument::Error => e
         Rails.logger.error(e.message)
         redirect_to bug_root_causes_path, alert: e.message.lines.first.strip

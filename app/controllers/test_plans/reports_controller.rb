@@ -5,7 +5,7 @@ class TestPlans::ReportsController < ApplicationController
     respond_to do |format|
       format.html { render template: "test_plans/report", layout: false }
       format.pdf do
-        send_data evidence_report.to_pdf, type: :pdf, disposition: :inline, filename: "#{report_filename}.pdf"
+        send_data evidence_report.to_pdf, type: :pdf, disposition: pdf_disposition, filename: "#{report_filename}.pdf"
       rescue LatexDocument::Error => e
         Rails.logger.error(e.message)
         redirect_to @test_plan, alert: e.message.lines.first.strip

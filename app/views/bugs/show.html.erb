@@ -143,6 +143,9 @@
       <%= link_to bug_report_path(@bug, format: :pdf), target: "_blank", class: "btn btn--secondary btn--lg" do %>
         &#128196; <%= t('bugs.show.export_pdf') %>
       <% end %>
+      <%= link_to bug_report_path(@bug, format: :pdf, download: 1), class: "btn btn--secondary btn--lg" do %>
+        &#11015;&#65039; <%= t('pdf.download') %>
+      <% end %>
     </div>
   </div>
 </div>

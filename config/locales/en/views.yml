@@ -339,6 +339,8 @@ en:
       claude_cli_hint: "Claude (local CLI) needs no key: it runs this computer's claude command with the login it already has (for example, a company account). Models: sonnet, opus, haiku or a full model name."
       save: "Save"
       back: "Back"
+  pdf:
+    download: "Download PDF"
   evidence:
     caption_label: "Evidence caption"
     caption_placeholder: "Caption (shown in the PDF)"

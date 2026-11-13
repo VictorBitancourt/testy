@@ -339,6 +339,8 @@ pt-BR:
       claude_cli_hint: "Claude (CLI local) não usa chave: roda o comando claude deste computador, com o login que ele já tem (por exemplo, a conta da empresa). Modelos: sonnet, opus, haiku ou o nome completo."
       save: "Salvar"
       back: "Voltar"
+  pdf:
+    download: "Baixar PDF"
   evidence:
     caption_label: "Legenda da evidência"
     caption_placeholder: "Legenda (sai no PDF)"

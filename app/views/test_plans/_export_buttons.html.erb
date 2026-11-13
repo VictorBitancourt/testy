@@ -3,5 +3,8 @@
     <%= link_to test_plan_report_path(test_plan, format: :pdf), target: "_blank", class: "btn btn--primary btn--lg" do %>
       &#128196; <%= t('test_plans.show.export_pdf') %>
     <% end %>
+    <%= link_to test_plan_report_path(test_plan, format: :pdf, download: 1), class: "btn btn--secondary btn--lg" do %>
+      &#11015;&#65039; <%= t('pdf.download') %>
+    <% end %>
   </div>
 <% end %>
