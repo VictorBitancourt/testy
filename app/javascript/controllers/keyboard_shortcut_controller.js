@@ -18,6 +18,9 @@ export default class extends Controller {
       return
     }
 
+    // Leave browser shortcuts such as Cmd+W / Ctrl+N alone
+    if (event.metaKey || event.ctrlKey || event.altKey) return
+
     if (event.key.toLowerCase() === this.keyValue.toLowerCase()) {
       event.preventDefault()
       this.element.click()

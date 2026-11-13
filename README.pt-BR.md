@@ -30,6 +30,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 - **Pesquisa e Filtros** — pesquisa planos por nome, QA ou tag; pesquisa bugs por ID, título ou descrição; filtra por status, tags e intervalo de datas
 - **Paginação** — listagens de planos e bugs paginadas para grandes volumes de dados
 - **Relatórios PDF (LaTeX)** — exporta planos de teste, bugs individuais e análises de bugs por IA como PDF em LaTeX (Latin Modern), com logo global e no idioma em que o app está
+- **Atalhos de Teclado** — navegue com uma tecla só (T para o menu, W para projetos, N para novo, B para voltar, R para causas raiz, P para planos)
 - **Autenticação e Perfis** — login com username/password com perfis de administrador e utilizador comum
 - **Bilingue (EN / PT-BR)** — interface completa em inglês e português brasileiro; alterna idiomas com um clique!
 - **API REST** — API JSON completa com autenticação por token para planos de teste, cenários, bugs, tags e anexos de screenshots

@@ -30,7 +30,7 @@ Most test management tools drown you in fields, workflows, and integrations befo
 - **Search & Filters** — search plans by name, QA, or tag; search bugs by ID, title, or description; filter by status, tags, and date range
 - **Pagination** — paginated plan and bug listings for large datasets
 - **PDF Reports (LaTeX)** — export test plans, individual bugs and AI bug analyses as LaTeX PDFs (Latin Modern), with a global logo and in the language the app is in
-- **Keyboard Shortcuts** — navigate quickly with single-key shortcuts (N for new, B for back, R for root causes, P for plans)
+- **Keyboard Shortcuts** — navigate quickly with single-key shortcuts (T for the menu, W for projects, N for new, B for back, R for root causes, P for plans)
 - **Authentication & Roles** — username/password login with admin and regular user roles; admins manage all plans and bugs, users manage their own
 - **Bilingual (EN / PT-BR)** — full interface in English and Brazilian Portuguese; switch languages with one click, preference saved in cookie
 - **REST API** — full JSON API with token authentication for test plans, scenarios, bugs, tags, and screenshot attachments

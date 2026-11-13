@@ -22,6 +22,7 @@ export default class extends Controller {
 
   handleKeydown(event) {
     if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") return
+    if (event.metaKey || event.ctrlKey || event.altKey) return
 
     if (event.key.toLowerCase() === this.keyValue.toLowerCase()) {
       event.preventDefault()

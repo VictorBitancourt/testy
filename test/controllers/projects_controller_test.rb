@@ -101,4 +101,13 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "a.btn--danger[href=?]", bugs_path
   end
+
+  test "W shortcut on the topbar opens the projects page" do
+    get project_path(projects(:main))
+    follow_redirect!
+
+    assert_select "a.topbar__project[href=?][data-keyboard-shortcut-key-value=w]", projects_path do
+      assert_select ".kbd", "W"
+    end
+  end
 end
