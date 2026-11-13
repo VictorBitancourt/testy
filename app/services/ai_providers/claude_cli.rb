@@ -13,19 +13,32 @@ module AiProviders
     @console_url = "https://docs.claude.com/en/docs/claude-code/setup"
     @needs_api_key = false
 
+    # Where the Claude Code installers put `claude`. A server started outside
+    # the user's login shell (or with `claude` only as a shell alias) misses
+    # these on PATH.
+    FALLBACK_PATHS = %w[
+      ~/.local/bin/claude
+      ~/.claude/local/claude
+      /opt/homebrew/bin/claude
+      /usr/local/bin/claude
+    ].freeze
+
     def self.executable
       ENV.fetch("CLAUDE_CLI_PATH", "claude")
     end
 
     def self.executable_path
-      return executable if executable.include?("/") && File.executable?(executable)
-      ENV["PATH"].to_s.split(File::PATH_SEPARATOR).map { |dir| File.join(dir, executable) }.find { |path| File.executable?(path) }
+      return (executable if File.executable?(executable)) if executable.include?("/")
+
+      on_path = ENV["PATH"].to_s.split(File::PATH_SEPARATOR).map { |dir| File.join(dir, executable) }
+      fallbacks = ENV.key?("CLAUDE_CLI_PATH") ? [] : FALLBACK_PATHS.map { |path| File.expand_path(path) }
+      (on_path + fallbacks).find { |path| File.executable?(path) }
     end
 
     def self.available? = executable_path.present?
 
     def configuration_error
-      "The `#{executable}` command was not found. Install Claude Code and sign in, or set CLAUDE_CLI_PATH." unless executable_path
+      "The `#{executable}` command was not found. Install Claude Code and sign in, or start testy with CLAUDE_CLI_PATH set to the output of `which claude`." unless executable_path
     end
 
     def complete(prompt)

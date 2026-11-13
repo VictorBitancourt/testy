@@ -71,6 +71,23 @@ class AiProvidersClaudeCliTest < ActiveSupport::TestCase
     assert_match(/command was not found/, result.error)
   end
 
+  test "finds claude in the installer folder when it is not on PATH" do
+    home = File.join(@dir, "home")
+    FileUtils.mkdir_p(File.join(home, ".local/bin"))
+    claude = File.join(home, ".local/bin/claude")
+    File.write(claude, "#!/bin/sh\n")
+    File.chmod(0o755, claude)
+    saved = ENV.to_h.slice("HOME", "PATH")
+    ENV.delete("CLAUDE_CLI_PATH")
+    ENV["HOME"] = home
+    ENV["PATH"] = File.join(@dir, "empty")
+
+    assert_equal claude, AiProviders::ClaudeCli.executable_path
+    assert AiProviders::ClaudeCli.available?
+  ensure
+    saved&.each { |key, value| ENV[key] = value }
+  end
+
   test "settings page has no API key field for the CLI" do
     assert_not AiProviders::ClaudeCli.needs_api_key?
     assert_equal %w[gemini openai anthropic], AiProviders.with_api_key
