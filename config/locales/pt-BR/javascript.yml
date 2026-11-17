@@ -39,4 +39,4 @@ pt-BR:
       files: "%{count} arquivos selecionados"
     clipboard_paste:
       no_image: "Nenhuma imagem no clipboard"
-      denied: "Sem permissão para ler o clipboard. Use Ctrl+V."
+      denied: "Não foi possível ler o clipboard por aqui. Use Ctrl+V."

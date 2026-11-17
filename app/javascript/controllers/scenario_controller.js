@@ -173,7 +173,7 @@ export default class extends Controller {
             ${t('scenario.upload_evidence')}
             <input type="file" id="${fileId}" multiple accept="image/*,.pdf" class="hidden" data-clipboard-paste-target="input" />
           </label>
-          <button type="button" class="btn btn--secondary btn--sm" data-clipboard-paste-target="button" data-action="clipboard-paste#pasteFromClipboard">${t('scenario.paste_evidence')}</button>
+          <button type="button" class="btn btn--secondary btn--sm" data-action="clipboard-paste#pasteFromClipboard">${t('scenario.paste_evidence')}</button>
           <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" data-file-count data-clipboard-paste-target="status">${t('scenario.no_file_selected')}</span>
         </div>
         <div class="flex gap-2">

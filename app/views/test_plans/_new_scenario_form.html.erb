@@ -31,7 +31,7 @@
         <%= t('test_plans.show.upload_evidence') %>
         <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload", data: { clipboard_paste_target: "input" } %>
       </label>
-      <button type="button" class="btn btn--secondary btn--lg" data-clipboard-paste-target="button" data-action="clipboard-paste#pasteFromClipboard">
+      <button type="button" class="btn btn--secondary btn--lg" data-action="clipboard-paste#pasteFromClipboard">
         <%= t('test_plans.show.paste_evidence') %>
       </button>
       <p class="form-hint" id="file-count" data-clipboard-paste-target="status"><%= t('test_plans.show.no_file_selected') %></p>

@@ -7,17 +7,13 @@ import { t } from "i18n_helper"
 const active = []
 
 export default class extends Controller {
-  static targets = ["input", "button", "status"]
+  static targets = ["input", "status"]
   static values = { scope: String }
 
   connect() {
     this.handlePaste = this.handlePaste.bind(this)
     document.addEventListener("paste", this.handlePaste)
     active.push(this)
-
-    if (this.hasButtonTarget && !navigator.clipboard?.read) {
-      this.buttonTarget.classList.add("hidden")
-    }
   }
 
   disconnect() {
@@ -40,6 +36,12 @@ export default class extends Controller {
   }
 
   async pasteFromClipboard() {
+    // Some browsers (e.g. older Firefox) can't read images from the clipboard
+    if (!navigator.clipboard?.read) {
+      this.showStatus(t("clipboard_paste.denied"))
+      return
+    }
+
     try {
       const items = await navigator.clipboard.read()
       const images = []

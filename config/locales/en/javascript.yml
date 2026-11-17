@@ -39,4 +39,4 @@ en:
       files: "%{count} files selected"
     clipboard_paste:
       no_image: "No image in the clipboard"
-      denied: "Clipboard access denied. Use Ctrl+V instead."
+      denied: "Couldn't read the clipboard from here. Use Ctrl+V instead."

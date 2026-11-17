@@ -27,6 +27,24 @@ class ClipboardPasteTest < ApplicationSystemTestCase
     assert scenario.evidence_files.all? { |file| file.filename.to_s.match?(/\Aprint-\d{8}-\d{6}-\d\.png\z/) }
   end
 
+  test "pasting an image adds it as bug evidence" do
+    visit new_bug_path
+    assert_button "Paste screenshot (Ctrl+V)"
+
+    fill_in "Title", with: "Pasted evidence bug"
+    fill_in "Description", with: "a screenshot was pasted"
+    fill_in "Feature", with: "checkout"
+    fill_in "Root Cause", with: "database"
+
+    paste_image_into(find_field("Description"))
+    assert_text "1 file selected"
+
+    click_button "Report Bug"
+
+    assert_text "Bug reported successfully!"
+    assert_equal 1, Bug.find_by!(title: "Pasted evidence bug").evidence_files.count
+  end
+
   private
 
   def login_as(user)
