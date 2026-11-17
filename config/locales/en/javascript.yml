@@ -12,6 +12,7 @@ en:
       save: "Save"
       cancel: "Cancel"
       upload_evidence: "Upload Evidence"
+      paste_evidence: "Paste screenshot (Ctrl+V)"
       no_file_selected: "No file selected"
       one_file_selected: "1 file selected"
       files_selected: "%{count} files selected"
@@ -36,3 +37,6 @@ en:
       no_file: "No file selected"
       one_file: "1 file selected"
       files: "%{count} files selected"
+    clipboard_paste:
+      no_image: "No image in the clipboard"
+      denied: "Clipboard access denied. Use Ctrl+V instead."

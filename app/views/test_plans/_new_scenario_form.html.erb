@@ -24,14 +24,17 @@
       </div>
     </div>
 
-    <div>
+    <div data-controller="clipboard-paste" data-clipboard-paste-scope-value="form">
       <%= f.label :evidence_files, t('test_plans.show.evidence_label'), class: "label" %>
       <label class="btn btn--primary btn--lg" style="cursor:pointer;">
         <%= icon_tag("paperclip", size: :sm) %>
         <%= t('test_plans.show.upload_evidence') %>
-        <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload" %>
+        <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "file-upload", data: { clipboard_paste_target: "input" } %>
       </label>
-      <p class="form-hint" id="file-count"><%= t('test_plans.show.no_file_selected') %></p>
+      <button type="button" class="btn btn--secondary btn--lg" data-clipboard-paste-target="button" data-action="clipboard-paste#pasteFromClipboard">
+        <%= t('test_plans.show.paste_evidence') %>
+      </button>
+      <p class="form-hint" id="file-count" data-clipboard-paste-target="status"><%= t('test_plans.show.no_file_selected') %></p>
     </div>
 
     <button type="submit" class="btn btn--primary" data-controller="keyboard-shortcut" data-keyboard-shortcut-key-value="c">

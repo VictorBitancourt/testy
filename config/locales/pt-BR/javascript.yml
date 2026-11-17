@@ -12,6 +12,7 @@ pt-BR:
       save: "Salvar"
       cancel: "Cancelar"
       upload_evidence: "Enviar Evidências"
+      paste_evidence: "Colar print (Ctrl+V)"
       no_file_selected: "Nenhum arquivo selecionado"
       one_file_selected: "1 arquivo selecionado"
       files_selected: "%{count} arquivos selecionados"
@@ -36,3 +37,6 @@ pt-BR:
       no_file: "Nenhum arquivo selecionado"
       one_file: "1 arquivo selecionado"
       files: "%{count} arquivos selecionados"
+    clipboard_paste:
+      no_image: "Nenhuma imagem no clipboard"
+      denied: "Sem permissão para ler o clipboard. Use Ctrl+V."

@@ -20,14 +20,17 @@
     <%= f.text_area :description, rows: 4, class: "input input--focus-red input--textarea", placeholder: t('bugs.form.description_placeholder') %>
   </div>
 
-  <div>
+  <div data-controller="clipboard-paste" data-clipboard-paste-scope-value="form">
     <label class="label"><%= t('bugs.form.evidence_label') %></label>
     <label class="btn btn--primary btn--sm" style="cursor:pointer;">
       <%= icon_tag("paperclip", size: :sm) %>
       <%= t('bugs.form.upload_evidence') %>
-      <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "bug-file-upload" %>
+      <%= f.file_field :evidence_files, multiple: true, accept: "image/*,.pdf", class: "hidden", id: "bug-file-upload", data: { clipboard_paste_target: "input" } %>
     </label>
-    <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" id="bug-file-count"><%= t('bugs.form.no_file_selected') %></span>
+    <button type="button" class="btn btn--secondary btn--sm" data-clipboard-paste-target="button" data-action="clipboard-paste#pasteFromClipboard">
+      <%= t('bugs.form.paste_evidence') %>
+    </button>
+    <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" id="bug-file-count" data-clipboard-paste-target="status"><%= t('bugs.form.no_file_selected') %></span>
   </div>
 
   <div>

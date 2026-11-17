@@ -167,13 +167,14 @@ export default class extends Controller {
 
       const fileId = `edit-evidence-${scenarioId}`
       actionsDiv.innerHTML = `
-        <div>
+        <div data-controller="clipboard-paste" data-clipboard-paste-scope-value=".scenario-card">
           <label class="btn btn--primary btn--sm" style="cursor:pointer;">
 <span class="icon icon--paperclip icon--sm" aria-hidden="true"></span>
             ${t('scenario.upload_evidence')}
-            <input type="file" id="${fileId}" multiple accept="image/*,.pdf" class="hidden" />
+            <input type="file" id="${fileId}" multiple accept="image/*,.pdf" class="hidden" data-clipboard-paste-target="input" />
           </label>
-          <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" data-file-count>${t('scenario.no_file_selected')}</span>
+          <button type="button" class="btn btn--secondary btn--sm" data-clipboard-paste-target="button" data-action="clipboard-paste#pasteFromClipboard">${t('scenario.paste_evidence')}</button>
+          <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" data-file-count data-clipboard-paste-target="status">${t('scenario.no_file_selected')}</span>
         </div>
         <div class="flex gap-2">
           <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="scenario-btn scenario-btn--approved">${t('scenario.save')}</button>
