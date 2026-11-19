@@ -220,4 +220,14 @@ class TestScenariosControllerTest < ActionDispatch::IntegrationTest
       }
     end
   end
+
+  test "inline update adds evidence to what is attached" do
+    scenario = test_scenarios(:login_success)
+    scenario.evidence_files.attach(fixture_file_upload("test_evidence.png", "image/png"))
+
+    patch test_plan_test_scenario_path(scenario.test_plan, scenario), headers: { "Accept" => "application/json" },
+      params: { test_scenario: { title: "Login", given: "G", when_step: "W", then_step: "T", evidence_files: [ fixture_file_upload("report_evidence.png", "image/png") ] } }
+
+    assert_equal 2, scenario.reload.evidence_files.count
+  end
 end

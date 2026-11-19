@@ -8,6 +8,13 @@ module Attachments
     has_many_attached :evidence_files
 
     validate :acceptable_evidence_files, if: -> { evidence_files.any? }
+
+    # Assigning to has_many_attached replaces what is attached, so saving a
+    # form (which always sends evidence_files, if only [""]) wiped the
+    # evidence. Forms only ever add evidence: keep the old files.
+    def evidence_files=(attachables)
+      super(evidence_files.blobs + Array(attachables).compact_blank)
+    end
   end
 
   private

@@ -223,4 +223,15 @@ class BugsControllerTest < ActionDispatch::IntegrationTest
       delete bug_path(bugs(:user_bug))
     end
   end
+
+  test "update keeps the evidence already attached" do
+    bug = bugs(:open_bug)
+    bug.evidence_files.attach(fixture_file_upload("test_evidence.png", "image/png"))
+
+    patch bug_path(bug), params: { bug: { title: "Payment hangs", evidence_files: [ "" ] } }
+    assert_equal 1, bug.reload.evidence_files.count
+
+    patch bug_path(bug), params: { bug: { title: "Payment hangs", evidence_files: [ "", fixture_file_upload("report_evidence.png", "image/png") ] } }
+    assert_equal %w[test_evidence.png report_evidence.png], bug.reload.evidence_files.map { |file| file.filename.to_s }
+  end
 end
