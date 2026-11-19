@@ -234,4 +234,24 @@ class BugsControllerTest < ActionDispatch::IntegrationTest
     patch bug_path(bug), params: { bug: { title: "Payment hangs", evidence_files: [ "", fixture_file_upload("report_evidence.png", "image/png") ] } }
     assert_equal %w[test_evidence.png report_evidence.png], bug.reload.evidence_files.map { |file| file.filename.to_s }
   end
+
+  test "edit shows the evidence already attached" do
+    bug = bugs(:open_bug)
+    bug.evidence_files.attach(fixture_file_upload("test_evidence.png", "image/png"))
+
+    get edit_bug_path(bug)
+
+    assert_select "[data-attached-evidence] .evidence-item img", 1
+  end
+
+  test "invalid update keeps the evidence and shows the form again" do
+    bug = bugs(:open_bug)
+    bug.evidence_files.attach(fixture_file_upload("test_evidence.png", "image/png"))
+
+    patch bug_path(bug), params: { bug: { title: "", evidence_files: [ "", fixture_file_upload("report_evidence.png", "image/png") ] } }
+
+    assert_response :unprocessable_entity
+    assert_select "[data-attached-evidence] .evidence-item", 1
+    assert_equal 1, bug.reload.evidence_files.count
+  end
 end

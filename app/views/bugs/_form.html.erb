@@ -24,6 +24,15 @@
 
   <div data-controller="clipboard-paste" data-clipboard-paste-scope-value="form">
     <label class="label"><%= t('bugs.form.evidence_label') %></label>
+    <% attached = bug.evidence_files.select(&:persisted?) %>
+    <% if attached.any? %>
+      <%# Captions are edited on the bug page: their forms can't nest in this one. %>
+      <div class="evidence-grid mb-3" data-attached-evidence>
+        <% attached.each do |file| %>
+          <%= render "shared/evidence_item", file: file, editable: false %>
+        <% end %>
+      </div>
+    <% end %>
     <label class="btn btn--primary btn--sm" style="cursor:pointer;">
       <%= icon_tag("paperclip", size: :sm) %>
       <%= t('bugs.form.upload_evidence') %>
