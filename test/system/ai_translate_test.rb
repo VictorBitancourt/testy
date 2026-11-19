@@ -7,16 +7,21 @@ class AiTranslateTest < ApplicationSystemTestCase
   end
 
   test "translating a bug fills the form for review" do
-    AiTranslator.any_instance.stubs(:call_api).returns({ "bug[title]" => "Payment hangs", "bug[description]" => "The page loads forever" }.to_json)
+    AiTranslator.any_instance.stubs(:call_api).returns({ "bug[title]" => "Payment hangs", "bug[description]" => "The page loads forever",
+      "bug[feature_tag]" => "payments", "bug[cause_tag]" => "validation" }.to_json)
     visit new_bug_path
 
     fill_in "Title", with: "Pagamento trava"
     fill_in "Description", with: "A tela carrega para sempre"
+    fill_in "Feature", with: "pagamentos"
+    fill_in "Root Cause", with: "validação"
     click_button "Translate to English"
 
     assert_text "Translated. Review before saving."
     assert_field "Title", with: "Payment hangs"
     assert_field "Description", with: "The page loads forever"
+    assert_field "Feature", with: "payments"
+    assert_field "Root Cause", with: "validation"
   end
 
   test "translating a scenario while editing it inline" do

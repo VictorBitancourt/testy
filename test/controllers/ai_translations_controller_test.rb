@@ -40,7 +40,7 @@ class AiTranslationsControllerTest < ActionDispatch::IntegrationTest
   test "bug form and new scenario form have the translate button" do
     get new_bug_path
     assert_select "[data-controller=ai-translate] button"
-    assert_select "[data-translatable]", 5
+    assert_select "[data-translatable]", 7
 
     sign_in_as users(:admin)
     get test_plan_path(test_plans(:login_plan))

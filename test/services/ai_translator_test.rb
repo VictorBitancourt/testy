@@ -22,10 +22,19 @@ class AiTranslatorTest < ActiveSupport::TestCase
     assert_equal "Dado que estou logado", result.data["given"]
   end
 
+  test "tags come back lowercase" do
+    @translator.stubs(:call_api).returns({ "bug[feature_tag]" => "Payments", "bug[cause_tag]" => "Validation" }.to_json)
+
+    result = @translator.call("bug[feature_tag]" => "pagamentos", "bug[cause_tag]" => "validação")
+
+    assert_equal({ "bug[feature_tag]" => "payments", "bug[cause_tag]" => "validation" }, result.data)
+  end
+
   test "prompt carries the fields" do
     prompt = @translator.send(:build_prompt, { "given" => "Dado que estou na home" })
 
     assert_includes prompt, "English"
+    assert_includes prompt, "no Portuguese may be left"
     assert_includes prompt, %("given": "Dado que estou na home")
   end
 
