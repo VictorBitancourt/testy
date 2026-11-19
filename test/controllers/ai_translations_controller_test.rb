@@ -14,6 +14,14 @@ class AiTranslationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Payment hangs", response.parsed_body["fields"]["bug[title]"]
   end
 
+  test "ignores fields that are not translatable" do
+    AiTranslator.any_instance.expects(:call).with({ "given" => "Dado" }).returns(Result.success({ "given" => "Given" }))
+
+    post ai_translation_path, params: { fields: { "given" => "Dado", "bug[status]" => "aberto" } }, as: :json
+
+    assert_response :success
+  end
+
   test "error" do
     post ai_translation_path, params: { fields: {} }, as: :json
 
