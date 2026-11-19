@@ -115,14 +115,6 @@ class SmokeTest < ApplicationSystemTestCase
 
   private
 
-  def login_as(user)
-    visit new_session_path
-    fill_in "Username", with: user.username
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
-    assert_text "+ New Project"
-  end
-
   def open_nav_dropdown
     find("[data-action='click->dropdown#toggle']").click
   end

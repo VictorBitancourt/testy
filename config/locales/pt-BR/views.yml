@@ -343,6 +343,8 @@ pt-BR:
       back: "Voltar"
   pdf:
     download: "Baixar PDF"
+  ai_translate:
+    button: "Traduzir para inglês"
   evidence:
     caption_label: "Legenda da evidência"
     caption_placeholder: "Legenda (sai no PDF)"

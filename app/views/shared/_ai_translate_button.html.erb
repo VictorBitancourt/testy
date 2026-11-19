@@ -1,0 +1,8 @@
+<%# Translates the [data-translatable] fields inside the closest `scope` into English. %>
+<div class="flex items-center gap-2" data-controller="ai-translate" data-ai-translate-url-value="<%= ai_translation_path %>" data-ai-translate-scope-value="<%= scope %>">
+  <button type="button" class="btn btn--ai btn--sm" data-ai-translate-target="button" data-action="ai-translate#translate">
+    <%= icon_tag("sparkle", size: :sm) %>
+    <%= t('ai_translate.button') %>
+  </button>
+  <span class="hidden text-sm txt-ink-medium" data-ai-translate-target="status"></span>
+</div>

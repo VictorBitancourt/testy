@@ -30,6 +30,12 @@ pt-BR:
       enter_text: "Cole o relato do bug primeiro."
       error: "Erro ao preencher o bug com IA."
       filled: "Formulário preenchido. Revise antes de salvar."
+    ai_translate:
+      button: "Traduzir para inglês"
+      working: "Traduzindo…"
+      done: "Traduzido. Revise antes de salvar."
+      nothing: "Preencha algum campo antes de traduzir."
+      error: "Erro ao traduzir com IA."
     bug_form:
       detail_bug: "Detalhar Bug +"
       hide_details: "Ocultar Detalhes -"

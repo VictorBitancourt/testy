@@ -7,4 +7,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     super
     Capybara.default_max_wait_time = 10
   end
+
+  def login_as(user)
+    visit new_session_path
+    fill_in "Username", with: user.username
+    fill_in "Password", with: "password123"
+    click_button "Sign In"
+    assert_text "+ New Project"
+  end
 end

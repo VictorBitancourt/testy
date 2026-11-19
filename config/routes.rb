@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   post "bugs/root_causes/ai_analysis", to: "bugs/ai_analyses#create", as: :bug_ai_analysis
   get "bugs/root_causes/ai_analyses/:id", to: "bugs/ai_analyses#show", as: :bug_ai_analysis_report
   post "bugs/ai_draft", to: "bugs/ai_drafts#create", as: :bug_ai_draft
+  post "ai_translation", to: "ai_translations#create", as: :ai_translation
   get "bugs/tag_suggestions", to: "bugs#tag_suggestions", as: :bug_tag_suggestions
   resources :bugs do
     resource :report, only: :show, controller: "bugs/reports"

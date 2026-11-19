@@ -343,6 +343,8 @@ en:
       back: "Back"
   pdf:
     download: "Download PDF"
+  ai_translate:
+    button: "Translate to English"
   evidence:
     caption_label: "Evidence caption"
     caption_placeholder: "Caption (shown in the PDF)"

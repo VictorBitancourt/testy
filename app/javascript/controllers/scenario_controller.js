@@ -156,8 +156,19 @@ export default class extends Controller {
       textarea.name = key
       textarea.value = originalText
       textarea.dataset.originalText = originalText
+      textarea.dataset.translatable = ''
       textEl.replaceWith(textarea)
     })
+
+    const heading = card.querySelector('.scenario-card__title h3')
+    const titleInput = document.createElement('input')
+    titleInput.type = 'text'
+    titleInput.className = 'input'
+    titleInput.name = 'title'
+    titleInput.value = heading.textContent
+    titleInput.dataset.originalText = heading.textContent
+    titleInput.dataset.translatable = ''
+    heading.replaceWith(titleInput)
 
     // Show file upload + save/cancel buttons
     let actionsDiv = card.querySelector('.inline-edit-actions')
@@ -175,6 +186,10 @@ export default class extends Controller {
           </label>
           <button type="button" class="btn btn--secondary btn--sm" data-action="clipboard-paste#pasteFromClipboard">${t('scenario.paste_evidence')}</button>
           <span class="text-sm txt-ink-medium" style="margin-left:var(--space-2);" data-file-count data-clipboard-paste-target="status">${t('scenario.no_file_selected')}</span>
+        </div>
+        <div data-controller="ai-translate" data-ai-translate-url-value="/ai_translation" data-ai-translate-scope-value=".scenario-card" class="flex items-center gap-2">
+          <button type="button" class="btn btn--ai btn--sm" data-ai-translate-target="button" data-action="ai-translate#translate"><span class="icon icon--sparkle icon--sm" aria-hidden="true"></span> ${t('ai_translate.button')}</button>
+          <span class="hidden text-sm txt-ink-medium" data-ai-translate-target="status"></span>
         </div>
         <div class="flex gap-2">
           <button type="button" data-action="click->scenario#saveEdit" data-scenario-id="${scenarioId}" class="scenario-btn scenario-btn--approved">${t('scenario.save')}</button>
@@ -200,12 +215,14 @@ export default class extends Controller {
     const card = event.currentTarget.closest('.scenario-card')
     const scenarioId = card.dataset.scenarioId
 
+    const title = card.querySelector('input[name="title"]').value
     const given = card.querySelector('textarea[name="given"]').value
     const whenStep = card.querySelector('textarea[name="when_step"]').value
     const thenStep = card.querySelector('textarea[name="then_step"]').value
     const fileInput = card.querySelector('.inline-edit-actions input[type="file"]')
 
     const formData = new FormData()
+    formData.append('test_scenario[title]', title)
     formData.append('test_scenario[given]', given)
     formData.append('test_scenario[when_step]', whenStep)
     formData.append('test_scenario[then_step]', thenStep)
@@ -278,6 +295,15 @@ export default class extends Controller {
       p.textContent = value
       textarea.replaceWith(p)
     })
+    this._restoreTitle(card, scenario.title)
+  }
+
+  _restoreTitle(card, title) {
+    const input = card.querySelector('.scenario-card__title input[name="title"]')
+    if (!input) return
+    const heading = document.createElement('h3')
+    heading.textContent = title
+    input.replaceWith(heading)
   }
 
   _restoreStatusButtons(card) {
@@ -320,6 +346,8 @@ export default class extends Controller {
       p.textContent = textarea.dataset.originalText || textarea.value
       textarea.replaceWith(p)
     })
+    const titleInput = card.querySelector('.scenario-card__title input[name="title"]')
+    if (titleInput) this._restoreTitle(card, titleInput.dataset.originalText)
   }
 
   showBugSearch(event) {
@@ -470,6 +498,6 @@ export default class extends Controller {
   }
 
   getCSRFToken() {
-    return document.querySelector('meta[name="csrf-token"]').content
+    return document.querySelector('meta[name="csrf-token"]')?.content
   }
 }

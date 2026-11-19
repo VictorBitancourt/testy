@@ -30,6 +30,12 @@ en:
       enter_text: "Paste the bug report first."
       error: "Error filling the bug with AI."
       filled: "Form filled. Review it before saving."
+    ai_translate:
+      button: "Translate to English"
+      working: "Translating…"
+      done: "Translated. Review before saving."
+      nothing: "Fill in a field before translating."
+      error: "AI translation failed."
     bug_form:
       detail_bug: "Detail Bug +"
       hide_details: "Hide Details -"

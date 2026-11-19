@@ -47,14 +47,6 @@ class ClipboardPasteTest < ApplicationSystemTestCase
 
   private
 
-  def login_as(user)
-    visit new_session_path
-    fill_in "Username", with: user.username
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
-    assert_text "+ New Project"
-  end
-
   # Dispatches a paste event carrying a 1x1 PNG, like a copied screenshot
   def paste_image_into(element)
     execute_script(<<~JS, element)

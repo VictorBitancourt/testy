@@ -28,7 +28,7 @@ class TestScenariosController < ApplicationController
         update_params = update_params.merge(status: "pending") unless only_bug_update
 
         if @test_scenario.update(update_params)
-          render json: { success: true, scenario: { given: @test_scenario.given, when_step: @test_scenario.when_step, then_step: @test_scenario.then_step, status: @test_scenario.status } }
+          render json: { success: true, scenario: { title: @test_scenario.title, given: @test_scenario.given, when_step: @test_scenario.when_step, then_step: @test_scenario.then_step, status: @test_scenario.status } }
         else
           render json: { success: false, errors: @test_scenario.errors.full_messages }, status: :unprocessable_entity
         end

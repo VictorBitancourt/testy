@@ -2,25 +2,27 @@
   <h2 class="panel__title"><%= t('test_plans.show.add_new_scenario') %></h2>
 
   <%= form_with model: [test_plan, new_scenario], class: "form-stack" do |f| %>
+    <%= render "shared/ai_translate_button", scope: "form" %>
+
     <div>
       <%= f.label :title, t('test_plans.show.scenario_title'), class: "label" %>
-      <%= f.text_field :title, class: "input", placeholder: t('test_plans.show.scenario_title_placeholder') %>
+      <%= f.text_field :title, data: { translatable: true }, class: "input", placeholder: t('test_plans.show.scenario_title_placeholder') %>
     </div>
 
     <div class="form-grid-3">
       <div>
         <%= f.label :given, t('test_plans.show.given'), class: "label" %>
-        <%= f.text_area :given, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.given_placeholder') %>
+        <%= f.text_area :given, data: { translatable: true }, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.given_placeholder') %>
       </div>
 
       <div>
         <%= f.label :when_step, t('test_plans.show.when'), class: "label" %>
-        <%= f.text_area :when_step, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.when_placeholder') %>
+        <%= f.text_area :when_step, data: { translatable: true }, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.when_placeholder') %>
       </div>
 
       <div>
         <%= f.label :then_step, t('test_plans.show.then'), class: "label" %>
-        <%= f.text_area :then_step, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.then_placeholder') %>
+        <%= f.text_area :then_step, data: { translatable: true }, rows: 3, class: "input input--focus-blue", placeholder: t('test_plans.show.then_placeholder') %>
       </div>
     </div>
 
