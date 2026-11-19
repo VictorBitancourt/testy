@@ -85,7 +85,12 @@
 
     <% if @bug.evidence_files.attached? %>
       <div class="panel mb-6">
-        <h2 class="text-lg font-bold mb-3"><%= t('bugs.show.evidence') %></h2>
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <h2 class="text-lg font-bold"><%= t('bugs.show.evidence') %></h2>
+          <% if current_user_admin? || @bug.user == Current.user %>
+            <%= render "shared/ai_translate_button", scope: ".panel" %>
+          <% end %>
+        </div>
         <div class="evidence-grid">
           <% @bug.evidence_files.each do |file| %>
             <%= render "shared/evidence_item", file: file, editable: current_user_admin? || @bug.user == Current.user %>

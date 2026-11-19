@@ -3,7 +3,8 @@ import { t } from "i18n_helper"
 
 // Translates the [data-translatable] fields inside the scope element (the
 // closest match of the scope selector) into English with the AI and fills them
-// in for review. Nothing is saved.
+// in for review. Each field goes by its data-translate-key, else its name.
+// Fields that save on change (evidence captions) are saved right away.
 export default class extends Controller {
   static targets = ["button", "status"]
   static values = { url: String, scope: String }
@@ -17,7 +18,7 @@ export default class extends Controller {
       return
     }
 
-    const fields = Object.fromEntries(inputs.map(input => [input.name, input.value]))
+    const fields = Object.fromEntries(inputs.map(input => [this.key(input), input.value]))
     this.buttonTarget.disabled = true
     this.showStatus(t("ai_translate.working"))
 
@@ -40,8 +41,11 @@ export default class extends Controller {
       }
 
       for (const input of inputs) {
-        const value = data.fields[input.name]
-        if (value) input.value = value
+        const value = data.fields[this.key(input)]
+        if (value && value !== input.value) {
+          input.value = value
+          input.dispatchEvent(new Event("change", { bubbles: true }))
+        }
       }
       this.showStatus(t("ai_translate.done"))
     } catch (error) {
@@ -51,6 +55,10 @@ export default class extends Controller {
     } finally {
       this.buttonTarget.disabled = false
     }
+  }
+
+  key(input) {
+    return input.dataset.translateKey || input.name
   }
 
   inputs() {

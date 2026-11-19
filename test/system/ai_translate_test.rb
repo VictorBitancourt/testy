@@ -21,8 +21,11 @@ class AiTranslateTest < ApplicationSystemTestCase
 
   test "translating a scenario while editing it inline" do
     scenario = test_scenarios(:login_success)
+    scenario.evidence_files.attach(io: file_fixture("test_evidence.png").open, filename: "test_evidence.png", content_type: "image/png")
+    evidence = scenario.evidence_files.first
+    evidence.update!(caption: "Tela de login")
     AiTranslator.any_instance.stubs(:call_api).returns(
-      { "title" => "Successful login", "given" => "G", "when_step" => "W", "then_step" => "T" }.to_json)
+      { "title" => "Successful login", "given" => "G", "when_step" => "W", "then_step" => "T", "evidence_caption_#{evidence.id}" => "Login page" }.to_json)
     visit test_plan_path(test_plans(:login_plan))
 
     within ".scenario-card[data-scenario-id='#{scenario.id}']" do
@@ -30,10 +33,28 @@ class AiTranslateTest < ApplicationSystemTestCase
       click_button "Translate to English"
       assert_text "Translated. Review before saving."
       assert_field "title", with: "Successful login"
+      assert_field "caption", with: "Login page"
       click_button "Save"
       assert_selector "h3", text: "Successful login"
     end
 
     assert_equal [ "Successful login", "G", "W", "T" ], scenario.reload.values_at(:title, :given, :when_step, :then_step)
+    assert_equal "Login page", evidence.reload.caption
+    assert_equal 1, scenario.evidence_files.count
+  end
+
+  test "translating the evidence captions of a bug" do
+    bug = bugs(:open_bug)
+    bug.evidence_files.attach(io: file_fixture("test_evidence.png").open, filename: "test_evidence.png", content_type: "image/png")
+    evidence = bug.evidence_files.first
+    evidence.update!(caption: "Botão travado")
+    AiTranslator.any_instance.stubs(:call_api).returns({ "evidence_caption_#{evidence.id}" => "Stuck button" }.to_json)
+    visit bug_path(bug)
+
+    click_button "Translate to English"
+
+    assert_field "caption", with: "Stuck button"
+    assert_selector ".evidence-caption--saved"
+    assert_equal "Stuck button", evidence.reload.caption
   end
 end

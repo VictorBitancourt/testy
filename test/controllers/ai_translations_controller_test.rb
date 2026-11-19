@@ -22,6 +22,14 @@ class AiTranslationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "accepts evidence captions" do
+    AiTranslator.any_instance.expects(:call).with({ "title" => "Entrar", "evidence_caption_12" => "Tela de login" }).returns(Result.success({}))
+
+    post ai_translation_path, params: { fields: { "title" => "Entrar", "evidence_caption_12" => "Tela de login", "evidence_caption_x" => "y" } }, as: :json
+
+    assert_response :success
+  end
+
   test "error" do
     post ai_translation_path, params: { fields: {} }, as: :json
 

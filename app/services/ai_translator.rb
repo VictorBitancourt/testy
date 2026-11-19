@@ -1,8 +1,8 @@
 # Translates the text fields of a form (bug, scenario) into English. Nothing
 # is saved: the form is filled with the translation for the QA to review.
 class AiTranslator < AiTask
-  MAX_FIELDS = 10
-  MAX_LENGTH = 10_000
+  MAX_FIELDS = 50
+  MAX_LENGTH = 20_000
 
   def call(fields)
     fields = fields.to_h.transform_keys(&:to_s).transform_values { |value| value.to_s.strip }.compact_blank
@@ -16,7 +16,7 @@ class AiTranslator < AiTask
 
   def build_prompt(fields)
     <<~PROMPT
-      You are a QA engineer translating a test artifact (bug report or test scenario) into English.
+      You are a QA engineer translating a test artifact (bug report or test scenario, with the captions of its screenshots) into English.
 
       Rules:
       - Return ONLY a JSON object with exactly the same keys as the input below; each value is the English translation of that field
