@@ -1,10 +1,12 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -53,6 +55,9 @@ func newQAGenerateCmd() *cobra.Command {
 			}
 
 			ensureTokenEnv()
+			if err := ensureProjectEnv(app); err != nil {
+				return err
+			}
 
 			system := buildQASystemPrompt()
 			task := buildGeneratePrompt(url, name, user, pass, context, depth, tags, qa)
@@ -98,6 +103,9 @@ func newQAExecuteCmd() *cobra.Command {
 			}
 
 			ensureTokenEnv()
+			if err := ensurePlanProjectEnv(app, plan); err != nil {
+				return err
+			}
 
 			system := buildQASystemPrompt()
 			task := buildExecutePrompt(plan, url, user, pass, context)
@@ -144,6 +152,9 @@ func newQAFullCmd() *cobra.Command {
 			}
 
 			ensureTokenEnv()
+			if err := ensureProjectEnv(app); err != nil {
+				return err
+			}
 
 			system := buildQASystemPrompt()
 			task := buildFullPrompt(url, name, user, pass, context, depth, tags, qa)
@@ -213,6 +224,39 @@ func ensureTokenEnv() {
 	os.Setenv("TESTY_API_TOKEN", strings.TrimSpace(string(data)))
 }
 
+// ensureProjectEnv exports TESTY_PROJECT with the selected project's id so the
+// plans and bugs created by the child testy commands land in it.
+func ensureProjectEnv(app *appctx.App) error {
+	p, _, err := currentProject(app)
+	if err != nil {
+		return err
+	}
+	if p == nil {
+		return fmt.Errorf("the server has several projects and none is selected: pass --project <id|name> or run: testy projects use <id|name>")
+	}
+	os.Setenv("TESTY_PROJECT", strconv.Itoa(p.ID))
+	return nil
+}
+
+// ensurePlanProjectEnv exports TESTY_PROJECT with the plan's project, so the
+// bugs reported while executing it go to the same project.
+func ensurePlanProjectEnv(app *appctx.App, planID string) error {
+	data, err := app.Client.Get("/api/v1/test_plans/"+planID, nil)
+	if err != nil {
+		return err
+	}
+	var resp struct {
+		TestPlan struct {
+			ProjectID int `json:"project_id"`
+		} `json:"test_plan"`
+	}
+	if err := json.Unmarshal(data, &resp); err != nil {
+		return fmt.Errorf("failed to parse response: %w", err)
+	}
+	os.Setenv("TESTY_PROJECT", strconv.Itoa(resp.TestPlan.ProjectID))
+	return nil
+}
+
 // runClaude executes claude with the given task prompt, system prompt, and MCP config.
 func runClaude(task, system, mcpPath, model string) error {
 	if model == "" {
@@ -245,6 +289,7 @@ func buildQASystemPrompt() string {
 
 ## 1. Testy CLI (via Bash tool)
 You are already authenticated. The session token is set. Do NOT call testy login.
+The project (workspace) is already selected through TESTY_PROJECT. Do NOT pass --project or run testy projects use.
 Available commands:
 - testy plans list/show/create/update/delete
 - testy scenarios create/update/delete --plan <id>

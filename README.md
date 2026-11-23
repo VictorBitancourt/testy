@@ -119,6 +119,12 @@ bin/testy login <username> <password>
 The CLI provides direct CRUD commands for all resources:
 
 ```bash
+# Projects (workspaces)
+bin/testy projects list
+bin/testy projects create "Mobile App" --use
+bin/testy projects use "Web Shop"     # by name or id; saved in ~/.config/testy/config.json
+bin/testy projects current
+
 # Test plans
 bin/testy plans list
 bin/testy plans show 1
@@ -142,7 +148,7 @@ bin/testy doctor
 
 All commands support `--json`, `--md`, and `--quiet` output flags.
 
-> **Projects:** the CLI does not choose a project yet. While the server has a single project it is used automatically; with two or more, `plans create` and `bugs create` are rejected by the API (`project_id` is required) and `plans list` / `bugs list` show every project.
+> **Projects:** `plans` and `bugs` work on the selected project — `--project <id|name>` (or `-p`), then `TESTY_PROJECT`, then `testy projects use`. With nothing selected and a single project on the server, that project is used; with several, `plans create` / `bugs create` ask you to pick one and `plans list` / `bugs list` show every project. `testy qa` passes the project on to the agent (`qa execute` uses the plan's own project).
 
 ### Usage — AI Mode (testy qa)
 
@@ -180,6 +186,7 @@ bin/testy version    # Show CLI version
 | Variable | Default | Description |
 |---|---|---|
 | `TESTY_BASE_URL` | `http://localhost:3000` | Testy server URL |
+| `TESTY_PROJECT` | — | Project (id or name) for this shell; overrides `testy projects use` |
 | `TESTY_MODEL` | `sonnet` | Claude model for AI mode (`sonnet`, `opus`, `haiku`) |
 | `CHROME_PATH` | Auto-detected | Path to Chromium/Chrome binary (AI mode) |
 

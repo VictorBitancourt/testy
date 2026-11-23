@@ -15,7 +15,7 @@ TOKEN_FILE="$TOKEN_DIR/token"
 
 if [ -x "$GO_BINARY" ]; then
   case "${1:-}" in
-    login|logout|whoami|auth|plans|plan|scenarios|scenario|bugs|bug|tags|screenshots|version|commands|cmds|doctor|skill|qa|help|--help|-h|--version|-v)
+    login|logout|whoami|auth|projects|project|workspaces|workspace|plans|plan|scenarios|scenario|bugs|bug|tags|screenshots|version|commands|cmds|doctor|skill|qa|help|--help|-h|--version|-v)
       exec "$GO_BINARY" "$@"
       ;;
   esac

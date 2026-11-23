@@ -16,6 +16,7 @@ You manage test plans, scenarios, bugs, and execute automated tests via Playwrig
 3. **Evidence is mandatory** — every executed scenario must have a screenshot attached as evidence before updating its status.
 4. **Status update is mandatory** — after executing a scenario, always update its status to `approved` or `failed`.
 5. **Failures must reference bugs** — when a scenario fails, create or reference an existing bug and link it via `--bug-id`.
+6. **Work inside one project** — plans and bugs belong to a project (workspace). Check `testy projects current` first; bugs found while executing a plan go to that plan's project (`--project <plan.project_id>`).
 
 ## Output Modes
 
@@ -28,6 +29,19 @@ You manage test plans, scenarios, bugs, and execute automated tests via Playwrig
 | `--md`     | Markdown            | Same as default                   |
 
 ## Quick Reference
+
+### Projects (workspaces)
+
+| Command                                        | Description                                  |
+|------------------------------------------------|----------------------------------------------|
+| `testy projects list`                          | List projects                                |
+| `testy projects current`                       | Show the selected project                    |
+| `testy projects use <id\|name>`                | Select the project for the next commands     |
+| `testy projects create "<name>" --use`         | Create a project and select it               |
+| `testy <cmd> --project <id\|name>`             | Run one command on another project (`-p`)    |
+
+`plans list` / `bugs list` show only the selected project; `plans create` / `bugs create` create in it.
+With nothing selected and several projects, creates fail with a usage error asking for a project.
 
 ### Test Plans
 
@@ -84,6 +98,7 @@ You manage test plans, scenarios, bugs, and execute automated tests via Playwrig
 
 ```
 Need to find something?
+├── Which project am I in? → testy projects current (others: testy projects list)
 ├── Looking for test plans? → testy plans list [--status S] [--search Q]
 ├── Looking for a specific plan's scenarios? → testy plans show <id>
 ├── Looking for bugs? → testy bugs list [--status S] [--feature-tag T]
@@ -123,7 +138,7 @@ Found a defect?
 ### Pre-execution Checklist
 
 Before executing any test plan:
-1. Verify authentication: `testy whoami`
+1. Verify authentication: `testy whoami` and the project: `testy projects current`
 2. Read the plan: `testy plans show <id> --json` — understand all scenarios
 3. Confirm target URL with the user if not specified
 4. Ensure browser tools are available
@@ -193,6 +208,7 @@ For each scenario in the plan, follow this exact sequence:
   "ok": true,
   "data": {
     "id": 17,
+    "project_id": 1,
     "name": "Login Flow Tests",
     "qa_name": "Victor",
     "status": "in_progress",
@@ -264,9 +280,12 @@ Location: `~/.config/testy/config.json`
 
 ```json
 {
-  "base_url": "http://localhost:3000"
+  "base_url": "http://localhost:3000",
+  "project": "1"
 }
 ```
+
+`project` is written by `testy projects use`. Precedence: `--project` > `TESTY_PROJECT` > config file.
 
 ### Environment Variables
 
@@ -274,6 +293,7 @@ Location: `~/.config/testy/config.json`
 |-------------------|----------------------------|--------------------------|
 | `TESTY_BASE_URL`  | Testy server URL           | `http://localhost:3000`  |
 | `TESTY_API_TOKEN` | API token (skip file auth) | -                        |
+| `TESTY_PROJECT`   | Project id or name         | -                        |
 
 ### Token Storage
 

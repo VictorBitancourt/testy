@@ -55,7 +55,24 @@ func NewDoctorCmd() *cobra.Command {
 			}
 			checks = append(checks, apiCheck)
 
-			// 4. Playwright MCP
+			// 4. Project (workspace)
+			projectCheck := map[string]any{"check": "project"}
+			if !app.IsAuthenticated() || err != nil {
+				projectCheck["status"] = "warn"
+				projectCheck["detail"] = "Skipped (needs authentication and API access)"
+			} else if p, source, perr := currentProject(app); perr != nil {
+				projectCheck["status"] = "fail"
+				projectCheck["detail"] = fmt.Sprintf("%s: %v. Run: testy projects use <id|name>", app.Config.Project, perr)
+			} else if p == nil {
+				projectCheck["status"] = "warn"
+				projectCheck["detail"] = "Several projects, none selected. Run: testy projects use <id|name>"
+			} else {
+				projectCheck["status"] = "ok"
+				projectCheck["detail"] = fmt.Sprintf("%s (#%d, from %s)", p.Name, p.ID, source)
+			}
+			checks = append(checks, projectCheck)
+
+			// 5. Playwright MCP
 			playwrightCheck := map[string]any{"check": "playwright_mcp"}
 			if _, err := exec.LookPath("npx"); err != nil {
 				playwrightCheck["status"] = "warn"
@@ -66,7 +83,7 @@ func NewDoctorCmd() *cobra.Command {
 			}
 			checks = append(checks, playwrightCheck)
 
-			// 5. Skill installed
+			// 6. Skill installed
 			skillCheck := map[string]any{"check": "skill_installed"}
 			home, _ := os.UserHomeDir()
 			skillPath := filepath.Join(home, ".claude", "skills", "testy", "SKILL.md")
@@ -116,7 +133,9 @@ func NewDoctorCmd() *cobra.Command {
 				}
 				// Convert check detail to string safely
 				detail := ""
-				if d, ok := c["detail"]; ok {
+				if d, ok := c["detail"].(string); ok {
+					detail = d
+				} else if d, ok := c["detail"]; ok {
 					b, _ := json.Marshal(d)
 					detail = string(b)
 					// Remove surrounding quotes if it's a simple string

@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
+	neturl "net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -181,12 +182,11 @@ func (c *Client) buildURL(path string, params map[string]string) string {
 	if len(params) == 0 {
 		return url
 	}
-	sep := "?"
+	query := neturl.Values{}
 	for k, v := range params {
-		url += sep + k + "=" + v
-		sep = "&"
+		query.Set(k, v)
 	}
-	return url
+	return url + "?" + query.Encode()
 }
 
 func (c *Client) handleErrorResponse(resp *http.Response) error {

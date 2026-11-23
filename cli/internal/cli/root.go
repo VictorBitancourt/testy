@@ -18,6 +18,7 @@ import (
 func NewRootCmd() *cobra.Command {
 	var flags appctx.GlobalFlags
 	var baseURL string
+	var project string
 
 	cmd := &cobra.Command{
 		Use:           "testy",
@@ -33,7 +34,7 @@ func NewRootCmd() *cobra.Command {
 		},
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if cmd.Name() == "help" || cmd.Name() == "version" {
-				cfg := config.Load(baseURL)
+				cfg := config.Load(baseURL, project)
 				app := appctx.NewApp(cfg)
 				app.Flags = flags
 				app.ApplyFlags()
@@ -41,7 +42,7 @@ func NewRootCmd() *cobra.Command {
 				return nil
 			}
 
-			cfg := config.Load(baseURL)
+			cfg := config.Load(baseURL, project)
 			app := appctx.NewApp(cfg)
 			app.Flags = flags
 			app.ApplyFlags()
@@ -58,6 +59,7 @@ func NewRootCmd() *cobra.Command {
 
 	// Config flag
 	cmd.PersistentFlags().StringVar(&baseURL, "url", "", "Testy server URL")
+	cmd.PersistentFlags().StringVarP(&project, "project", "p", "", "Project (workspace) id or name")
 
 	return cmd
 }
@@ -71,6 +73,7 @@ func Execute() {
 	cmd.AddCommand(commands.NewLoginCmd())
 	cmd.AddCommand(commands.NewLogoutCmd())
 	cmd.AddCommand(commands.NewWhoamiCmd())
+	cmd.AddCommand(commands.NewProjectsCmd())
 	cmd.AddCommand(commands.NewPlansCmd())
 	cmd.AddCommand(commands.NewScenariosCmd())
 	cmd.AddCommand(commands.NewBugsCmd())
@@ -84,6 +87,11 @@ func Execute() {
 
 	executedCmd, err := cmd.ExecuteC()
 	if err != nil {
+		// Already written by the command — just exit with its code
+		if reported, ok := err.(*output.Reported); ok {
+			os.Exit(reported.ExitCode())
+		}
+
 		// Structured CLI error — output via the writer
 		apiErr, ok := err.(*output.Error)
 		if ok {

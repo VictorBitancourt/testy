@@ -28,6 +28,16 @@ type CommandCategory struct {
 func CommandCategories() []CommandCategory {
 	return []CommandCategory{
 		{
+			Name: "Projects (workspaces)",
+			Commands: []CommandInfo{
+				{Name: "projects list", Description: "List projects"},
+				{Name: "projects show <id|name>", Description: "Show a project"},
+				{Name: "projects create <name>", Description: "Create a project", Flags: "--description, --use"},
+				{Name: "projects use <id|name>", Description: "Select the project for next commands", Flags: "--clear"},
+				{Name: "projects current", Description: "Show the selected project"},
+			},
+		},
+		{
 			Name: "Test Management",
 			Commands: []CommandInfo{
 				{Name: "plans list", Description: "List test plans", Flags: "--status, --search, --date-from, --date-until, --page"},
@@ -131,7 +141,7 @@ func NewCommandsCmd() *cobra.Command {
 				}
 			}
 
-			fmt.Fprintf(w, "\nGlobal flags: --json, --md, --quiet, --agent, --url\n")
+			fmt.Fprintf(w, "\nGlobal flags: --json, --md, --quiet, --agent, --url, --project\n")
 			return nil
 		},
 	}

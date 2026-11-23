@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"os"
 
 	"github.com/victorbitancourt/testy-cli/internal/client"
 	"github.com/victorbitancourt/testy-cli/internal/config"
@@ -10,8 +9,8 @@ import (
 
 // LoginResponse is the response from POST /api/v1/auth/login.
 type LoginResponse struct {
-	Token string       `json:"token"`
-	User  LoginUser    `json:"user"`
+	Token string    `json:"token"`
+	User  LoginUser `json:"user"`
 }
 
 // LoginUser is the user info in the login response.
@@ -49,10 +48,4 @@ func Logout(c *client.Client) error {
 	// Try to revoke on server (ignore errors — token may already be invalid)
 	_ = c.Delete("/api/v1/auth/logout")
 	return config.RemoveToken()
-}
-
-// IsLoggedIn checks if a token file exists.
-func IsLoggedIn() bool {
-	_, err := os.Stat(config.TokenPath())
-	return err == nil
 }

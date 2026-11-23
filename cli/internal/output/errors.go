@@ -62,6 +62,17 @@ func (e *Error) ExitCode() int {
 	}
 }
 
+// Reported is an error already written to the output: only its exit code is
+// left for main to apply.
+type Reported struct {
+	Err *Error
+}
+
+func (r *Reported) Error() string { return r.Err.Error() }
+
+// ExitCode returns the process exit code for the reported error.
+func (r *Reported) ExitCode() int { return r.Err.ExitCode() }
+
 // Error constructors.
 
 func ErrUsage(msg string) *Error {

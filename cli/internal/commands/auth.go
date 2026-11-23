@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -101,14 +102,25 @@ func newAuthStatusCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			app := appctx.FromContext(cmd.Context())
 
-			if !auth.IsLoggedIn() {
-				return app.Err(output.ErrAuth("Not logged in"))
+			if err := requireAuth(app); err != nil {
+				return app.Err(err)
 			}
 
-			return app.OK(map[string]any{
-				"authenticated": true,
-				"token_path":    config.TokenPath(),
-			}, output.WithSummary(fmt.Sprintf("Authenticated (token at %s)", config.TokenPath())))
+			status := map[string]any{"authenticated": true}
+			var summary string
+			if os.Getenv("TESTY_API_TOKEN") != "" {
+				status["token_source"] = "TESTY_API_TOKEN"
+				summary = "Authenticated (token from TESTY_API_TOKEN)"
+			} else {
+				status["token_path"] = config.TokenPath()
+				summary = fmt.Sprintf("Authenticated (token at %s)", config.TokenPath())
+			}
+			if app.Config.Project != "" {
+				status["project"] = app.Config.Project
+				summary += fmt.Sprintf(", project %s", app.Config.Project)
+			}
+
+			return app.OK(status, output.WithSummary(summary))
 		},
 	}
 }

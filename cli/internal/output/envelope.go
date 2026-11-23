@@ -76,7 +76,8 @@ func (w *Writer) OK(data any, opts ...ResponseOption) error {
 	}
 }
 
-// Err outputs an error response.
+// Err outputs an error response and returns it as *Reported, so the command
+// fails with the error's exit code without printing it twice.
 func (w *Writer) Err(err error) error {
 	apiErr, ok := err.(*Error)
 	if !ok {
@@ -91,14 +92,16 @@ func (w *Writer) Err(err error) error {
 			Code:  apiErr.Code,
 			Hint:  apiErr.Hint,
 		}
-		return w.writeJSON(resp)
+		if writeErr := w.writeJSON(resp); writeErr != nil {
+			return writeErr
+		}
 	default:
 		fmt.Fprintf(w.w, "Error: %s\n", apiErr.Message)
 		if apiErr.Hint != "" {
 			fmt.Fprintf(w.w, "Hint: %s\n", apiErr.Hint)
 		}
-		return nil
 	}
+	return &Reported{Err: apiErr}
 }
 
 func (w *Writer) writeJSON(v any) error {

@@ -60,6 +60,13 @@ func newPlansListCmd() *cobra.Command {
 			if page != "" {
 				params["page"] = page
 			}
+			projectID, err := selectedProjectID(app)
+			if err != nil {
+				return app.Err(err)
+			}
+			if projectID != "" {
+				params["project_id"] = projectID
+			}
 
 			data, err := app.Client.Get("/api/v1/test_plans", params)
 			if err != nil {
@@ -144,9 +151,17 @@ func newPlansCreateCmd() *cobra.Command {
 				body["test_plan"].(map[string]any)["tag_list"] = tags
 			}
 
-			data, err := app.Client.Post("/api/v1/test_plans", body)
+			projectID, err := selectedProjectID(app)
 			if err != nil {
 				return app.Err(err)
+			}
+			if projectID != "" {
+				body["project_id"] = projectID
+			}
+
+			data, err := app.Client.Post("/api/v1/test_plans", body)
+			if err != nil {
+				return app.Err(withProjectHint(err))
 			}
 
 			var resp struct {
