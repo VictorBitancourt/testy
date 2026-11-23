@@ -32,12 +32,36 @@ func TokenPath() string {
 	return filepath.Join(configDir(), "token")
 }
 
+// LocalFileName is the per-repository config file that ties a repository to
+// its project: {"project": "<id or name>"}.
+const LocalFileName = ".testy.json"
+
+// FindLocalFile returns the nearest .testy.json from the working directory
+// up, or "" when there is none.
+func FindLocalFile() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		return ""
+	}
+	for {
+		candidate := filepath.Join(dir, LocalFileName)
+		if info, err := os.Stat(candidate); err == nil && !info.IsDir() {
+			return candidate
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return ""
+		}
+		dir = parent
+	}
+}
+
 // configPath returns the path to the config file.
 func configPath() string {
 	return filepath.Join(configDir(), "config.json")
 }
 
-// Load resolves configuration from flags > env > config file > defaults.
+// Load resolves configuration from flags > env > .testy.json > config file > defaults.
 func Load(baseURL, project string) *Config {
 	cfg := &Config{
 		BaseURL: "http://localhost:3000",
@@ -49,6 +73,16 @@ func Load(baseURL, project string) *Config {
 	}
 	if cfg.Project != "" {
 		cfg.ProjectSource = "config"
+	}
+
+	// Layer 1b: the repository's .testy.json
+	if path := FindLocalFile(); path != "" {
+		var local struct {
+			Project string `json:"project"`
+		}
+		if data, err := os.ReadFile(path); err == nil && json.Unmarshal(data, &local) == nil && local.Project != "" {
+			cfg.Project, cfg.ProjectSource = local.Project, path
+		}
 	}
 
 	// Layer 2: environment variables
@@ -94,13 +128,35 @@ func RemoveToken() error {
 	return os.Remove(TokenPath())
 }
 
-// SaveProject stores the selected project in the config file, keeping the
-// other settings. An empty project clears the selection.
+// SaveProject stores the selected project in the user's config file, keeping
+// the other settings. An empty project clears the selection.
 func SaveProject(project string) error {
+	if err := os.MkdirAll(configDir(), 0o700); err != nil {
+		return err
+	}
+	return saveProjectTo(configPath(), project, 0o600)
+}
+
+// SaveLocalProject stores the project in the repository's .testy.json (the
+// nearest one, or a new one in the working directory) and returns its path.
+// An empty project clears it.
+func SaveLocalProject(project string) (string, error) {
+	path := FindLocalFile()
+	if path == "" {
+		dir, err := os.Getwd()
+		if err != nil {
+			return "", err
+		}
+		path = filepath.Join(dir, LocalFileName)
+	}
+	return path, saveProjectTo(path, project, 0o644)
+}
+
+func saveProjectTo(path, project string, perm os.FileMode) error {
 	settings := map[string]any{}
-	if data, err := os.ReadFile(configPath()); err == nil {
+	if data, err := os.ReadFile(path); err == nil {
 		if err := json.Unmarshal(data, &settings); err != nil {
-			return fmt.Errorf("cannot parse %s: %w", configPath(), err)
+			return fmt.Errorf("cannot parse %s: %w", path, err)
 		}
 	}
 
@@ -110,12 +166,9 @@ func SaveProject(project string) error {
 		settings["project"] = project
 	}
 
-	if err := os.MkdirAll(configDir(), 0o700); err != nil {
-		return err
-	}
 	data, err := json.MarshalIndent(settings, "", "  ")
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(configPath(), append(data, '\n'), 0o600)
+	return os.WriteFile(path, append(data, '\n'), perm)
 }

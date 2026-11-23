@@ -34,7 +34,7 @@ A maioria das ferramentas de gestão de testes são repletas de campos, workflow
 - **Autenticação e Perfis** — login com username/password com perfis de administrador e utilizador comum
 - **Bilingue (EN / PT-BR)** — interface completa em inglês e português brasileiro; alterna idiomas com um clique!
 - **API REST** — API JSON completa com autenticação por token para planos de teste, cenários, bugs, tags e anexos de screenshots
-- **Testy CLI** — assistente de linha de comando com IA que gerencia planos de teste, executa cenários no browser com Playwright, captura screenshots como evidência e aprova ou reprova cenários automaticamente — tudo a partir de comandos em linguagem natural
+- **Testy CLI** — cliente de linha de comando para pessoas e agentes de IA: gerencie projetos, planos e cenários de teste, reporte bugs com passos de reprodução e screenshots, cada repositório ligado ao seu workspace (`.testy.json`); o modo IA opcional executa cenários no browser com o Playwright
 
 ## Stack Tecnológica
 
@@ -90,105 +90,178 @@ Cobre modelos, controllers, autenticação, autorização, filtros, projetos, pr
 
 ## Testy CLI
 
-O Testy inclui um assistente de linha de comando com IA que permite gerenciar planos de teste, executar cenários no browser e capturar evidências — tudo a partir de comandos em linguagem natural.
+O `testy` é um cliente de linha de comando para a API do Testy. Use à mão ou deixe um agente de IA (o Claude Code, por exemplo) usá-lo a partir de qualquer repositório: listar e criar planos e cenários de teste, reportar bugs com o passo a passo de reprodução e screenshots, tudo dentro do projeto (workspace) certo.
 
 ### Pré-requisitos
 
-| Requisito | Finalidade |
+| Requisito | Para quê |
 |---|---|
-| Go 1.22+ (ou binário pré-compilado) | Binário do CLI (`cli/bin/testy`) |
-| Node.js e `npm install` | Playwright MCP para automação de browser (apenas modo IA) |
-| Chromium ou Chrome | Browser para screenshots e execução de testes (apenas modo IA) |
-| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | Agente de IA que alimenta o `testy qa` (opcional) |
+| Go 1.26+ (ou o binário pronto `cli/bin/testy`) | Compilar o CLI |
+| Um servidor Testy rodando e um usuário | Todo comando fala com a API dele |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Node.js e Chromium | Só para o `testy qa` (veja o fim desta seção) |
 
-### Setup
+### Instalação
 
 ```bash
-# Compilar o CLI a partir do código-fonte (opcional — o binário pode já estar compilado)
+# Compilar (o binário também está commitado em cli/bin/testy)
 cd cli && make build && cd ..
 
-# Se o servidor Testy estiver num endereço diferente:
-export TESTY_BASE_URL=http://192.168.1.x:3000
+# Colocar no PATH, para funcionar em qualquer repositório
+ln -s "$PWD/cli/bin/testy" ~/.local/bin/testy
 
-# Fazer login (cria um token local)
-bin/testy login <username> <password>
+# Apontar para o servidor (padrão: http://localhost:3000)
+export TESTY_BASE_URL=http://192.168.1.20:3000
+
+# Login — o token da API fica salvo em ~/.config/testy/token
+testy login victor 's3cret-pass'
+testy whoami
+testy doctor        # confere token, API, projeto selecionado e skill
 ```
 
-### Uso — Comandos Diretos do CLI
+Dentro deste repositório também dá para chamar `bin/testy`, um wrapper que repassa para o mesmo binário.
 
-O CLI disponibiliza comandos CRUD diretos para todos os recursos:
+### Projetos (workspaces)
+
+Planos de teste e bugs pertencem a um projeto — um por aplicação testada. Todo comando de `plans` e `bugs` trabalha no **projeto selecionado**:
 
 ```bash
-# Projetos (workspaces)
-bin/testy projects list
-bin/testy projects create "App Mobile" --use
-bin/testy projects use "Loja Web"     # por nome ou id; fica salvo em ~/.config/testy/config.json
-bin/testy projects current
-
-# Planos de teste
-bin/testy plans list
-bin/testy plans show 1
-bin/testy plans create "Testes de Login" --qa "Victor"
-
-# Cenários
-bin/testy scenarios create "Login válido" --plan 1 --given "..." --when "..." --then "..."
-bin/testy scenarios update 5 --plan 1 --status approved
-
-# Bugs
-bin/testy bugs list --status open
-bin/testy bugs create "Botão partido" --description "..." --steps "..."
-
-# Tags & evidências
-bin/testy tags list
-bin/testy screenshots attach --plan 1 --scenario 5 --file screenshot.png
-
-# Verificação de saúde
-bin/testy doctor
+testy projects list                                  # id, nome, nº de planos e de bugs abertos
+testy projects create "Loja Web" --description "Vitrine e checkout"
+testy projects create "App Mobile" --use             # cria e já seleciona
+testy projects use "Loja Web"                        # seleciona pelo nome (sem diferenciar maiúsculas)...
+testy projects use 3                                 # ...ou pelo id
+testy projects current                               # qual projeto, e de onde veio a escolha
+testy projects use --clear                           # esquece a seleção
 ```
 
-Todos os comandos suportam as flags `--json`, `--md` e `--quiet` para formatos de saída.
-
-> **Projetos:** `plans` e `bugs` trabalham no projeto selecionado — `--project <id|nome>` (ou `-p`), depois `TESTY_PROJECT`, depois `testy projects use`. Sem seleção e com um só projeto no servidor, ele é usado; com vários, `plans create` / `bugs create` pedem que você escolha um e `plans list` / `bugs list` mostram todos os projetos. O `testy qa` repassa o projeto para o agente (o `qa execute` usa o projeto do próprio plano).
-
-### Uso — Modo IA (testy qa)
-
-Para execução de testes com IA via Playwright, é necessário o Claude Code e Node.js:
+**Ligar um repositório ao projeto dele.** Rode na raiz do repositório e commite o arquivo:
 
 ```bash
-# Instalar dependências Node.js (Playwright MCP)
-npm install
-
-# Modo IA interativo
-bin/testy qa
-
-# Comando IA único
-bin/testy qa "Executa os cenários do plano 'System Login' em http://localhost:3000"
+cd ~/code/loja-web
+testy projects use "Loja Web" --local                # grava o .testy.json
+cat .testy.json
+# {
+#   "project": "Loja Web"
+# }
 ```
 
-### O que acontece quando executa cenários no modo IA
+A partir daí, qualquer `testy` rodado em qualquer lugar dentro de `~/code/loja-web` (subpastas inclusive) usa o "Loja Web" — inclusive os comandos que um agente de IA roda ali.
 
-1. O agente lê os detalhes do cenário (Dado que/Quando/Então)
-2. Abre um browser com Playwright e executa os passos (navegar, clicar, escrever)
-3. Captura um screenshot do resultado e anexa como evidência
-4. Aprova ou reprova o cenário com base no resultado
+O projeto é resolvido nesta ordem (vale o primeiro que existir):
 
-### Outros comandos do CLI
+1. `--project <id|nome>` (ou `-p`) no comando: `testy bugs list -p "App Mobile"`
+2. Variável `TESTY_PROJECT`: `TESTY_PROJECT=3 testy plans list`
+3. O `.testy.json` mais próximo, da pasta atual para cima
+4. `testy projects use` (salvo em `~/.config/testy/config.json`)
+
+Sem nada selecionado e com um só projeto no servidor, ele é usado. Com vários, `plans create` / `bugs create` falham pedindo que você escolha um, e `plans list` / `bugs list` mostram todos os projetos.
+
+### Planos e cenários de teste
 
 ```bash
-bin/testy logout     # Remove o token guardado
-bin/testy whoami     # Verifica o estado da autenticação
-bin/testy commands   # Lista todos os comandos disponíveis
-bin/testy version    # Mostra a versão do CLI
+testy plans list
+testy plans list --status failed                     # approved, failed, in_progress, not_started
+testy plans list --search "checkout" --date-from 2026-11-01 --date-until 2026-11-30
+testy plans show 12                                  # o plano com todos os cenários
+testy plans create "Checkout — compra sem login" --qa "Victor" --tags "checkout,regressao"
+testy plans update 12 --name "Checkout — com e sem login" --tags "checkout"
+testy plans delete 12
+
+testy scenarios create "Pagar com cartão válido" --plan 12 \
+  --given "Um visitante tem um produto no carrinho" \
+  --when "Ele paga com o cartão 4242 4242 4242 4242" \
+  --then "A página de confirmação mostra o número do pedido"
+testy scenarios update 57 --plan 12 --status approved   # pending, approved, failed
+testy scenarios update 58 --plan 12 --status failed --bug-id 31
+testy scenarios delete 59 --plan 12
+testy screenshots attach --plan 12 --scenario 57 --file evidencias/pedido-confirmado.png
+```
+
+### Bugs
+
+Um bug completo — descrição, passos exatos, o que aconteceu e o que deveria acontecer, e depois os screenshots:
+
+```bash
+testy bugs create "Botão Pagar não faz nada depois de alterar o endereço de entrega" \
+  --description "No checkout, depois de editar o endereço de entrega, clicar em Pagar não envia o pedido nem mostra erro." \
+  --steps $'1. Acesse /products/42 e clique em "Adicionar ao carrinho"\n2. Abra /checkout sem fazer login\n3. Preencha o endereço e clique em "Continuar"\n4. Clique em "Editar endereço", troque o CEP para 01310-100 e salve\n5. Clique em "Pagar"' \
+  --obtained "Nada acontece; o console mostra: TypeError: cart.total is undefined" \
+  --expected "O pagamento é enviado e a página de confirmação abre" \
+  --feature-tag "checkout" --cause-tag "javascript"
+# → mostra o bug criado; digamos que o id seja 31
+
+testy bugs attach 31 --file evidencias/passo4-endereco-editado.png --file evidencias/passo5-pagar-clicado.png
+testy bugs show 31                                   # campos + evidências anexadas
+```
+
+O `$'...'` faz o shell transformar `\n` em quebras de linha de verdade, então cada passo aparece numa linha.
+
+```bash
+testy bugs list --status open                        # open ou resolved
+testy bugs list --feature-tag checkout --search "pagar"
+testy bugs update 31 --status resolved
+testy bugs delete 31
+testy tags list --search "check"
+```
+
+O `bugs attach` aceita PNG, JPEG, GIF, WebP e PDF. Ele confere se todos os arquivos existem antes de enviar qualquer um.
+
+### Saída e códigos de saída
+
+| Flag | Saída |
+|---|---|
+| (nenhuma) / `--md` | Tabelas legíveis |
+| `--json` / `-j` | Envelope `{"ok": true, "data": ..., "summary": ...}` |
+| `--quiet` / `-q`, `--agent` | Só a parte `data`, em JSON — prático para scripts |
+
+```bash
+BUG_ID=$(testy bugs create "Busca ignora acentos" --description "Buscar 'cafe' não encontra 'café'" -q | jq .id)
+testy bugs attach "$BUG_ID" --file busca.png
+```
+
+Os erros seguem o mesmo formato e definem o código de saída: `0` sucesso, `2` uso (argumento faltando, nenhum projeto selecionado, arquivo ilegível), `3` não encontrado, `4` sem login ou token inválido, `5` proibido (só dá para alterar os próprios planos e bugs, a não ser que você seja admin), `6` limite de requisições, `7` rede, `8` validação ou erro do servidor.
+
+### Usando a partir de um agente de IA em outro projeto
+
+Para que um agente do Claude Code trabalhando num dos seus repositórios explore a aplicação com o Playwright e reporte os bugs confirmados no workspace daquele repositório:
+
+1. Instale o `testy` no PATH e faça login (veja **Instalação**).
+2. Ligue o repositório ao projeto: `testy projects use "Loja Web" --local`, e commite o `.testy.json`.
+3. Dê ao agente a referência do CLI: `testy skill install` grava em `~/.claude/skills/testy/SKILL.md` (ela é atualizada sozinha quando a versão do CLI muda).
+4. Adicione o Playwright MCP ao repositório: `claude mcp add playwright -- npx @playwright/mcp@latest`.
+5. Descreva o fluxo num Markdown do repositório (regras de exploração, quando um bug conta como confirmado, nomes dos screenshots) e indique esse arquivo ao agente.
+
+Um token no ambiente também funciona, para CI ou containers: `TESTY_API_TOKEN=<token> testy bugs list`.
+
+### Modo IA (`testy qa`)
+
+O `testy qa` abre o Claude Code com os prompts do próprio Testy e o Playwright MCP do `.claude/mcp.json` deste repositório (rode `npm install` antes):
+
+```bash
+testy qa generate --url http://localhost:4000 --name "Checkout" --depth quick --user demo --pass demo123
+testy qa execute  --plan 12 --url http://localhost:4000 --user demo --pass demo123
+testy qa full     --url http://localhost:4000 --name "Checkout" --context "O cartão 4242 4242 4242 4242 sempre aprova" --model opus
+```
+
+O `generate` e o `full` criam o plano no projeto selecionado; o `execute` reporta os bugs no projeto do próprio plano.
+
+### Outros comandos
+
+```bash
+testy commands       # todos os comandos com as flags
+testy logout         # revoga e apaga o token salvo
+testy version
+testy skill          # imprime a skill do agente (SKILL.md)
 ```
 
 ### Variáveis de ambiente
 
 | Variável | Padrão | Descrição |
 |---|---|---|
-| `TESTY_BASE_URL` | `http://localhost:3000` | URL do servidor Testy |
-| `TESTY_PROJECT` | — | Projeto (id ou nome) desta shell; tem prioridade sobre o `testy projects use` |
-| `TESTY_MODEL` | `sonnet` | Modelo Claude para modo IA (`sonnet`, `opus`, `haiku`) |
-| `CHROME_PATH` | Auto-detectado | Caminho para o binário Chromium/Chrome (modo IA) |
+| `TESTY_BASE_URL` | `http://localhost:3000` | URL do servidor Testy (ou `--url`) |
+| `TESTY_API_TOKEN` | — | Token da API; usado no lugar de `~/.config/testy/token` |
+| `TESTY_PROJECT` | — | Id ou nome do projeto; tem prioridade sobre o `.testy.json` e o `testy projects use` |
+| `XDG_CONFIG_HOME` | `~/.config` | Onde fica a pasta de configuração `testy/` |
 
 ## Como Funciona
 

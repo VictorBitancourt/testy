@@ -37,6 +37,7 @@ You manage test plans, scenarios, bugs, and execute automated tests via Playwrig
 | `testy projects list`                          | List projects                                |
 | `testy projects current`                       | Show the selected project                    |
 | `testy projects use <id\|name>`                | Select the project for the next commands     |
+| `testy projects use <id\|name> --local`        | Tie the current repository to it (.testy.json) |
 | `testy projects create "<name>" --use`         | Create a project and select it               |
 | `testy <cmd> --project <id\|name>`             | Run one command on another project (`-p`)    |
 
@@ -75,6 +76,7 @@ With nothing selected and several projects, creates fail with a usage error aski
 | `testy bugs create "<title>" --description "..." --steps "..."`  | Create a bug      |
 | `testy bugs update <id> --status closed`                         | Update a bug      |
 | `testy bugs delete <id>`                                         | Delete a bug      |
+| `testy bugs attach <id> --file a.png --file b.png`               | Attach screenshots to a bug |
 
 ### Tags & Evidence
 
@@ -129,7 +131,8 @@ Asked to execute tests?
 Found a defect?
 ├── 1. Capture evidence → browser_screenshot
 ├── 2. Create bug → testy bugs create "<title>" --description "..." --steps "..." --obtained "..." --expected "..." --feature-tag "..." --cause-tag "..."
-├── 3. Attach evidence → testy screenshots attach --plan <pid> --scenario <sid> --file <path>
+├── 3. Attach evidence → testy bugs attach <bid> --file <path> [--file <path>...]
+│      (and on the scenario, if any: testy screenshots attach --plan <pid> --scenario <sid> --file <path>)
 └── 4. Link to scenario → testy scenarios update <sid> --plan <pid> --status failed --bug-id <new_bug_id>
 ```
 
@@ -285,7 +288,9 @@ Location: `~/.config/testy/config.json`
 }
 ```
 
-`project` is written by `testy projects use`. Precedence: `--project` > `TESTY_PROJECT` > config file.
+`project` is written by `testy projects use`. A repository can pin its own project in a `.testy.json`
+at its root (`{"project": "Web Shop"}`, written by `testy projects use --local`); the nearest one up from
+the working directory is used. Precedence: `--project` > `TESTY_PROJECT` > `.testy.json` > config file.
 
 ### Environment Variables
 

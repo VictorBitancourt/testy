@@ -29,7 +29,8 @@ func NewProjectsCmd() *cobra.Command {
 		Aliases: []string{"project", "workspaces", "workspace"},
 		Short:   "Manage projects (workspaces)",
 		Long: "Each project is a workspace for one application under test: its test plans and bugs stay separate.\n" +
-			"Select one with 'testy projects use <id|name>', the --project flag or TESTY_PROJECT.",
+			"Select one with --project, TESTY_PROJECT, a .testy.json in the repository ('testy projects use --local')\n" +
+			"or 'testy projects use <id|name>', in that order of precedence.",
 	}
 	cmd.AddCommand(newProjectsListCmd())
 	cmd.AddCommand(newProjectsShowCmd())
@@ -141,7 +142,7 @@ func newProjectsCreateCmd() *cobra.Command {
 }
 
 func newProjectsUseCmd() *cobra.Command {
-	var clear bool
+	var clear, local bool
 
 	cmd := &cobra.Command{
 		Use:   "use <id|name>",
@@ -156,11 +157,19 @@ func newProjectsUseCmd() *cobra.Command {
 			app := appctx.FromContext(cmd.Context())
 
 			if clear {
+				if local {
+					path, err := config.SaveLocalProject("")
+					if err != nil {
+						return app.Err(err)
+					}
+					return app.OK(map[string]any{"project": nil, "file": path},
+						output.WithSummary(fmt.Sprintf("Project removed from %s", path)))
+				}
 				if err := config.SaveProject(""); err != nil {
 					return app.Err(err)
 				}
 				return app.OK(map[string]any{"project": nil},
-					output.WithSummary("Project selection cleared"))
+					output.WithSummary("Project selection cleared"+localNote()))
 			}
 
 			if err := requireAuth(app); err != nil {
@@ -172,15 +181,24 @@ func newProjectsUseCmd() *cobra.Command {
 				return app.Err(err)
 			}
 
-			// Store the id: it survives renames.
+			// The repository file keeps the name: it is readable and the same on
+			// every server. The user's config keeps the id: it survives renames.
+			if local {
+				path, err := config.SaveLocalProject(p.Name)
+				if err != nil {
+					return app.Err(err)
+				}
+				return app.OK(p, output.WithSummary(fmt.Sprintf("Project %s (#%d) saved in %s", p.Name, p.ID, path)))
+			}
 			if err := config.SaveProject(strconv.Itoa(p.ID)); err != nil {
 				return app.Err(err)
 			}
 
-			return app.OK(p, output.WithSummary(fmt.Sprintf("Using project %s (#%d)", p.Name, p.ID)))
+			return app.OK(p, output.WithSummary(fmt.Sprintf("Using project %s (#%d)%s", p.Name, p.ID, localNote())))
 		},
 	}
 	cmd.Flags().BoolVar(&clear, "clear", false, "Forget the selected project")
+	cmd.Flags().BoolVar(&local, "local", false, "Save in this repository's .testy.json instead of the user config")
 	return cmd
 }
 
@@ -210,6 +228,14 @@ func newProjectsCurrentCmd() *cobra.Command {
 			}, output.WithSummary(fmt.Sprintf("Project %s (#%d), from %s", p.Name, p.ID, source)))
 		},
 	}
+}
+
+// localNote warns that a repository's .testy.json overrides the user config here.
+func localNote() string {
+	if path := config.FindLocalFile(); path != "" {
+		return fmt.Sprintf(" (note: %s takes precedence in this directory)", path)
+	}
+	return ""
 }
 
 // listProjects fetches every project.
