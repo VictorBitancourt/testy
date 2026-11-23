@@ -12,7 +12,9 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :bugs, only: [ :index, :show, :create, :update, :destroy ]
+      resources :bugs, only: [ :index, :show, :create, :update, :destroy ] do
+        resources :screenshots, only: [ :create ], controller: "bug_screenshots"
+      end
       resources :tags, only: [ :index ]
     end
   end

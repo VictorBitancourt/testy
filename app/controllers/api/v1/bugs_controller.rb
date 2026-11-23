@@ -81,7 +81,8 @@ module Api
         serialize_bug(bug).merge(
           steps_to_reproduce: bug.steps_to_reproduce,
           obtained_result: bug.obtained_result,
-          expected_result: bug.expected_result
+          expected_result: bug.expected_result,
+          evidence_files: bug.evidence_files.map { |f| { id: f.blob_id, filename: f.filename.to_s, content_type: f.content_type } }
         )
       end
     end

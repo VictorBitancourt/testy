@@ -3,6 +3,7 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -22,6 +23,7 @@ func NewBugsCmd() *cobra.Command {
 	cmd.AddCommand(newBugsCreateCmd())
 	cmd.AddCommand(newBugsUpdateCmd())
 	cmd.AddCommand(newBugsDeleteCmd())
+	cmd.AddCommand(newBugsAttachCmd())
 	return cmd
 }
 
@@ -310,4 +312,52 @@ func newBugsDeleteCmd() *cobra.Command {
 			}, output.WithSummary(fmt.Sprintf("Bug #%s deleted", args[0])))
 		},
 	}
+}
+
+func newBugsAttachCmd() *cobra.Command {
+	var files []string
+
+	cmd := &cobra.Command{
+		Use:   "attach <id>",
+		Short: "Attach screenshots as evidence to a bug",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			app := appctx.FromContext(cmd.Context())
+			if err := requireAuth(app); err != nil {
+				return app.Err(err)
+			}
+
+			for _, file := range files {
+				if _, err := os.Stat(file); err != nil {
+					return app.Err(output.ErrUsage(fmt.Sprintf("Cannot read %s: %v", file, err)))
+				}
+			}
+
+			attached := []any{}
+			for _, file := range files {
+				data, err := app.Client.PostMultipart("/api/v1/bugs/"+args[0]+"/screenshots", "screenshot[file]", file, nil)
+				if err != nil {
+					if len(attached) > 0 {
+						return app.Err(fmt.Errorf("attached %d file(s), then %s failed: %w", len(attached), file, err))
+					}
+					return app.Err(err)
+				}
+
+				var resp struct {
+					Screenshot any `json:"screenshot"`
+				}
+				if err := json.Unmarshal(data, &resp); err != nil {
+					return app.Err(fmt.Errorf("failed to parse response: %w", err))
+				}
+				attached = append(attached, resp.Screenshot)
+			}
+
+			return app.OK(attached,
+				output.WithSummary(fmt.Sprintf("%d screenshot(s) attached to bug #%s", len(attached), args[0])),
+			)
+		},
+	}
+	cmd.Flags().StringArrayVar(&files, "file", nil, "Screenshot or PDF to attach (repeat for several)")
+	_ = cmd.MarkFlagRequired("file")
+	return cmd
 }
